@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mode d’emploi — Organigramme Interactif</title>
+  <style>
+    :root{
+      --bg: #0b0f1a;
+      --panel: #111726;
+      --panel-2: #0e1422;
+      --text: #e6e9f2;
+      --muted: #a9b1c6;
+      --accent: #6ae3ff;
+      --accent-2: #9b8eff;
+      --border: #1f2740;
+      --shadow: 0 10px 35px rgba(0,0,0,.35);
+      --radius-xl: 18px;
+      --radius: 12px;
+      --chip: #1a2032;
+      --ok: #7aff9a;
+      --warn: #ffd36a;
+      --danger: #ff7a7a;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 1200px at 10% -10%,#142038 0%, transparent 60%),
+        radial-gradient(1200px 1200px at 90% 110%,#161c2c 0%, transparent 60%),
+        var(--bg);
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 16px 60px;
+    }
+
+    header{
+      position:sticky; top:0;
+      z-index:10;
+      padding: 12px 0;
+      backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, rgba(11,15,26,.85), rgba(11,15,26,.55));
+      border-bottom: 1px solid rgba(31,39,64,.65);
+    }
+
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .title{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-width:0;
+    }
+
+    .logo{
+      width:36px;height:36px;display:grid;place-items:center;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 6px 25px rgba(106,227,255,.30);
+      flex:0 0 auto;
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:2px;
+    }
+
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:12px;
+      border:1px solid var(--border);
+      color:var(--text);
+      cursor:pointer;
+      user-select:none;
+      text-decoration:none;
+      background:linear-gradient(135deg, rgba(106,227,255,.18), rgba(155,142,255,.12));
+      box-shadow:var(--shadow);
+      white-space:nowrap;
+    }
+    .btn.ghost{
+      background:rgba(255,255,255,.03);
+      box-shadow:none;
+    }
+    .btn:active{transform:translateY(1px)}
+
+    .card{
+      margin-top: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .toc{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      border:1px solid var(--border);
+      color: var(--muted);
+      text-decoration:none;
+      font-size: 13px;
+    }
+    .chip:hover{ color: var(--text); border-color: rgba(106,227,255,.45); }
+
+    h2{
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing:.2px;
+    }
+    h3{
+      margin: 14px 0 6px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    p{ margin: 8px 0; color: var(--text); }
+    ul{ margin: 8px 0 8px 18px; color: var(--text); }
+    li{ margin: 6px 0; }
+
+    .kbd{
+      font-family: var(--mono);
+      background: var(--chip);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    .note{
+      border-left: 3px solid rgba(106,227,255,.55);
+      padding: 10px 12px;
+      background: rgba(255,255,255,.03);
+      border-radius: 12px;
+      margin: 10px 0;
+      color: var(--muted);
+    }
+
+    .warn{
+      border-left-color: rgba(255,211,106,.65);
+    }
+    .danger{
+      border-left-color: rgba(255,122,122,.65);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 860px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      overflow:hidden;
+      border-radius: 12px;
+      border:1px solid var(--border);
+    }
+    th, td{
+      padding: 10px 10px;
+      border-bottom:1px solid rgba(31,39,64,.7);
+      vertical-align:top;
+    }
+    th{
+      text-align:left;
+      color: var(--muted);
+      font-weight: 700;
+      background: rgba(255,255,255,.03);
+    }
+    tr:last-child td{ border-bottom:none; }
+
+    .small{ font-size: 13px; color: var(--muted); }
+
+    .hr{
+      height:1px;
+      background: rgba(31,39,64,.8);
+      margin: 14px 0;
+    }
+
+    .footer{
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="title">
+      <div class="logo">📖</div>
+      <div style="min-width:0">
+        <h1>Mode d’emploi — Organigramme Interactif</h1>
+        <div class="sub">Export / Import JSON & Export PNG (guide “profil non technique”)</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <a class="btn ghost" href="org1.html" title="Revenir à l’organigramme">↩︎ Retour</a>
+      <button class="btn" id="btnPrint" title="Imprimer / enregistrer en PDF">🖨️ Imprimer</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="card">
+    <h2>Sommaire</h2>
+    <div class="toc">
+      <a class="chip" href="#ouvrir">Ouvrir</a>
+      <a class="chip" href="#interface">Interface</a>
+      <a class="chip" href="#export-json">💾 Export JSON</a>
+      <a class="chip" href="#import-json">📥 Import JSON</a>
+      <a class="chip" href="#export-png">🖼️ Export PNG</a>
+      <a class="chip" href="#sauvegarde">Sauvegarde auto</a>
+      <a class="chip" href="#depannage">Dépannage</a>
+    </div>
+  </section>
+
+  <section class="card" id="ouvrir">
+    <h2>1) Ouvrir l’organigramme</h2>
+    <ul>
+      <li>Double-cliquez sur <span class="kbd">org1.html</span> (ou le fichier HTML principal).</li>
+      <li>Le fichier s’ouvre dans votre navigateur (Chrome / Edge / Firefox).</li>
+      <li>Aucune installation n’est nécessaire.</li>
+    </ul>
+    <div class="note warn">
+      Si vous changez d’ordinateur (ou de navigateur), vous ne retrouverez pas automatiquement vos données :
+      utilisez <b>Export JSON</b> puis <b>Import JSON</b> pour transférer l’organigramme.
+    </div>
+  </section>
+
+  <section class="card" id="interface">
+    <h2>2) Comprendre l’interface</h2>
+    <div class="grid">
+      <div>
+        <h3>En haut</h3>
+        <ul>
+          <li><b>📖 Mode d’emploi</b> : ouvre cette notice.</li>
+          <li><b>🖼️ Export PNG</b> : crée une image du schéma.</li>
+          <li><b>💾 Export JSON</b> : sauvegarde complète des données.</li>
+          <li><b>📥 Import JSON</b> : recharge une sauvegarde JSON.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Navigation & vues</h3>
+        <ul>
+          <li><b>Recherche</b> : filtrer par nom / fonction / département.</li>
+          <li><b>Filtres</b> : fonction, département, collaborateur.</li>
+          <li><b>Vues Schéma</b> : molette = zoom ; glisser = déplacer ; double-clic = centrer.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="export-json">
+    <h2>3) 💾 Export JSON — sauvegarde complète (recommandé)</h2>
+    <p>
+      <b>Export JSON</b> enregistre l’organigramme au format <span class="kbd">.json</span>.
+      C’est la méthode à privilégier pour sauvegarder, transférer ou restaurer.
+    </p>
+
+    <h3>Procédure</h3>
+    <ol>
+      <li>Cliquez sur <b>💾 Export JSON</b>.</li>
+      <li>Un fichier <span class="kbd">organigramme.json</span> est téléchargé.</li>
+      <li>Rangez ce fichier dans un dossier identifié (ex. “Sauvegardes Organigramme”).</li>
+    </ol>
+
+    <div class="note">
+      Bon réflexe : faites un export avant une grosse modification.
+    </div>
+
+    <h3>À quoi ça sert ?</h3>
+    <ul>
+      <li>Revenir en arrière si une erreur est faite</li>
+      <li>Envoyer l’organigramme à quelqu’un</li>
+      <li>Changer d’ordinateur / navigateur</li>
+    </ul>
+
+    <div class="note danger">
+      Attention : si vous perdez ce fichier ET que votre navigateur efface ses données (nettoyage, changement de PC),
+      vous ne pourrez pas récupérer l’organigramme.
+    </div>
+  </section>
+
+  <section class="card" id="import-json">
+    <h2>4) 📥 Import JSON — restaurer / charger une sauvegarde</h2>
+    <p>
+      <b>Import JSON</b> charge un fichier <span class="kbd">.json</span> précédemment exporté.
+    </p>
+
+    <h3>Procédure</h3>
+    <ol>
+      <li>Cliquez sur <b>📥 Import JSON</b>.</li>
+      <li>Sélectionnez votre fichier <span class="kbd">organigramme.json</span>.</li>
+      <li>L’organigramme se met à jour immédiatement.</li>
+    </ol>
+
+    <div class="note warn">
+      L’import <b>remplace</b> l’organigramme actuel.
+      Avant d’importer, faites un <b>Export JSON</b> si vous voulez conserver l’état actuel.
+    </div>
+
+    <h3>Si ça échoue</h3>
+    <ul>
+      <li>Vérifiez que le fichier est bien un <span class="kbd">.json</span>.</li>
+      <li>Si un message “JSON invalide” apparaît, le fichier n’a pas le bon format.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="export-png">
+    <h2>5) 🖼️ Export PNG — créer une image</h2>
+    <p>
+      <b>Export PNG</b> crée une image du schéma (utile pour imprimer, envoyer par e-mail, coller dans un document).
+    </p>
+
+    <h3>Procédure</h3>
+    <ol>
+      <li>Allez dans une <b>Vue Schéma</b> (verticale ou horizontale).</li>
+      <li>Ajustez le zoom / déplacement si nécessaire.</li>
+      <li>Cliquez sur <b>🖼️ Export PNG</b>.</li>
+      <li>Un fichier <span class="kbd">organigramme.png</span> est téléchargé.</li>
+    </ol>
+
+    <div class="note">
+      Le PNG est une <b>photo</b> du schéma : on ne peut pas ré-importer un PNG comme des données.
+      Pour sauvegarder “l’organigramme modifiable”, utilisez <b>Export JSON</b>.
+    </div>
+  </section>
+
+  <section class="card" id="sauvegarde">
+    <h2>6) Sauvegarde automatique</h2>
+    <p>
+      L’application mémorise automatiquement les données et certains réglages (recherche, filtres…) sur
+      <b>cet ordinateur</b> et <b>ce navigateur</b>.
+    </p>
+    <div class="note warn">
+      Cette sauvegarde automatique ne remplace pas un <b>Export JSON</b> si vous devez transférer ou archiver.
+    </div>
+  </section>
+
+  <section class="card" id="depannage">
+    <h2>7) Dépannage (rapide)</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Problème</th>
+          <th>Solution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Le fichier ne s’ouvre pas correctement</td>
+          <td>Ouvrez avec Chrome / Edge / Firefox (pas Word). Double-cliquez sur le fichier HTML.</td>
+        </tr>
+        <tr>
+          <td>Import JSON impossible</td>
+          <td>Vérifiez que le fichier est bien <span class="kbd">.json</span> et provient d’un <b>Export JSON</b>.</td>
+        </tr>
+        <tr>
+          <td>Je ne retrouve plus mes données</td>
+          <td>Rechargez votre dernière sauvegarde via <b>Import JSON</b>. Sinon, elles ont probablement été effacées côté navigateur.</td>
+        </tr>
+        <tr>
+          <td>Je veux partager une version “image”</td>
+          <td>Utilisez <b>Export PNG</b> depuis la vue schéma.</td>
+        </tr>
+        <tr>
+          <td>Je veux partager une version modifiable</td>
+          <td>Utilisez <b>Export JSON</b>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer">
+      Astuce : vous pouvez imprimer cette page (bouton 🖨️) et choisir “Enregistrer en PDF”.
+    </div>
+  </section>
+
+</div>
+
+<script>
+  document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
+</script>
+
+</body>
+</html>
