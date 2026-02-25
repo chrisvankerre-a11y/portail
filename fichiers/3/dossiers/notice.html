@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notice — Dashboard DG</title>
+  <style>
+    :root{
+      --bg:#f5f7fa; --card:#fff; --text:#243041; --muted:#5b6b7d;
+      --primary:#2c3e50; --accent:#3498db; --warn:#f39c12; --danger:#e74c3c; --ok:#2ecc71;
+      --border:#e6edf5;
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg); color:var(--text); line-height:1.55;
+    }
+    header{
+      background:linear-gradient(135deg,var(--primary),#1f2b36);
+      color:#fff; padding:28px 18px;
+    }
+    header .wrap{max-width:980px; margin:0 auto}
+    h1{margin:0 0 6px; font-size:1.8rem}
+    header p{margin:0; color:rgba(255,255,255,.85)}
+    main{max-width:980px; margin:18px auto 50px; padding:0 18px}
+    .grid{display:grid; grid-template-columns: 1fr; gap:14px}
+    @media (min-width: 980px){
+      .grid{grid-template-columns: 320px 1fr; align-items:start}
+      .toc{position:sticky; top:14px}
+    }
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      box-shadow:0 8px 24px rgba(18,38,63,.06);
+      padding:16px 16px;
+    }
+    .toc h2{font-size:1rem; margin:0 0 10px}
+    .toc a{
+      display:block; padding:8px 10px; border-radius:10px;
+      text-decoration:none; color:var(--text);
+    }
+    .toc a:hover{background:#eef5ff}
+    .badge{
+      display:inline-block; padding:2px 8px; border-radius:999px; font-size:.78rem; font-weight:600;
+      border:1px solid var(--border); background:#fbfdff; color:var(--muted);
+    }
+    .badge.ok{background:#effcf4; border-color:#c6f3d6; color:#137a3a}
+    .badge.warn{background:#fff7e8; border-color:#ffe1a8; color:#8a4f00}
+    .badge.danger{background:#fff0f0; border-color:#ffd0d0; color:#a31717}
+    h2{margin:0 0 10px; font-size:1.25rem}
+    h3{margin:18px 0 8px; font-size:1.05rem}
+    p{margin:8px 0}
+    ul{margin:8px 0 8px 18px}
+    li{margin:6px 0}
+    code.k{
+      display:inline-block; padding:2px 6px; border-radius:8px; background:#f0f4f9; border:1px solid var(--border);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size:.92em;
+    }
+    .callout{
+      border-left:5px solid var(--accent);
+      background:#f2f8ff; border:1px solid #d7e9ff; border-radius:var(--radius);
+      padding:12px 14px; margin:12px 0;
+    }
+    .callout.warn{border-left-color:var(--warn); background:#fff8ec; border-color:#ffe5b6}
+    .callout.danger{border-left-color:var(--danger); background:#fff3f3; border-color:#ffd4d4}
+    .two{
+      display:grid; grid-template-columns:1fr; gap:12px;
+    }
+    @media (min-width: 740px){
+      .two{grid-template-columns:1fr 1fr}
+    }
+    table{
+      width:100%; border-collapse:separate; border-spacing:0;
+      border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#fff;
+    }
+    th,td{padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:top}
+    th{background:#f7fafe; text-align:left; font-weight:700}
+    tr:last-child td{border-bottom:none}
+    footer{
+      max-width:980px; margin:0 auto; padding:0 18px 26px; color:var(--muted);
+      font-size:.95rem;
+    }
+    .small{color:var(--muted); font-size:.95rem}
+    .toplink{float:right; font-size:.95rem}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <h1>Notice d’utilisation — Dashboard DG</h1>
+    <p>Mode d’emploi simple pour gérer chefs d’opérations, accountables, tâches et projets.</p>
+  </div>
+</header>
+
+<main class="grid">
+  <!-- Table des matières -->
+  <nav class="card toc" aria-label="Sommaire">
+    <h2>Sommaire</h2>
+    <a href="#but">1) À quoi ça sert</a>
+    <a href="#navigation">2) Se repérer</a>
+    <a href="#import">3) Importer (Excel)</a>
+    <a href="#export">4) Exporter</a>
+    <a href="#taches">5) Tâches</a>
+    <a href="#projets">6) Projets + phases</a>
+    <a href="#sauvegarde">7) Sauvegarde complète</a>
+    <a href="#gist">8) Sauvegarde en ligne (Gist)</a>
+    <a href="#reset">9) Réinitialiser</a>
+    <a href="#bonsreflexes">10) Bons réflexes</a>
+  </nav>
+
+  <!-- Contenu -->
+  <article class="card">
+    <section id="but">
+      <a class="toplink" href="#top" aria-hidden="true"></a>
+      <h2>1) À quoi ça sert</h2>
+      <p>Le Dashboard DG permet de :</p>
+      <ul>
+        <li>tenir la liste des <strong>chefs d’opérations</strong> et des <strong>accountables</strong>,</li>
+        <li>suivre des <strong>tâches</strong> (avec détails, risques et plans d’action),</li>
+        <li>suivre des <strong>projets</strong> (avec dates et phases).</li>
+      </ul>
+      <div class="callout">
+        <strong>Important :</strong> vos données restent disponibles sur l’ordinateur où vous utilisez le dashboard.
+      </div>
+    </section>
+
+    <section id="navigation">
+      <h2>2) Se repérer</h2>
+      <p>Le menu à gauche donne accès à :</p>
+      <ul>
+        <li><strong>Accueil</strong> : import/export et sauvegardes</li>
+        <li><strong>Liste des chefs d’opérations</strong></li>
+        <li><strong>Liste des accountables</strong></li>
+        <li><strong>Toutes les tâches</strong></li>
+        <li><strong>Liste des projets</strong></li>
+      </ul>
+      <p class="small">
+        Dans les listes, cliquer sur un nom ou un compteur permet souvent de filtrer.
+      </p>
+    </section>
+
+    <section id="import">
+      <h2>3) Importer des données (Excel)</h2>
+      <p>Depuis <strong>Accueil</strong> → <strong>Importer des données</strong>, choisissez le type (chefs d’opérations, accountables, tâches, projets), sélectionnez votre fichier Excel, puis lancez l’import.</p>
+
+      <div class="callout warn">
+        <strong>Attention :</strong> pour les tâches et projets, les noms de “Responsable” et “Accountable” doivent être écrits <strong>exactement</strong> comme dans vos listes.
+      </div>
+
+      <h3>Formats attendus</h3>
+      <div class="two">
+        <div>
+          <table aria-label="Format chefs d’opérations et accountables">
+            <thead>
+              <tr>
+                <th>Fichier</th>
+                <th>Colonnes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Chefs d’opérations</td>
+                <td>ID, Nom, Rôle</td>
+              </tr>
+              <tr>
+                <td>Accountables</td>
+                <td>ID, Nom, Rôle</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <table aria-label="Format tâches et projets">
+            <thead>
+              <tr>
+                <th>Fichier</th>
+                <th>Colonnes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tâches</td>
+                <td>ID, Responsable, Accountable, Titre, Description</td>
+              </tr>
+              <tr>
+                <td>Projets</td>
+                <td>ID, Responsable, Accountable, Titre, Description, Date Début, Date Fin</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3>Dates (projets)</h3>
+      <ul>
+        <li>Vous pouvez utiliser <code class="k">YYYY-MM-DD</code> ou <code class="k">DD/MM/YYYY</code>.</li>
+      </ul>
+      <p class="small">Astuce : pour être sûr d'importer au bon format, réaliser d'abord un export, modifiez-le puis réimportez-le.</p>
+    </section>
+
+    <section id="export">
+      <h2>4) Exporter</h2>
+      <p>Depuis <strong>Accueil</strong> (ou depuis chaque section), utilisez les boutons <strong>Exporter</strong> pour générer un fichier Excel.</p>
+      <p class="small">Astuce : exporter avant une grosse modification permet de garder une copie simple.</p>
+    </section>
+
+    <section id="taches">
+      <h2>5) Tâches</h2>
+
+      <h3>Voir les tâches</h3>
+      <ul>
+        <li>Menu → <strong>Toutes les tâches</strong></li>
+        <li>Cliquer sur le titre d’une tâche pour ouvrir sa fiche</li>
+        <li>Cliquer sur le nom d’un responsable / accountable pour filtrer</li>
+      </ul>
+
+      <h3>Modifier une tâche</h3>
+      <p>Dans la fiche d’une tâche, cliquez dans un champ pour le modifier (titre, description, objectifs, commentaires, etc.).</p>
+      <div class="callout">
+        Les modifications sont enregistrées quand vous sortez du champ.
+      </div>
+
+      <h3>Risques et plans d’action</h3>
+      <ul>
+        <li>Cliquer sur <strong>Ajouter un risque avec plan d’action</strong></li>
+        <li>Remplir le “Risque” et le “Plan d’action” associé</li>
+        <li>Vous pouvez supprimer un risque via le bouton <strong>×</strong></li>
+      </ul>
+
+      <h3>Supprimer une tâche</h3>
+      <p>Dans la fiche d’une tâche : bouton <strong>Effacer la tâche</strong> (confirmation demandée).</p>
+    </section>
+
+    <section id="projets">
+      <h2>6) Projets + phases</h2>
+
+      <h3>Ouvrir un projet</h3>
+      <p>Menu → <strong>Liste des projets</strong>, puis cliquez sur le titre d’un projet pour voir ses détails.</p>
+
+      <h3>Modifier un projet</h3>
+      <ul>
+        <li>Titre, description</li>
+        <li>Date de début / date de fin</li>
+      </ul>
+
+      <h3>Ajouter des phases</h3>
+      <p>Dans un projet, section “Phases du projet” :</p>
+      <ul>
+        <li>Cliquer sur <strong>Ajouter une phase</strong></li>
+        <li>Indiquer un titre, une date, et une description (facultatif)</li>
+      </ul>
+
+      <h3>Supprimer un projet</h3>
+      <div class="callout danger">
+        <strong>Attention :</strong> supprimer un projet est irréversible.
+      </div>
+    </section>
+
+    <section id="sauvegarde">
+      <h2>7) Sauvegarde complète (fichier)</h2>
+      <p>Sur <strong>Accueil</strong> → “Sauvegarde complète” :</p>
+      <ul>
+        <li><strong>Exporter HTML</strong> : télécharge un fichier de sauvegarde complet (à conserver)</li>
+        <li><strong>Importer HTML</strong> : restaure une sauvegarde (remplace tout ce qui existe)</li>
+        <li><strong>Exporter HTML statique</strong> : génère un document “lecture seule” pratique pour partager</li>
+      </ul>
+      <div class="callout warn">
+        <strong>Importer</strong> remplace toutes les données actuelles.
+      </div>
+    </section>
+
+    <section id="gist">
+      <h2>8) Sauvegarde en ligne (Gist)</h2>
+      <p>En bas de page, vous avez :</p>
+      <ul>
+        <li><strong>Charger (Gist)</strong> : récupère la sauvegarde en ligne</li>
+        <li><strong>Sauvegarder (Gist)</strong> : envoie vos données en ligne</li>
+      </ul>
+      <p class="small">
+        Lors de la première sauvegarde, un code personnel GitHub peut être demandé.
+        Si une version plus récente existe en ligne, une proposition de chargement peut apparaître.
+      </p>
+    </section>
+
+    <section id="reset">
+      <h2>9) Réinitialiser</h2>
+      <div class="callout danger">
+        <strong>Réinitialiser</strong> supprime toutes les données (chefs d’opérations, accountables, tâches, projets).
+      </div>
+      <p>À utiliser uniquement si vous voulez repartir de zéro.</p>
+    </section>
+
+    <section id="bonsreflexes">
+      <h2>10) Bons réflexes</h2>
+      <ul>
+        <li><span class="badge ok">À faire</span> Faire une sauvegarde complète avant de gros changements.</li>
+        <li><span class="badge ok">À faire</span> Vérifier l’orthographe exacte des noms avant import (tâches/projets).</li>
+        <li><span class="badge warn">À surveiller</span> Conserver vos fichiers d’export (Excel et sauvegarde complète) dans un dossier dédié.</li>
+        <li><span class="badge danger">À éviter</span> Importer un fichier de sauvegarde si vous n’êtes pas sûr : cela remplace tout.</li>
+      </ul>
+    </section>
+  </article>
+</main>
+
+<footer>
+</footer>
+</body>
+</html>
