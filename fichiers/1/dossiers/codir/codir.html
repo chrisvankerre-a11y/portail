@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CODIR — Documents</title>
+
+  <!-- codir.html = dossiers/codir/ ; cat1 est 2 niveaux au-dessus ; admin est 1 niveau au-dessus de cat1 -->
+  <link rel="stylesheet" href="../../../admin/style.css" />
+  <script src="../../../admin/access.js"></script>
+
+  <!-- Manifest en JS (compatible file://) :
+       Doit définir window.CODIR_MANIFEST = [{ base: "Codir-CCRN-YYYY-MM", label: "..." }, ...] -->
+  <script src="manifest.js"></script>
+
+  <style>
+    .topbar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    .topbar a { text-decoration:none; }
+    .layout { display:grid; grid-template-columns: 380px 1fr; gap:14px; margin-top:14px; }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+    .panel { border:1px solid #e5e5e5; border-radius:12px; background:#fff; padding:12px; }
+    .muted { opacity:0.75; }
+
+    .controls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .controls input[type="search"] { flex:1; min-width: 220px; padding:10px; border:1px solid #ddd; border-radius:10px; }
+    .controls select { padding:10px; border:1px solid #ddd; border-radius:10px; background:#fff; }
+
+    .list { margin-top:10px; max-height: 70vh; overflow:auto; padding-right:6px; }
+    .item { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px; border:1px solid #eee; border-radius:10px; margin-bottom:8px; }
+    .item button { white-space:nowrap; }
+    .filename { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.92rem; }
+
+    .viewerHeader { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .viewerTitle { margin:0; font-size:1.05rem; }
+    .viewerActions { display:flex; gap:10px; flex-wrap:wrap; }
+
+    iframe { width:100%; height: 78vh; border:1px solid #eee; border-radius:12px; background:#fafafa; }
+    .empty { padding:12px; border:1px dashed #ddd; border-radius:10px; }
+    .hidden { display:none !important; }
+    .warn { padding:10px; border:1px solid #f1d48b; background:#fff7df; border-radius:10px; }
+  </style>
+</head>
+
+<body onload="protectPagePerm('1')">
+  <h1>CODIR — Documents</h1>
+
+  <div class="topbar">
+    <a href="../../cat1.html">← Retour Newsletter</a>
+    <span id="status" class="muted"></span>
+  </div>
+
+  <div id="warn" class="warn hidden" style="margin-top:12px;"></div>
+
+  <div class="layout">
+    <section class="panel" aria-label="Liste des documents">
+      <div class="controls">
+        <input id="q" type="search" placeholder="Filtrer (ex: 2026, CCRN…)" autocomplete="off" />
+
+        <!-- Choix du format -->
+        <select id="fmt" title="Format d’affichage">
+          <option value="pdf" selected>Afficher en PDF</option>
+          <option value="pptx">Télécharger en PPTX</option>
+        </select>
+
+        <select id="sort" title="Tri">
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+        </select>
+      </div>
+
+      <div id="list" class="list"></div>
+      <div id="hint" class="muted" style="margin-top:10px;"></div>
+    </section>
+
+    <section class="panel" aria-label="Visualisation">
+      <div class="viewerHeader">
+        <h2 class="viewerTitle" id="currentTitle">Aucun document sélectionné</h2>
+        <div class="viewerActions">
+          <button id="openTab" type="button" disabled>Ouvrir</button>
+                  </div>
+      </div>
+
+      <div id="viewerEmpty" class="empty muted">
+        Sélectionne un document dans la liste à gauche.
+      </div>
+
+      <iframe id="viewer" class="hidden" title="Aperçu PDF"></iframe>
+    </section>
+  </div>
+
+  <script>
+    const state = { items: [], filtered: [], current: null };
+    const $ = (id) => document.getElementById(id);
+
+    function normalizeManifest(raw) {
+      if (!Array.isArray(raw)) return [];
+      return raw.map(x => {
+        if (x && typeof x === 'object' && typeof x.base === 'string') {
+          return { base: x.base, label: typeof x.label === 'string' ? x.label : x.base };
+        }
+        // tolérance si tu mets directement des strings (sans extension)
+        if (typeof x === 'string') {
+          return { base: x, label: x };
+        }
+        return null;
+      }).filter(Boolean);
+    }
+
+    function sortItems(items, mode) {
+      const copy = items.slice();
+      copy.sort((a,b) => a.label.localeCompare(b.label, 'fr', { sensitivity:'base' }));
+      if (mode === 'za') copy.reverse();
+      return copy;
+    }
+
+    function applyFilter() {
+      const q = ($('q').value || '').trim().toLowerCase();
+      const mode = $('sort').value;
+
+      let items = state.items;
+      if (q) {
+        items = items.filter(it =>
+          it.label.toLowerCase().includes(q) ||
+          it.base.toLowerCase().includes(q)
+        );
+      }
+      state.filtered = sortItems(items, mode);
+      renderList();
+    }
+
+    function renderList() {
+      const host = $('list');
+      host.innerHTML = '';
+
+      if (!state.filtered.length) {
+        host.innerHTML = `<div class="empty muted">Aucun document (manifest vide / absent / filtre trop restrictif).</div>`;
+        return;
+      }
+
+      for (const it of state.filtered) {
+        const row = document.createElement('div');
+        row.className = 'item';
+
+        const left = document.createElement('div');
+        left.innerHTML = `
+          <div><strong>${escapeHtml(it.label)}</strong></div>
+          <div class="filename muted">${escapeHtml(it.base)}</div>
+        `;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'Afficher';
+        btn.addEventListener('click', () => openDoc(it));
+
+        row.appendChild(left);
+        row.appendChild(btn);
+        host.appendChild(row);
+      }
+    }
+
+    function openDoc(it) {
+      state.current = it;
+
+      const fmt = $('fmt').value; // pdf | pptx
+      const filename = `${it.base}.${fmt}`;
+      const url = encodeURI(filename);
+
+      $('currentTitle').textContent = `${it.label} — ${fmt.toUpperCase()}`;
+
+      const iframe = $('viewer');
+      const empty = $('viewerEmpty');
+
+      // PDF : preview inline
+      if (fmt === 'pdf') {
+        empty.classList.add('hidden');
+        iframe.classList.remove('hidden');
+        iframe.title = `Aperçu PDF: ${filename}`;
+        iframe.src = url;
+      } else {
+        // PPTX : pas de preview fiable en local -> on ouvre externe
+        iframe.classList.add('hidden');
+        iframe.src = '';
+        empty.classList.remove('hidden');
+        empty.textContent = "PPTX : ouverture dans l’application / le navigateur (pas d’aperçu intégré en local).";
+        // On ouvre aussi directement pour éviter “clic en plus”
+        window.open(url, '_blank', 'noopener');
+      }
+
+      $('openTab').disabled = false;
+      $('openTab').onclick = () => window.open(url, '_blank', 'noopener');
+
+      $('copyLink').disabled = false;
+      $('copyLink').onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(filename);
+          $('status').textContent = 'Nom copié.';
+          setTimeout(() => $('status').textContent = '', 1200);
+        } catch {
+          $('status').textContent = "Impossible de copier (clipboard non autorisé ici).";
+          setTimeout(() => $('status').textContent = '', 1800);
+        }
+      };
+
+      $('status').textContent = `Ouverture: ${filename}`;
+      setTimeout(() => { if ($('status').textContent.startsWith('Ouverture:')) $('status').textContent = ''; }, 2500);
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function warn(msg) {
+      const w = $('warn');
+      w.classList.remove('hidden');
+      w.innerHTML = msg;
+    }
+
+    function loadFromManifestJs() {
+      if (!Array.isArray(window.CODIR_MANIFEST)) {
+        warn(
+          `Manifest introuvable. Il faut un fichier <span class="filename">manifest.js</span> dans ce dossier ` +
+          `qui définit <span class="filename">window.CODIR_MANIFEST</span>.`
+        );
+        $('status').textContent = 'Manifest absent';
+        $('hint').innerHTML = '';
+        state.items = [];
+        state.filtered = [];
+        renderList();
+        return;
+      }
+
+      state.items = normalizeManifest(window.CODIR_MANIFEST);
+      state.filtered = sortItems(state.items, $('sort').value);
+      $('status').textContent = `${state.items.length} documents`;
+      $('hint').innerHTML = `Format actuel : <span class="filename">${escapeHtml($('fmt').value)}</span>`;
+      renderList();
+    }
+
+    $('q').addEventListener('input', applyFilter);
+    $('sort').addEventListener('change', applyFilter);
+
+    // Si on change de format, on garde la sélection courante (si existe)
+    $('fmt').addEventListener('change', () => {
+      $('hint').innerHTML = `Format actuel : <span class="filename">${escapeHtml($('fmt').value)}</span>`;
+      if (state.current) openDoc(state.current);
+    });
+
+    // En local file:// on charge uniquement depuis manifest.js
+    loadFromManifestJs();
+  </script>
+</body>
+</html>
