@@ -1,1 +1,1406 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Organigramme Interactif (agentic)</title>
+  <style>
+    :root{
+      --bg: #0b0f1a;
+      --panel: #111726;
+      --panel-2: #0e1422;
+      --text: #e6e9f2;
+      --muted: #a9b1c6;
+      --accent: #6ae3ff;
+      --accent-2: #9b8eff;
+      --ok: #7aff9a;
+      --warn: #ffd36a;
+      --danger: #ff7a7a;
+      --chip: #1a2032;
+      --border: #1f2740;
+      --shadow: 0 8px 30px rgba(0,0,0,.35);
+      --radius-xl: 18px;
+      --radius: 12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 1200px at 10% -10%,#142038 0%, transparent 60%),
+        radial-gradient(1200px 1200px at 90% 110%,#161c2c 0%, transparent 60%),
+        var(--bg);
+    }
+    .app{
+      display:grid;
+      grid-template-columns: 300px 1fr;
+      grid-template-rows:auto 1fr;
+      gap:16px;
+      min-height:100vh;
+      padding:16px
+    }
+    header{
+      grid-column:1 / -1;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+      border:1px solid var(--border);
+      padding:14px 16px;
+      border-radius:var(--radius-xl);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:var(--shadow)
+    }
+    header .title{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:36px;height:36px;display:grid;place-items:center;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 6px 25px rgba(106,227,255,.35)
+    }
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .title small{display:block;color:var(--muted);font-weight:500}
+
+    aside{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+      border:1px solid var(--border);
+      border-radius:var(--radius-xl);
+      padding:14px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:12px
+    }
+    .section-label{
+      font-size:12px;color:var(--muted);
+      text-transform:uppercase;letter-spacing:.14em;
+      margin:2px 0 6px
+    }
+    .input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid #323b5c;
+      background:#151b2e;
+      color:#ffffff;
+      outline:none;
+      font-weight:600;
+    }
+    select option{
+      background:#151b2e;
+      color:#ffffff;
+    }
+    .row{display:flex;gap:10px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:12px;
+      background:linear-gradient(135deg, rgba(106,227,255,.2), rgba(155,142,255,.15));
+      border:1px solid var(--border);
+      color:var(--text);cursor:pointer;user-select:none
+    }
+    .btn.ghost{background:rgba(255,255,255,.02)}
+    .btn:active{transform:translateY(1px)}
+
+    main{display:grid;grid-template-rows: auto 1fr;gap:12px;min-width:0}
+    .tabs{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+      border:1px solid var(--border);
+      border-radius:var(--radius-xl);
+      display:flex;padding:6px;gap:6px;
+      box-shadow:var(--shadow)
+    }
+    .tab{
+      flex:1;padding:12px;border-radius:10px;
+      text-align:center;cursor:pointer;
+      border:1px solid transparent
+    }
+    .tab.active{
+      background:linear-gradient(135deg,rgba(106,227,255,.18),rgba(155,142,255,.15));
+      border-color:var(--border)
+    }
+
+    .panels{position:relative;min-height:400px}
+    .panel{
+      position:absolute;inset:0;overflow:auto;
+      border:1px solid var(--border);border-radius:var(--radius-xl);
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      box-shadow:var(--shadow)
+    }
+    .panel.hidden{display:none}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+      gap:12px
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      display:flex;gap:12px;align-items:flex-start
+    }
+    .avatar{
+      width:44px;height:44px;border-radius:12px;
+      background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+      display:grid;place-items:center;
+      border:1px solid var(--border)
+    }
+    .name{font-weight:700}
+    .muted{color:var(--muted)}
+    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .chip{
+      padding:4px 8px;border-radius:10px;
+      background:var(--chip);border:1px solid var(--border);
+      font-size:12px;color:var(--muted)
+    }
+
+    .detail{margin-top:14px;border-top:1px dashed var(--border);padding-top:14px}
+    .detail h3{margin:0 0 8px}
+    .link{color:var(--accent);cursor:pointer}
+    .list{display:flex;flex-direction:column;gap:6px}
+    .mini{font-size:13px}
+
+    #svgWrap{
+      position:relative;height:100%;
+      border:1px dashed var(--border);
+      border-radius:12px;overflow:hidden
+    }
+    svg{
+      width:100%;height:100%;
+      background:radial-gradient(800px 600px at 70% 10%, rgba(106,227,255,.05), rgba(0,0,0,0));
+    }
+    .node{cursor:grab}
+    .node:active{cursor:grabbing}
+    .bubble{fill:url(#gradBubble);stroke:var(--border);stroke-width:1}
+    .label{font-size:12px;fill:var(--text);text-anchor:middle;pointer-events:none}
+    .sub{font-size:10px;fill:var(--muted)}
+    .edge{stroke:#3a4668;stroke-width:1.2;marker-end:url(#arrow);}
+
+    .drawer{
+      position:fixed;right:16px;bottom:16px;top:auto;left:auto;
+      min-width:320px;max-width:420px;max-height:70vh;overflow:auto;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border);border-radius:18px;
+      box-shadow:var(--shadow);padding:12px;display:none
+    }
+    .drawer.show{display:block}
+
+    .kbd{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      background:var(--chip);border:1px solid var(--border);
+      padding:2px 6px;border-radius:8px;font-size:12px;color:var(--muted)
+    }
+
+    @media (max-width: 980px){
+      .app{grid-template-columns: 1fr}
+      aside{order:2}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title">
+        <div class="logo">🏗️</div>
+        <div>
+          <h1>Organigramme Interactif — Direction Générale</h1>
+          <small>Fichier unique HTML — vue Collaborateur & vue Schéma</small>
+        </div>
+      </div>
+      <div class="row">
+        <button id="btnExportPNG" class="btn ghost" title="Exporter la vue schéma en PNG">🖼️ Export PNG</button>
+        <button id="btnExportJSON" class="btn ghost" title="Télécharger les données JSON">💾 Export JSON</button>
+        <button id="btnFullscreen" class="btn ghost" title="Plein écran vue schéma">⛶ Plein écran</button>
+        <label class="btn" title="Importer des données JSON">
+          📥 Import JSON
+          <input id="importJSON" type="file" accept="application/json" hidden />
+        </label>
+      </div>
+    </header>
+
+    <aside>
+      <div>
+        <div class="section-label">Recherche</div>
+        <input id="search" class="input" placeholder="Rechercher un collaborateur, une fonction, un projet… (⌘/Ctrl + K)" />
+      </div>
+
+      <div>
+        <div class="section-label">Ordre d'affichage</div>
+        <select id="sortMode">
+          <option value="hierarchy">Hiérarchie</option>
+          <option value="alpha">Alphabétique</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div style="flex:1">
+          <div class="section-label">Fonction</div>
+          <select id="filterRole"><option value="">Toutes</option></select>
+        </div>
+        <div style="flex:1">
+          <div class="section-label">Département</div>
+          <select id="filterDept"><option value="">Tous</option></select>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Collaborateurs</div>
+        <select id="filterCollab">
+          <option value="">Tous</option>
+        </select>
+      </div>
+
+      <div>
+        <div class="section-label">Sans</div>
+        <select id="filterExclude">
+          <option value="">Aucun</option>
+        </select>
+        <div id="excludeChips" class="chips mini"></div>
+      </div>
+
+      <div>
+        <div class="section-label">Astuce</div>
+        <div class="muted mini">
+          Cliquez un nom pour ouvrir le détail. Dans la vue Schéma :
+          molette pour zoomer, glisser pour déplacer, double-clic pour centrer.
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="tabs">
+        <div class="tab active" data-tab="people">👤 Vue Collaborateur</div>
+        <div class="tab" data-tab="graph">🕸️ Vue Schéma verticale</div>
+        <div class="tab" data-tab="graphH">🕸️ Vue Schéma horizontale</div>
+      </div>
+      <div class="panels">
+        <section id="panel-people" class="panel">
+          <div id="peopleGrid" class="grid"></div>
+        </section>
+        <section id="panel-graph" class="panel hidden">
+          <div id="svgWrap">
+            <svg id="orgSvg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Schéma de l'organigramme">
+<defs>
+  <style>
+    .bubble{
+      fill:url(#gradBubble);
+      stroke:#1f2740;
+      stroke-width:1;
+    }
+    .label{
+      fill:#e6e9f2;
+      text-anchor:middle;
+      pointer-events:none;
+    }
+    .sub{
+      fill:#a9b1c6;
+    }
+    .edge{
+      stroke:#3a4668;
+      stroke-width:1.2;
+      marker-end:url(#arrow);
+    }
+  </style>
+
+  <linearGradient id="gradBubble" x1="0" x2="1" y1="0" y2="1">
+    <stop offset="0%" stop-color="#6ae3ff" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#9b8eff" stop-opacity="0.12"/>
+  </linearGradient>
+
+  <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#3a4668"></path>
+  </marker>
+</defs>
+              <g id="edges"></g>
+              <g id="nodes"></g>
+            </svg>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="drawer" class="drawer" aria-live="polite"></div>
+
+  <script>
+    const App = (() => {
+      const LS_KEY_DATA = 'organigramme:data:v1';
+      const LS_KEY_UI   = 'organigramme:ui:v1';
+
+      const INITIAL_DATA = {
+        collaborateurs: [
+          { id:'c1', nom:'Alice Martin',   fonction:'Directrice Générale', dept:'Direction Générale', manager:null,  email:'alice@exemple.com',   tel:'+33 1 23 45 67 00', avatar:'AM' },
+          { id:'c2', nom:'Benoît Leroy',   fonction:'Directeur Financier',  dept:'Finance',            manager:'c1', email:'benoit@exemple.com',   tel:'', avatar:'BL' },
+          { id:'c3', nom:'Camille Dupont', fonction:'Directrice Marketing', dept:'Marketing',          manager:'c1', email:'camille@exemple.com', tel:'', avatar:'CD' },
+          { id:'c4', nom:'Damien Roux',    fonction:'Chef de projet',       dept:'Marketing',          manager:'c3', email:'damien@exemple.com',  tel:'', avatar:'DR' },
+          { id:'c5', nom:'Emma Garnier',   fonction:'Analyste Data',        dept:'Finance',            manager:'c2', email:'emma@exemple.com',    tel:'', avatar:'EG' },
+          { id:'c6', nom:'Farah Beny',     fonction:'UX Designer',          dept:'Marketing',          manager:'c3', email:'farah@exemple.com',   tel:'', avatar:'FB' },
+          { id:'c7', nom:'Hugo Petit',     fonction:'Développeur Front',    dept:'Tech',               manager:'c8', email:'hugo@exemple.com',    tel:'', avatar:'HP' },
+          { id:'c8', nom:'Inès Morel',     fonction:'CTO',                  dept:'Tech',               manager:'c1', email:'ines@exemple.com',    tel:'', avatar:'IM' },
+        ],
+        fonctions: [
+          { id:'f1', nom:'Directrice Générale', niveau:1, description:'Pilotage global, stratégie.' },
+          { id:'f2', nom:'Directeur Financier', niveau:2, description:'Finance & contrôle.' },
+          { id:'f3', nom:'Directrice Marketing', niveau:2, description:'Marque & acquisition.' },
+          { id:'f4', nom:'CTO', niveau:2, description:'Technologie & delivery.' },
+          { id:'f5', nom:'Chef de projet', niveau:3, description:'Coordination projets.' },
+          { id:'f6', nom:'Analyste Data', niveau:3, description:'Analyses & reporting.' },
+          { id:'f7', nom:'UX Designer', niveau:3, description:'Expérience utilisateur.' },
+          { id:'f8', nom:'Développeur Front', niveau:3, description:'Interface & web app.' },
+        ],
+        departements: [
+          { id:'d1', nom:'Direction Générale', responsable:'c1' },
+          { id:'d2', nom:'Finance',            responsable:'c2' },
+          { id:'d3', nom:'Marketing',          responsable:'c3' },
+          { id:'d4', nom:'Tech',               responsable:'c8' },
+        ],
+        projets: [
+          { id:'p1', nom:'Dashboard',    chef:'c4', dept:'d3', participants:['c3','c4','c6','c7'] , statut:'En cours'},
+          { id:'p2', nom:'Organigramme', chef:'c4', dept:'d3', participants:['c1','c3','c4','c8'] , statut:'En cours'},
+          { id:'p3', nom:'Refonte Site', chef:'c8', dept:'d4', participants:['c7','c6','c8'],      statut:'Planifié'},
+        ],
+        taches: [
+          { id:'t1', nom:'Supervision reporting',  responsable:'c2', collaborateurs:['c5'], projet:null },
+          { id:'t2', nom:'Brand book 2025',        responsable:'c3', collaborateurs:['c6'], projet:'p1' },
+          { id:'t3', nom:'Dev composants UI',      responsable:'c7', collaborateurs:['c6'], projet:'p3' },
+        ]
+      };
+
+      const state = {
+        data: structuredClone(INITIAL_DATA),
+        ui: {
+          tab: 'people',
+          search: '',
+          role: '',
+          dept: '',
+          collab: '',
+          sort: 'hierarchy',
+          excluded: []
+        }
+      };
+
+      const getEls = () => ({
+        search:      document.getElementById('search'),
+        filterRole:  document.getElementById('filterRole'),
+        filterDept:  document.getElementById('filterDept'),
+        filterCollab:document.getElementById('filterCollab'),
+        filterExclude:document.getElementById('filterExclude'),
+        excludeChips:document.getElementById('excludeChips'),
+        sortMode:    document.getElementById('sortMode'),
+        peopleGrid:  document.getElementById('peopleGrid'),
+        panelPeople: document.getElementById('panel-people'),
+        panelGraph:  document.getElementById('panel-graph'),
+        tabs:        document.querySelectorAll('.tab'),
+        svg:         document.getElementById('orgSvg'),
+        gNodes:      document.getElementById('nodes'),
+        gEdges:      document.getElementById('edges'),
+        drawer:      document.getElementById('drawer'),
+        btnExportJSON: document.getElementById('btnExportJSON'),
+        btnExportPNG:  document.getElementById('btnExportPNG'),
+        btnFullscreen: document.getElementById('btnFullscreen'),
+        importJSON:    document.getElementById('importJSON')
+      });
+
+      const helpers = {
+        byId: arr => Object.fromEntries(arr.map(x => [x.id, x])),
+        indexData() {
+          const coll = helpers.byId(state.data.collaborateurs);
+          const fonctions = Object.fromEntries(state.data.fonctions.map(f => [f.nom, f]));
+          const depts = Object.fromEntries(state.data.departements.map(d => [d.nom, d]));
+          return { coll, fonctions, depts };
+        },
+        shorten(str,max){
+          if(!str) return '';
+          return str.length>max? str.slice(0,max-1)+'…' : str;
+        },
+        escapeHtml(s){
+          return String(s).replace(/[&<>"']/g, (m)=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+        }
+      };
+
+      const persistence = {
+        load() {
+          try {
+            const rawData = localStorage.getItem(LS_KEY_DATA);
+            if(rawData){
+              const obj = JSON.parse(rawData);
+              if(obj && obj.collaborateurs && obj.fonctions && obj.departements){
+                state.data = obj;
+              }
+            }
+            const rawUI = localStorage.getItem(LS_KEY_UI);
+            if(rawUI){
+              const ui = JSON.parse(rawUI);
+              if(ui && typeof ui === 'object'){
+                if(typeof ui.tab === 'string')    state.ui.tab = ui.tab;
+                if(typeof ui.search === 'string') state.ui.search = ui.search;
+                if(typeof ui.role === 'string')   state.ui.role = ui.role;
+                if(typeof ui.dept === 'string')   state.ui.dept = ui.dept;
+                if(typeof ui.collab === 'string') state.ui.collab = ui.collab;
+                if(typeof ui.sort === 'string')   state.ui.sort = ui.sort;
+                if(Array.isArray(ui.excluded))    state.ui.excluded = ui.excluded;
+              }
+            }
+          } catch(e){
+            console.warn('Persist: lecture impossible', e);
+          }
+        },
+        saveData() {
+          try{
+            localStorage.setItem(LS_KEY_DATA, JSON.stringify(state.data));
+          }catch(e){
+            console.warn('Persist data KO', e);
+          }
+        },
+        saveUI() {
+          try{
+            localStorage.setItem(LS_KEY_UI, JSON.stringify(state.ui));
+          }catch(e){
+            console.warn('Persist ui KO', e);
+          }
+        }
+      };
+
+      const domain = {
+        buildHierarchy(collaborateurs){
+          const source = collaborateurs || state.data.collaborateurs;
+          const nodes = source.map(c => ({ ...c }));
+          const levels = new Map();
+          const byIdMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+
+          const roots = nodes
+            .filter(n => !n.manager || !byIdMap[n.manager])
+            .sort((a,b) => a.nom.localeCompare(b.nom,'fr'));
+
+          const queue = [];
+          roots.forEach(r => {
+            levels.set(r.id, 0);
+            queue.push(r);
+          });
+
+          while(queue.length){
+            const cur = queue.shift();
+            const curLvl = levels.get(cur.id);
+            nodes
+              .filter(n => n.manager === cur.id)
+              .forEach(ch => {
+                if(!levels.has(ch.id)){
+                  levels.set(ch.id, curLvl + 1);
+                  queue.push(ch);
+                }
+              });
+          }
+
+          nodes.forEach(n => {
+            if(!levels.has(n.id)) levels.set(n.id, 0);
+          });
+
+          const uniqueLvls = [...new Set(levels.values())].sort((a,b)=> a-b);
+          const order = [];
+          uniqueLvls.forEach(l => {
+            nodes
+              .filter(n => levels.get(n.id) === l)
+              .sort((a,b)=> a.nom.localeCompare(b.nom,'fr'))
+              .forEach(n => order.push(n.id));
+          });
+
+          return { nodes, levels, order };
+        },
+
+        // NOUVELLE VERSION : vue verticale = niveaux équidistants, DG centré
+        layoutNodes(width = 1200, height = 800, collaborateurs, orientation = 'vertical'){
+          const source = collaborateurs || state.data.collaborateurs;
+          if (!source || !source.length) {
+            return { positions: {}, levels: new Map() };
+          }
+
+          const byId = Object.fromEntries(source.map(c => [c.id, c]));
+
+          // enfants indexés
+          const children = {};
+          source.forEach(c => {
+            if (c.manager && byId[c.manager]) {
+              if (!children[c.manager]) children[c.manager] = [];
+              children[c.manager].push(c);
+            }
+          });
+          Object.values(children).forEach(list => {
+            list.sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+          });
+
+          // roots (DG et éventuels autres "tops")
+          const roots = source
+            .filter(c => !c.manager || !byId[c.manager])
+            .sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+
+          // BFS pour avoir un ordre stable et les niveaux
+          const levels = new Map();
+          const bfsOrder = [];
+          const queue = [];
+
+          roots.forEach(r => {
+            levels.set(r.id, 0);
+            queue.push(r);
+          });
+
+          while(queue.length){
+            const cur = queue.shift();
+            bfsOrder.push(cur.id);
+            const depth = levels.get(cur.id) || 0;
+            const kids = children[cur.id] || [];
+            kids.forEach(ch => {
+              if(!levels.has(ch.id)){
+                levels.set(ch.id, depth+1);
+                queue.push(ch);
+              }
+            });
+          }
+
+          // cas de nœuds orphelins
+          source.forEach(c => {
+            if(!levels.has(c.id)){
+              levels.set(c.id,0);
+              bfsOrder.push(c.id);
+            }
+          });
+
+          // regroupement par niveau
+          const levelMap = new Map();
+          levels.forEach((depth,id)=>{
+            if(!levelMap.has(depth)) levelMap.set(depth,[]);
+            levelMap.get(depth).push(id);
+          });
+
+          // ordre stable dans chaque niveau selon bfsOrder
+          const orderIndex = Object.fromEntries(bfsOrder.map((id,idx)=>[id,idx]));
+          levelMap.forEach(ids=>{
+            ids.sort((a,b)=>orderIndex[a] - orderIndex[b]);
+          });
+
+          const maxDepth = Math.max(...levelMap.keys());
+          const xPad = 80, yPad = 80;
+          const positions = {};
+
+          if(orientation === 'vertical'){
+            const usableWidth  = width  - 2*xPad;
+            const usableHeight = height - 2*yPad;
+
+            levelMap.forEach((ids,depth)=>{
+              const k = ids.length;
+              const y = maxDepth
+                ? yPad + (depth / maxDepth) * usableHeight
+                : height / 2;
+
+              if(k === 1){
+                // niveau avec une seule personne (typiquement DG) => plein centre
+                const id = ids[0];
+                positions[id] = { x: width / 2, y };
+              } else {
+                const step = usableWidth / (k - 1);
+                ids.forEach((id,idx)=>{
+                  const x = xPad + idx * step;
+                  positions[id] = { x, y };
+                });
+              }
+            });
+
+          } else {
+            // vue horizontale : DG à gauche, profondeur => X, équidistant verticalement
+            const usableWidth  = width  - 2*xPad;
+            const usableHeight = height - 2*yPad;
+
+            // X en fonction du niveau
+            levels.forEach((depth,id)=>{
+              const x = maxDepth
+                ? xPad + (depth / maxDepth) * usableWidth
+                : width / 2;
+              positions[id] = { x, y: 0 };
+            });
+
+            // Y réparti par niveau
+            levelMap.forEach(ids=>{
+              const k = ids.length;
+              if(k === 1){
+                const id = ids[0];
+                positions[id].y = height / 2;
+              } else {
+                const step = usableHeight / (k - 1);
+                ids.forEach((id,idx)=>{
+                  positions[id].y = yPad + idx * step;
+                });
+              }
+            });
+          }
+
+          return { positions, levels };
+        },
+
+        getVerticalChain(rootId){
+          const coll = state.data.collaborateurs;
+          const byId = Object.fromEntries(coll.map(c => [c.id, c]));
+          if (!byId[rootId]) return new Set();
+
+          const chain = new Set();
+
+          let cur = byId[rootId];
+          while (cur && !chain.has(cur.id)) {
+            chain.add(cur.id);
+            cur = cur.manager ? byId[cur.manager] : null;
+          }
+
+          const children = {};
+          coll.forEach(c => {
+            if (c.manager && byId[c.manager]) {
+              if (!children[c.manager]) children[c.manager] = [];
+              children[c.manager].push(c.id);
+            }
+          });
+
+          const queue = [rootId];
+          while (queue.length) {
+            const id = queue.shift();
+            const kids = children[id] || [];
+            kids.forEach(kidId => {
+              if (!chain.has(kidId)) {
+                chain.add(kidId);
+                queue.push(kidId);
+              }
+            });
+          }
+
+          return chain;
+        },
+
+        getDownwardChain(rootId){
+          const coll = state.data.collaborateurs;
+          const byId = Object.fromEntries(coll.map(c => [c.id, c]));
+          if(!byId[rootId]) return new Set();
+
+          const children = {};
+          coll.forEach(c => {
+            if (c.manager && byId[c.manager]) {
+              if (!children[c.manager]) children[c.manager] = [];
+              children[c.manager].push(c.id);
+            }
+          });
+
+          const chain = new Set([rootId]);
+          const queue = [rootId];
+          while(queue.length){
+            const id = queue.shift();
+            const kids = children[id] || [];
+            kids.forEach(kidId => {
+              if(!chain.has(kidId)){
+                chain.add(kidId);
+                queue.push(kidId);
+              }
+            });
+          }
+          return chain;
+        },
+
+        getExcludedSet(){
+          const roots = state.ui.excluded || [];
+          const set = new Set();
+          roots.forEach(id => {
+            const chain = domain.getDownwardChain(id);
+            chain.forEach(cid => set.add(cid));
+          });
+          return set;
+        }
+      };
+
+      const view = {
+        fmtRoleOptions(){
+          const roles = [...new Set(state.data.collaborateurs.map(c=>c.fonction))].sort();
+          const esc = helpers.escapeHtml;
+          return '<option value="">Toutes</option>' +
+            roles.map(r => `<option ${state.ui.role===r?'selected':''} value="${esc(r)}">${esc(r)}</option>`).join('');
+        },
+
+        fmtDeptOptions(){
+          const depts = [...new Set(
+            state.data.collaborateurs
+              .map(c => c.dept)
+              .filter(d => d && d.trim() !== '')
+          )].sort();
+
+          const esc = helpers.escapeHtml;
+          const selAll = (!state.ui.dept || state.ui.dept.trim() === '') ? ' selected' : '';
+
+          return `<option value=""${selAll}>Tous</option>` +
+            depts
+              .map(d => `<option ${state.ui.dept === d ? 'selected' : ''} value="${esc(d)}">${esc(d)}</option>`)
+              .join('');
+        },
+
+        fmtCollabOptions(){
+          const esc = helpers.escapeHtml;
+          const collabs = [...state.data.collaborateurs]
+            .sort((a,b) => a.nom.localeCompare(b.nom,'fr'));
+
+          return '<option value="">Tous</option>' +
+            collabs.map(c =>
+              `<option ${state.ui.collab===c.id?'selected':''} value="${esc(c.id)}">${esc(c.nom)}</option>`
+            ).join('');
+        },
+
+        fmtExcludeOptions(){
+          const esc = helpers.escapeHtml;
+          const collabs = [...state.data.collaborateurs]
+            .sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+          return '<option value="">Aucun</option>' +
+            collabs.map(c =>
+              `<option value="${esc(c.id)}">${esc(c.nom)}</option>`
+            ).join('');
+        },
+
+        renderExcludedChips(){
+          const els = getEls();
+          const wrap = els.excludeChips;
+          if(!wrap) return;
+          const excluded = state.ui.excluded || [];
+          if(!excluded.length){
+            wrap.innerHTML = '<span class="muted mini">Aucun exclu</span>';
+            return;
+          }
+          const idx = helpers.indexData().coll;
+          const esc = helpers.escapeHtml;
+
+          wrap.innerHTML = excluded
+            .map(id => {
+              const c = idx[id];
+              if(!c) return '';
+              return `<span class="chip mini link" data-remove-exclude="${esc(id)}">${esc(c.nom)} ✕</span>`;
+            })
+            .join('');
+
+          wrap.querySelectorAll('[data-remove-exclude]').forEach(el => {
+            el.addEventListener('click', () => {
+              actions.removeExclude(el.dataset.removeExclude);
+            });
+          });
+        },
+
+        renderFilters(){
+          const els = getEls();
+          if(!els.filterRole || !els.filterDept || !els.sortMode || !els.search) return;
+
+          els.filterRole.innerHTML   = view.fmtRoleOptions();
+          els.filterDept.innerHTML   = view.fmtDeptOptions();
+          if (els.filterCollab) {
+            els.filterCollab.innerHTML = view.fmtCollabOptions();
+          }
+          if (els.filterExclude) {
+            els.filterExclude.innerHTML = view.fmtExcludeOptions();
+          }
+          if (els.excludeChips) {
+            view.renderExcludedChips();
+          }
+
+          els.search.value   = state.ui.search || '';
+          els.sortMode.value = state.ui.sort   || 'hierarchy';
+        },
+
+        cardCollaborateur(c){
+          const esc = helpers.escapeHtml;
+          const initials = (c.avatar || c.nom.split(' ').map(w=>w[0]).slice(0,2).join('')).toUpperCase();
+          return `
+            <div class="card" role="button" tabindex="0" data-id="${c.id}">
+              <div class="avatar">${initials}</div>
+              <div style="min-width:0">
+                <div class="name">${esc(c.nom)}</div>
+                <div class="muted mini">${esc(c.fonction)} • ${esc(c.dept)}</div>
+                <div class="chips">
+                  <span class="chip link" data-jump-role="${esc(c.fonction)}"># ${esc(c.fonction)}</span>
+                  <span class="chip link" data-jump-dept="${esc(c.dept)}"># ${esc(c.dept)}</span>
+                </div>
+              </div>
+            </div>`;
+        },
+
+        renderPeople(){
+          const els = getEls();
+          if(!els.peopleGrid) return;
+
+          const {order} = domain.buildHierarchy();
+          const rank = Object.fromEntries(order.map((id,idx)=>[id,idx]));
+
+          let items = state.data.collaborateurs.slice();
+
+          const excludedSet = domain.getExcludedSet();
+
+          if (state.ui.collab) {
+            const chain = domain.getVerticalChain(state.ui.collab);
+            items = items.filter(c => chain.has(c.id));
+          } else {
+            const q = state.ui.search.trim().toLowerCase();
+            items = items.filter(c=>{
+              const matchQ = !q || [c.nom, c.fonction, c.dept].some(v => String(v).toLowerCase().includes(q));
+              const matchR = !state.ui.role || c.fonction === state.ui.role;
+              const matchD = !state.ui.dept || c.dept === state.ui.dept;
+              return matchQ && matchR && matchD;
+            });
+          }
+
+          if(excludedSet.size){
+            items = items.filter(c => !excludedSet.has(c.id));
+          }
+
+          if(state.ui.sort === 'alpha'){
+            items.sort((a,b)=> a.nom.localeCompare(b.nom,'fr'));
+          } else {
+            items.sort((a,b)=> (rank[a.id] ?? 9999) - (rank[b.id] ?? 9999));
+          }
+
+          els.peopleGrid.innerHTML = items.length
+            ? items.map(view.cardCollaborateur).join('')
+            : `<div class="muted">Aucun résultat.</div>`;
+
+          els.peopleGrid.querySelectorAll('[data-id]').forEach(el=>{
+            el.addEventListener('click',()=> App.actions.openDrawer(el.dataset.id));
+          });
+          els.peopleGrid.querySelectorAll('[data-jump-role]').forEach(el=>{
+            el.addEventListener('click',(e)=>{
+              e.stopPropagation();
+              App.actions.setRole(el.dataset.jumpRole);
+            })
+          });
+          els.peopleGrid.querySelectorAll('[data-jump-dept]').forEach(el=>{
+            el.addEventListener('click',(e)=>{
+              e.stopPropagation();
+              App.actions.setDept(el.dataset.jumpDept);
+            })
+          });
+        },
+
+        renderGraph(){
+          const els = getEls();
+          if (!els.svg || !els.gNodes || !els.gEdges) return;
+
+          const svg    = els.svg;
+          const gNodes = els.gNodes;
+          const gEdges = els.gEdges;
+          const vb     = svg.viewBox.baseVal;
+
+          const orientation = (state.ui.tab === 'graphH') ? 'horizontal' : 'vertical';
+          const isHorizontal = (orientation === 'horizontal');
+
+          let activeCollabs;
+          if (state.ui.collab) {
+            const chain = domain.getVerticalChain(state.ui.collab);
+            activeCollabs = state.data.collaborateurs.filter(c => chain.has(c.id));
+          } else if (state.ui.dept) {
+            activeCollabs = state.data.collaborateurs.filter(c => c.dept === state.ui.dept);
+          } else {
+            activeCollabs = state.data.collaborateurs;
+          }
+
+          const excludedSet = domain.getExcludedSet();
+          if(excludedSet.size){
+            activeCollabs = activeCollabs.filter(c => !excludedSet.has(c.id));
+          }
+
+          const nodeCount = activeCollabs.length;
+          if (!nodeCount) {
+            gNodes.innerHTML = '';
+            gEdges.innerHTML = '';
+            return;
+          }
+
+          const { positions, levels } = domain.layoutNodes(vb.width, vb.height, activeCollabs, orientation);
+
+          let baseMain = 13;
+          let baseSub  = 11;
+
+          if (nodeCount <= 15) {
+            baseMain = 16;
+            baseSub  = 13;
+          } else if (nodeCount <= 40) {
+            baseMain = 14;
+            baseSub  = 12;
+          } else {
+            baseMain = 12;
+            baseSub  = 10;
+          }
+
+          const idSet = new Set(activeCollabs.map(c => c.id));
+          const edges = activeCollabs
+            .filter(n => n.manager && idSet.has(n.manager))
+            .map(n => ({ from: n.manager, to: n.id }));
+
+          gEdges.innerHTML = edges.map(e => {
+            const a = positions[e.from], b = positions[e.to];
+            if (!a || !b) return '';
+
+            if (isHorizontal) {
+              return `<line class="edge" x1="${a.x+44}" y1="${a.y}" x2="${b.x-44}" y2="${b.y}" />`;
+            } else {
+              return `<line class="edge" x1="${a.x}" y1="${a.y+24}" x2="${b.x}" y2="${b.y-24}" />`;
+            }
+          }).join('');
+
+          const esc = helpers.escapeHtml;
+          const sh  = helpers.shorten;
+
+          gNodes.innerHTML = activeCollabs.map(c => {
+            const p = positions[c.id];
+            if (!p) return '';
+
+            const depth = levels && levels.get ? (levels.get(c.id) ?? 0) : 0;
+
+            const factor =
+              depth === 0 ? 1.3 :
+              depth === 1 ? 1.15 :
+              depth === 2 ? 1.0 :
+              0.9;
+
+            const mainSize = Math.round(baseMain * 1.2 * factor);
+            const subSize  = Math.round(baseSub  * 1.2 * factor);
+
+            return `
+              <g class="node" data-id="${c.id}" transform="translate(${p.x},${p.y})">
+                <circle class="bubble" r="28"></circle>
+                <text class="label" dy="-2" style="font-size:${mainSize}px">
+                  ${esc(sh(c.nom,16))}
+                </text>
+                <text class="label sub" dy="14" style="font-size:${subSize}px">
+                  ${esc(sh(c.fonction,16))}
+                </text>
+              </g>`;
+          }).join('');
+
+          gNodes.querySelectorAll('.node').forEach(node => {
+            const id = node.getAttribute('data-id');
+            node.addEventListener('click',    () => App.actions.openDrawer(id));
+            node.addEventListener('dblclick', () => App.actions.centerOnNode(id));
+          });
+        },
+
+        renderDrawerContent(html){
+          const {drawer} = getEls();
+          if(!drawer) return;
+          drawer.innerHTML = html;
+          drawer.classList.add('show');
+          const close = drawer.querySelector('#closeDrawer');
+          if(close) close.onclick = () => drawer.classList.remove('show');
+        }
+      };
+
+      const actions = {
+
+        toggleFullscreen(){
+          actions.setTab(state.ui.tab === 'graphH' ? 'graphH' : 'graph');
+
+          const el = document.getElementById('panel-graph');
+          if (!el) return;
+
+          if (!document.fullscreenElement) {
+            if (el.requestFullscreen) {
+              el.requestFullscreen().catch(()=>{});
+            }
+          } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen().catch(()=>{});
+            }
+          }
+        },
+
+        setTab(tab){
+          state.ui.tab = tab;
+          const els = getEls();
+
+          els.tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+
+          const isGraphTab = (tab === 'graph' || tab === 'graphH');
+          els.panelPeople.classList.toggle('hidden', isGraphTab);
+          els.panelGraph.classList.toggle('hidden',  !isGraphTab);
+
+          persistence.saveUI();
+
+          if (isGraphTab) {
+            view.renderGraph();
+          }
+        },
+        setSearch(value){
+          state.ui.search = value;
+          persistence.saveUI();
+          controller.renderAll();
+        },
+        setRole(value){
+          state.ui.role = value;
+          persistence.saveUI();
+          controller.renderAll();
+        },
+        setDept(value){
+          state.ui.dept = value;
+          persistence.saveUI();
+          controller.renderAll();
+        },
+        setCollab(value){
+          state.ui.collab = value || '';
+          persistence.saveUI();
+          controller.renderAll();
+        },
+        setSort(value){
+          state.ui.sort = value;
+          persistence.saveUI();
+          controller.renderAll();
+        },
+        setExclude(value){
+          if(!value){
+            state.ui.excluded = [];
+          } else {
+            if(!Array.isArray(state.ui.excluded)) state.ui.excluded = [];
+            if(!state.ui.excluded.includes(value)){
+              state.ui.excluded.push(value);
+            }
+          }
+          persistence.saveUI();
+          controller.renderAll();
+        },
+        removeExclude(id){
+          if(!Array.isArray(state.ui.excluded)) return;
+          state.ui.excluded = state.ui.excluded.filter(x => x !== id);
+          persistence.saveUI();
+          controller.renderAll();
+        },
+        openDrawer(id){
+          const idx = helpers.indexData();
+          const c = idx.coll[id];
+          if(!c) return;
+
+          const manager  = c.manager ? idx.coll[c.manager] : null;
+          const reports  = state.data.collaborateurs.filter(x=>x.manager===c.id);
+          const projets  = state.data.projets.filter(p=>[p.chef, ...(p.participants||[])].includes(c.id));
+          const taches   = state.data.taches.filter(t=> t.responsable===c.id || (t.collaborateurs||[]).includes(c.id));
+          const sameRole = state.data.collaborateurs.filter(x=>x.fonction===c.fonction && x.id!==c.id);
+          const esc = helpers.escapeHtml;
+
+          const html = `
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <div class="name">${esc(c.nom)}</div>
+              <button class="btn ghost" id="closeDrawer">✕</button>
+            </div>
+            <div class="muted mini" style="margin-top:-6px">${esc(c.fonction)} • ${esc(c.dept)}</div>
+            <div class="chips" style="margin-top:8px">
+              ${c.email?`<span class="chip">📧 ${esc(c.email)}</span>`:''}
+              ${c.tel?`<span class="chip">📞 ${esc(c.tel)}</span>`:''}
+            </div>
+
+            <div class="detail">
+              <h3>Liaisons</h3>
+              <div class="list mini">
+                <div>${manager?`N+1 : <span class="link" data-link-coll="${manager.id}">${esc(manager.nom)}</span>`:'N+1 : —'}</div>
+                <div>Équipe (N-1) : ${reports.length? reports.map(r=>`<span class="link" data-link-coll="${r.id}">${esc(r.nom)}</span>`).join(', '):'—'}</div>
+                <div>Fonction : <span class="link" data-jump-role="${esc(c.fonction)}">${esc(c.fonction)}</span>
+                  ${sameRole.length?`• autres : ${sameRole.map(r=>`<span class="link" data-link-coll="${r.id}">${esc(r.nom)}</span>`).join(', ')}`:''}
+                </div>
+                <div>Département : <span class="link" data-jump-dept="${esc(c.dept)}">${esc(c.dept)}</span></div>
+              </div>
+            </div>
+
+            <div class="detail">
+              <h3>Projets</h3>
+              <div class="list mini">
+                ${projets.length? projets.map(p=>`<div>• <span class="link" data-link-proj="${p.id}">${esc(p.nom)}</span> ${p.chef===c.id?'<span class="chip" title="Chef de projet">Chef</span>':''}</div>`).join(''):'Aucun'}
+              </div>
+            </div>
+
+            <div class="detail">
+              <h3>Tâches / responsabilités</h3>
+              <div class="list mini">
+                ${taches.length? taches.map(t=>`<div>• <span class="link" data-link-task="${t.id}">${esc(t.nom)}</span> ${t.responsable===c.id?'<span class="chip" title="Responsable">Resp.</span>':''}</div>`).join(''):'Aucune'}
+              </div>
+            </div>
+
+            <div class="detail">
+              <button class="btn" id="btnCenterGraph" title="Centrer ${esc(c.nom)} dans le schéma">🎯 Centrer dans le schéma</button>
+            </div>
+          `;
+          view.renderDrawerContent(html);
+
+          const {drawer} = getEls();
+          drawer.querySelectorAll('[data-link-coll]').forEach(el=>{
+            el.addEventListener('click',()=> actions.openDrawer(el.dataset.linkColl));
+          });
+          drawer.querySelectorAll('[data-jump-role]').forEach(el=>{
+            el.addEventListener('click',()=>{
+              actions.setRole(el.dataset.jumpRole);
+            });
+          });
+          drawer.querySelectorAll('[data-jump-dept]').forEach(el=>{
+            el.addEventListener('click',()=>{
+              actions.setDept(el.dataset.jumpDept);
+            });
+          });
+          drawer.querySelectorAll('[data-link-proj]').forEach(el=>{
+            el.addEventListener('click',()=> actions.openProject(el.dataset.linkProj));
+          });
+          drawer.querySelectorAll('[data-link-task]').forEach(el=>{
+            el.addEventListener('click',()=> actions.openTask(el.dataset.linkTask));
+          });
+          const btnCenter = drawer.querySelector('#btnCenterGraph');
+          if(btnCenter) btnCenter.onclick = ()=> actions.centerOnNode(id);
+        },
+        openProject(id){
+          const p = state.data.projets.find(x=>x.id===id); if(!p) return;
+          const idx = helpers.indexData();
+          const chef = idx.coll[p.chef];
+          const dept = state.data.departements.find(d=>d.id===p.dept);
+          const participants = (p.participants||[]).map(pid=>idx.coll[pid]).filter(Boolean);
+          const esc = helpers.escapeHtml;
+
+          const html = `
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <div class="name">Projet : ${esc(p.nom)}</div>
+              <button class="btn ghost" id="closeDrawer">✕</button>
+            </div>
+            <div class="muted mini" style="margin-top:-6px">Statut : ${esc(p.statut||'—')}</div>
+            <div class="detail">
+              <div>Chef de projet : <span class="link" data-link-coll="${chef?.id||''}">${chef?esc(chef.nom):'—'}</span></div>
+              <div>Département : <span class="chip">${dept?esc(dept.nom):'—'}</span></div>
+              <div style="margin-top:8px">Participants : ${participants.length? participants.map(c=>`<span class="link" data-link-coll="${c.id}">${esc(c.nom)}</span>`).join(', '):'—'}</div>
+            </div>
+          `;
+          view.renderDrawerContent(html);
+
+          const {drawer} = getEls();
+          drawer.querySelectorAll('[data-link-coll]').forEach(el =>
+            el.addEventListener('click',()=> actions.openDrawer(el.dataset.linkColl))
+          );
+        },
+        openTask(id){
+          const t = state.data.taches.find(x=>x.id===id); if(!t) return;
+          const idx  = helpers.indexData();
+          const resp = idx.coll[t.responsable];
+          const collabs = (t.collaborateurs||[]).map(cid=>idx.coll[cid]).filter(Boolean);
+          const proj = t.projet ? state.data.projets.find(p=>p.id===t.projet) : null;
+          const esc = helpers.escapeHtml;
+
+          const html = `
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <div class="name">Tâche : ${esc(t.nom)}</div>
+              <button class="btn ghost" id="closeDrawer">✕</button>
+            </div>
+            <div class="detail mini">
+              <div>Responsable : <span class="link" data-link-coll="${resp?.id||''}">${resp?esc(resp.nom):'—'}</span></div>
+              <div>Collaborateurs : ${collabs.length? collabs.map(c=>`<span class="link" data-link-coll="${c.id}">${esc(c.nom)}</span>`).join(', '):'—'}</div>
+              <div>Projet associé : ${proj?`<span class="link" data-link-proj="${proj.id}">${esc(proj.nom)}</span>`:'—'}</div>
+            </div>
+          `;
+          view.renderDrawerContent(html);
+
+          const {drawer} = getEls();
+          drawer.querySelectorAll('[data-link-coll]').forEach(el =>
+            el.addEventListener('click',()=> actions.openDrawer(el.dataset.linkColl))
+          );
+          drawer.querySelectorAll('[data-link-proj]').forEach(el =>
+            el.addEventListener('click',()=> actions.openProject(el.dataset.linkProj))
+          );
+        },
+        centerOnNode(id){
+          const els = getEls();
+          const svg = els.svg;
+          if(!svg) return;
+          const vb = svg.viewBox.baseVal;
+
+          let subset;
+          if (state.ui.collab) {
+            const chain = domain.getVerticalChain(state.ui.collab);
+            subset = state.data.collaborateurs.filter(c => chain.has(c.id));
+          } else if (state.ui.dept) {
+            subset = state.data.collaborateurs.filter(c => c.dept === state.ui.dept);
+          } else {
+            subset = state.data.collaborateurs;
+          }
+
+          const excludedSet = domain.getExcludedSet();
+          if(excludedSet.size){
+            subset = subset.filter(c => !excludedSet.has(c.id));
+          }
+
+          const orientation = (state.ui.tab === 'graphH') ? 'horizontal' : 'vertical';
+          const {positions} = domain.layoutNodes(vb.width, vb.height, subset, orientation);
+
+          const p = positions[id]; if(!p) return;
+          const w = 400, h = 300;
+          svg.setAttribute('viewBox', `${p.x - w/2} ${p.y - h/2} ${w} ${h}`);
+
+          actions.setTab(state.ui.tab === 'graphH' ? 'graphH' : 'graph');
+        },
+        exportJSON(){
+          const blob = new Blob([JSON.stringify(state.data,null,2)], {type:'application/json'});
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'organigramme.json';
+          a.click();
+          URL.revokeObjectURL(a.href);
+        },
+        exportPNGSvg(){
+          const els = getEls();
+          const svg = els.svg;
+          if(!svg) return;
+          const xml = new XMLSerializer().serializeToString(svg);
+          const svg64 = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+          const img = new Image();
+          img.onload = function(){
+            const canvas = document.createElement('canvas');
+            canvas.width = 1600; canvas.height = 1000;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0b0f1a';
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(img,0,0,canvas.width,canvas.height);
+            canvas.toBlob((blob)=>{
+              const a = document.createElement('a');
+              a.href = URL.createObjectURL(blob);
+              a.download = 'organigramme.png';
+              a.click();
+              URL.revokeObjectURL(a.href);
+            });
+          };
+          img.src = svg64;
+        },
+        importJSON(file){
+          const reader = new FileReader();
+          reader.onload = () => {
+            try{
+              const obj = JSON.parse(reader.result);
+              if(!obj.collaborateurs || !obj.fonctions || !obj.departements){
+                alert('JSON invalide : clés manquantes'); return;
+              }
+              state.data = obj;
+              persistence.saveData();
+              controller.renderAll();
+            }catch(e){
+              alert('Impossible de lire le JSON');
+            }
+          };
+          reader.readAsText(file);
+        }
+      };
+
+      const controller = {
+        bindUI(){
+          const els = getEls();
+          if(els.search){
+            els.search.addEventListener('input', ()=> {
+              actions.setSearch(els.search.value);
+            });
+          }
+          if(els.filterRole){
+            els.filterRole.addEventListener('change', ()=> {
+              actions.setRole(els.filterRole.value);
+            });
+          }
+          if(els.filterDept){
+            els.filterDept.addEventListener('change', ()=> {
+              actions.setDept(els.filterDept.value);
+            });
+          }
+          if(els.filterCollab){
+            els.filterCollab.addEventListener('change', ()=> {
+              actions.setCollab(els.filterCollab.value);
+            });
+          }
+          if(els.filterExclude){
+            els.filterExclude.addEventListener('change', ()=> {
+              actions.setExclude(els.filterExclude.value);
+              els.filterExclude.value = '';
+            });
+          }
+          if(els.sortMode){
+            els.sortMode.addEventListener('change', ()=> {
+              actions.setSort(els.sortMode.value);
+            });
+          }
+          if(els.tabs){
+            els.tabs.forEach(t => t.addEventListener('click', ()=> {
+              actions.setTab(t.dataset.tab);
+            }));
+          }
+          if(els.btnExportJSON){
+            els.btnExportJSON.onclick = actions.exportJSON;
+          }
+          if(els.btnExportPNG){
+            els.btnExportPNG.onclick = actions.exportPNGSvg;
+          }
+          if(els.btnFullscreen){
+            els.btnFullscreen.onclick = actions.toggleFullscreen;
+          }
+          if(els.importJSON){
+            els.importJSON.addEventListener('change', (e)=>{
+              const file = e.target.files[0];
+              if(file){
+                actions.importJSON(file);
+                e.target.value = '';
+              }
+            });
+          }
+
+          controller.bindPanZoom();
+        },
+        bindPanZoom(){
+          const els = getEls();
+          const svg = els.svg;
+          if(!svg) return;
+          const statePZ = {drag:false, last:null};
+
+          const setViewBox = (x,y,w,h) => svg.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+          const getVB = () => {
+            const v = svg.viewBox.baseVal;
+            return {x:v.x,y:v.y,w:v.width,h:v.height};
+          };
+
+          svg.addEventListener('wheel', (e)=>{
+            e.preventDefault();
+            const scale = (e.deltaY>0)? 1.1 : 0.9;
+            const {x,y,w,h} = getVB();
+            const mx = x + (e.offsetX/svg.clientWidth)*w;
+            const my = y + (e.offsetY/svg.clientHeight)*h;
+            const nw = w*scale, nh = h*scale;
+            const nx = mx - (mx - x) * (nw/w);
+            const ny = my - (my - y) * (nh/h);
+            setViewBox(nx, ny, nw, nh);
+          }, {passive:false});
+
+          svg.addEventListener('mousedown', (e)=>{ statePZ.drag=true; statePZ.last={x:e.clientX,y:e.clientY}; });
+          window.addEventListener('mouseup', ()=> statePZ.drag=false);
+          window.addEventListener('mousemove', (e)=>{
+            if(!statePZ.drag) return;
+            const {w,h} = getVB();
+            const dx = (e.clientX - statePZ.last.x) * (w / svg.clientWidth);
+            const dy = (e.clientY - statePZ.last.y) * (h / svg.clientHeight);
+            statePZ.last = {x:e.clientX,y:e.clientY};
+            const v = svg.viewBox.baseVal;
+            setViewBox(v.x - dx, v.y - dy, v.width, v.height);
+          });
+        },
+        renderAll(){
+          view.renderFilters();
+          view.renderPeople();
+          const isGraphTab = (state.ui.tab === 'graph' || state.ui.tab === 'graphH');
+          if(isGraphTab) view.renderGraph();
+        },
+        init(){
+          persistence.load();
+          controller.bindUI();
+          actions.setTab(state.ui.tab || 'people');
+          controller.renderAll();
+        }
+      };
+
+      return {
+        init: controller.init,
+        actions
+      };
+    })();
+
+    document.addEventListener('DOMContentLoaded', App.init);
+  </script>
+</body>
+</html>
