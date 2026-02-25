@@ -1,0 +1,6 @@
+// dossiers/codir/manifest.js
+window.CODIR_MANIFEST = [
+  { "file": "2026-01-10_CR.pdf", "label": "CR — 10/01/2026" },
+  { "file": "2026-02-07_CR.pdf", "label": "CR — 07/02/2026" }
+  // ... ajoute tous tes PDFs ici
+];
