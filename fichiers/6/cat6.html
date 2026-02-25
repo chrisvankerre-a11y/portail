@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outils Prévention — Accueil</title>
+  <style>
+    /* Hub local — UI "app" légère, sans dépendances. */
+
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --surface2: rgba(255, 255, 255, 0.75);
+      --text: #0b1220;
+      --muted: rgba(11, 18, 32, 0.68);
+      --border: rgba(15, 23, 42, 0.12);
+      --shadow: 0 12px 32px rgba(2, 6, 23, 0.08);
+      --shadow2: 0 8px 18px rgba(2, 6, 23, 0.08);
+      --brand: #2563eb;
+      --brand2: #7c3aed;
+      --ok: #16a34a;
+      --info: #0ea5e9;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --pad: 16px;
+      --pad-lg: 22px;
+      --focus: 0 0 0 3px rgba(37, 99, 235, 0.35);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1020;
+        --surface: #0f172a;
+        --surface2: rgba(15, 23, 42, 0.72);
+        --text: #e5e7eb;
+        --muted: rgba(229, 231, 235, 0.70);
+        --border: rgba(148, 163, 184, 0.18);
+        --shadow: 0 18px 38px rgba(0, 0, 0, 0.50);
+        --shadow2: 0 10px 22px rgba(0, 0, 0, 0.38);
+        --focus: 0 0 0 3px rgba(96, 165, 250, 0.35);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 12% 8%, rgba(37, 99, 235, 0.14), transparent 55%),
+                  radial-gradient(1200px 800px at 88% 12%, rgba(124, 58, 237, 0.12), transparent 55%),
+                  var(--bg);
+    }
+
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 22px 14px 28px; }
+
+    header {
+      position: sticky; top: 0; z-index: 10;
+      padding: 14px 0 10px;
+      background: linear-gradient(to bottom, rgba(246, 247, 251, 0.92), rgba(246, 247, 251, 0.65), transparent);
+      backdrop-filter: blur(10px);
+    }
+    @media (prefers-color-scheme: dark) {
+      header { background: linear-gradient(to bottom, rgba(11, 16, 32, 0.92), rgba(11, 16, 32, 0.65), transparent); }
+    }
+
+    .hero {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: var(--shadow2);
+      display: grid; place-items: center; color: #fff;
+      flex: 0 0 auto;
+    }
+    .logo svg { width: 22px; height: 22px; opacity: 0.95; }
+
+    h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
+    .sub { margin-top: 3px; color: var(--muted); font-size: 13px; }
+
+    .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 10px; border: 1px solid var(--border);
+      border-radius: 999px; background: var(--surface2);
+      color: var(--muted); font-size: 12px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--ok); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15); }
+
+    main { padding-top: 10px; }
+
+    .grid {
+      display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 14px;
+    }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.82));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--pad-lg);
+      box-shadow: var(--shadow2);
+      position: relative; overflow: hidden;
+    }
+    @media (prefers-color-scheme: dark) {
+      .card { background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(15,23,42,0.82)); }
+    }
+
+    .card::before {
+      content: ""; position: absolute; inset: -1px -1px auto -1px; height: 3px;
+      background: linear-gradient(90deg, rgba(37,99,235,0.9), rgba(124,58,237,0.85));
+    }
+
+    .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; }
+
+    .title {
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .ico {
+      width: 40px; height: 40px; border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(37, 99, 235, 0.10);
+      display: grid; place-items: center;
+      flex: 0 0 auto;
+    }
+    @media (prefers-color-scheme: dark) { .ico { background: rgba(96, 165, 250, 0.10); } }
+    .ico span { font-size: 18px; }
+
+    h2 { margin: 0 0 6px; font-size: 16px; }
+    .desc { color: var(--muted); font-size: 13px; line-height: 1.35; }
+
+    .badges { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.55);
+    }
+    @media (prefers-color-scheme: dark) { .badge { background: rgba(15,23,42,0.55); } }
+    .b-ok { border-color: rgba(22,163,74,0.35); color: rgba(22,163,74,0.95); background: rgba(22,163,74,0.10); }
+    .b-info { border-color: rgba(14,165,233,0.35); color: rgba(14,165,233,0.95); background: rgba(14,165,233,0.10); }
+    .b-warn { border-color: rgba(245,158,11,0.45); color: rgba(245,158,11,0.95); background: rgba(245,158,11,0.12); }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .actions { display: flex; align-items: center; gap: 10px; }
+
+    a.btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.70);
+      box-shadow: 0 1px 0 rgba(2,6,23,0.04);
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
+      user-select: none;
+    }
+    @media (prefers-color-scheme: dark) { a.btn { background: rgba(15,23,42,0.65); } }
+
+    a.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow2); border-color: rgba(37,99,235,0.35); }
+    a.btn:active { transform: translateY(0px); }
+    a.btn:focus-visible { outline: none; box-shadow: var(--shadow2), var(--focus); }
+
+    .arrow { width: 18px; height: 18px; display: inline-block; }
+
+    .note {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 1px 0 rgba(2,6,23,0.03);
+    }
+    @media (prefers-color-scheme: dark) { .note { background: rgba(15,23,42,0.55); } }
+
+    .note h3 { margin: 0 0 8px; font-size: 14px; }
+    .note ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .note li { margin: 6px 0; }
+
+    footer { margin-top: 14px; color: var(--muted); font-size: 12px; }
+    .hr { margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="hero">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2.5l7.8 4.5v10l-7.8 4.5L4.2 17V7L12 2.5z" stroke="white" stroke-width="1.6" opacity="0.95"/>
+              <path d="M12 7.2l4 2.3v5L12 16.8 8 14.5v-5L12 7.2z" fill="white" opacity="0.85"/>
+            </svg>
+          </div>
+          <div>
+            <h1>Outils Prévention</h1>
+            <div class="sub">Hub local • offline • données dans le navigateur (<span class="mono">LocalStorage</span>)</div>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="chip"><span class="dot" aria-hidden="true"></span>Prêt hors-ligne</span>
+          <span class="chip">1 page HTML = 1 outil</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <section class="card" aria-label="Contrôle des boîtes de secours">
+        <div class="row">
+          <div>
+            <div class="title">
+              <div class="ico" aria-hidden="true"><span>🧰</span></div>
+              <div>
+                <h2>Contrôle des boîtes de secours</h2>
+                <div class="desc">Ajout de boîtes • contrôles OK/NOK • historique • export JSON/CSV</div>
+                <div class="badges">
+                  <span class="badge b-ok">Prêt</span>
+                  <span class="badge mono">LocalStorage</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="./boites.html">Ouvrir <svg class="arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Accidents du travail">
+        <div class="row">
+          <div>
+            <div class="title">
+              <div class="ico" aria-hidden="true"><span>📝</span></div>
+              <div>
+                <h2>Accidents du travail</h2>
+                <div class="desc">Registre AT / trajets • IT / sans IT • filtres • export</div>
+                <div class="badges">
+                  <span class="badge b-ok">Prêt</span>
+                  <span class="badge mono">LocalStorage</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="./accidents.html">Ouvrir <svg class="arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Rapports mensuels / CPPT">
+        <div class="row">
+          <div>
+            <div class="title">
+              <div class="ico" aria-hidden="true"><span>📄</span></div>
+              <div>
+                <h2>Rapports mensuels / CPPT</h2>
+                <div class="desc">Consultation des rapports PDF • import dossier • aperçu intégré</div>
+                <div class="badges">
+                  <span class="badge b-info">Consultation</span>
+                  <span class="badge mono">PDF</span>
+                  <span class="badge">Offline</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="./rapports.html">Ouvrir <svg class="arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Plan Global de Prévention">
+        <div class="row">
+          <div>
+            <div class="title">
+              <div class="ico" aria-hidden="true"><span>🗺️</span></div>
+              <div>
+                <h2>Plan Global de Prévention</h2>
+                <div class="desc">Planning multi-années • créneaux • export (selon implémentation)</div>
+                <div class="badges">
+                  <span class="badge b-ok">Prêt</span>
+                  <span class="badge">Offline</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="./plan.html">Ouvrir <svg class="arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Centrale Incendie">
+        <div class="row">
+          <div>
+            <div class="title">
+              <div class="ico" aria-hidden="true"><span>🔥</span></div>
+              <div>
+                <h2>Centrale Incendie</h2>
+                <div class="desc">Historique des événements reçus (entrée via mailto / code) • consultation</div>
+                <div class="badges">
+                  <span class="badge b-info">Historique</span>
+                  <span class="badge mono">Offline</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="./centrale_incendie.html">Historique <svg class="arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="note" aria-label="Conventions">
+      <h3>Conventions</h3>
+      <ul>
+        <li>1 page HTML = 1 outil (UI + logique).</li>
+        <li>Clé LocalStorage versionnée par outil (ex: <span class="mono">op_boites_v1</span>).</li>
+        <li>Export JSON = backup manuel (pas de synchronisation serveur).</li>
+      </ul>
+    </section>
+
+    <footer class="hr">
+      Astuce : <span class="mono">Ctrl/Cmd + L</span> puis nom de fichier pour navigation rapide (selon navigateur).
+    </footer>
+  </main>
+</body>
+</html>
