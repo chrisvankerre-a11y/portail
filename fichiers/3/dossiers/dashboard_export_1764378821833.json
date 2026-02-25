@@ -1,0 +1,1026 @@
+{
+  "responsables": [
+    {
+      "id": "1",
+      "name": "Adrien Cauchie",
+      "role": "Directeur des Jeux",
+      "tasksCount": 7,
+      "projectsCount": 0
+    },
+    {
+      "id": "3",
+      "name": "Andrea I",
+      "role": "Duty Gaming Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    },
+    {
+      "id": "4",
+      "name": "Aurélie D",
+      "role": "Wellness Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    },
+    {
+      "id": "5",
+      "name": "Cassie F",
+      "role": "House Keeping Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    },
+    {
+      "id": "6",
+      "name": "Céline A",
+      "role": "MES Manager",
+      "tasksCount": 13,
+      "projectsCount": 0
+    },
+    {
+      "id": "7",
+      "name": "Christophe V",
+      "role": "Executive Assistant",
+      "tasksCount": 12,
+      "projectsCount": 2
+    },
+    {
+      "id": "8",
+      "name": "Damien G",
+      "role": "Restaurant Manager",
+      "tasksCount": 3,
+      "projectsCount": 0
+    },
+    {
+      "id": "9",
+      "name": "David E",
+      "role": "Hotel Manager",
+      "tasksCount": 6,
+      "projectsCount": 0
+    },
+    {
+      "id": "10",
+      "name": "Frank R",
+      "role": "Duty Manager",
+      "tasksCount": 3,
+      "projectsCount": 0
+    },
+    {
+      "id": "11",
+      "name": "Gregory P",
+      "role": "Poker Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    },
+    {
+      "id": "12",
+      "name": "Hugues T",
+      "role": "Facility Manager",
+      "tasksCount": 15,
+      "projectsCount": 0
+    },
+    {
+      "id": "13",
+      "name": "Jean-Marc L",
+      "role": "Slots Manager",
+      "tasksCount": 8,
+      "projectsCount": 0
+    },
+    {
+      "id": "14",
+      "name": "Jérémy ICT",
+      "role": "informaticien",
+      "tasksCount": 1,
+      "projectsCount": 0
+    },
+    {
+      "id": "15",
+      "name": "Karim T",
+      "role": "General Manager",
+      "tasksCount": 6,
+      "projectsCount": 0
+    },
+    {
+      "id": "16",
+      "name": "Katia G",
+      "role": "Bar Manager",
+      "tasksCount": 3,
+      "projectsCount": 0
+    },
+    {
+      "id": "17",
+      "name": "Lise C",
+      "role": "Front Office Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    },
+    {
+      "id": "18",
+      "name": "Martin F",
+      "role": "ICT",
+      "tasksCount": 1,
+      "projectsCount": 0
+    },
+    {
+      "id": "19",
+      "name": "Michel V",
+      "role": "Floor Poker",
+      "tasksCount": 1,
+      "projectsCount": 0
+    },
+    {
+      "id": "20",
+      "name": "Pierre D",
+      "role": "Comptability Manager",
+      "tasksCount": 1,
+      "projectsCount": 0
+    },
+    {
+      "id": "21",
+      "name": "Raphaël V",
+      "role": "Duty Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    },
+    {
+      "id": "22",
+      "name": "René B",
+      "role": "Security Manager",
+      "tasksCount": 1,
+      "projectsCount": 0
+    },
+    {
+      "id": "23",
+      "name": "Sonia A",
+      "role": "Human Ressource Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    }
+  ],
+  "accountables": [
+    {
+      "id": "1",
+      "name": "Adrien Cauchie",
+      "role": "Directeur des Jeux",
+      "tasksCount": 14,
+      "projectsCount": 0
+    },
+    {
+      "id": "3",
+      "name": "Céline A",
+      "role": "MES Manager",
+      "tasksCount": 13,
+      "projectsCount": 0
+    },
+    {
+      "id": "4",
+      "name": "Christophe V",
+      "role": "Executive Assistant",
+      "tasksCount": 12,
+      "projectsCount": 2
+    },
+    {
+      "id": "5",
+      "name": "David E",
+      "role": "Hotel Manager",
+      "tasksCount": 12,
+      "projectsCount": 0
+    },
+    {
+      "id": "6",
+      "name": "Hugues T",
+      "role": "Facility Manager",
+      "tasksCount": 15,
+      "projectsCount": 0
+    },
+    {
+      "id": "7",
+      "name": "Jean-Marc L",
+      "role": "Slots Manager",
+      "tasksCount": 8,
+      "projectsCount": 0
+    },
+    {
+      "id": "9",
+      "name": "Karim T",
+      "role": "General Manager",
+      "tasksCount": 19,
+      "projectsCount": 0
+    },
+    {
+      "id": "8",
+      "name": "Sonia A",
+      "role": "Human Ressource Manager",
+      "tasksCount": 2,
+      "projectsCount": 0
+    }
+  ],
+  "tasks": {
+    "1": [
+      {
+        "id": "101",
+        "responsableId": "1",
+        "accountableId": "1",
+        "title": "nettoyage des cylindres",
+        "description": "non défini"
+      },
+      {
+        "id": "102",
+        "responsableId": "1",
+        "accountableId": "1",
+        "title": "Test04",
+        "description": "non défini"
+      },
+      {
+        "id": "103",
+        "responsableId": "1",
+        "accountableId": "1",
+        "title": "Marquoirs tables",
+        "description": "non défini"
+      },
+      {
+        "id": "104",
+        "responsableId": "1",
+        "accountableId": "1",
+        "title": "Ecran multi-tables",
+        "description": "non défini"
+      },
+      {
+        "id": "105",
+        "responsableId": "1",
+        "accountableId": "1",
+        "title": "Jackpots progressifs JT",
+        "description": "non défini"
+      },
+      {
+        "id": "106",
+        "responsableId": "1",
+        "accountableId": "1",
+        "title": "Mélangeuses de cartes",
+        "description": "non défini"
+      },
+      {
+        "id": "107",
+        "responsableId": "1",
+        "accountableId": "1",
+        "title": "Nettoyage JT (cylindres, jetons)",
+        "description": "non défini"
+      }
+    ],
+    "2": [],
+    "3": [
+      {
+        "id": "108",
+        "responsableId": "3",
+        "accountableId": "1",
+        "title": "Terminaux de paiement casino",
+        "description": "non défini"
+      },
+      {
+        "id": "109",
+        "responsableId": "3",
+        "accountableId": "1",
+        "title": "Glory",
+        "description": "non défini"
+      }
+    ],
+    "4": [
+      {
+        "id": "206",
+        "responsableId": "4",
+        "accountableId": "5",
+        "title": "Décorations intérieures et terrasses",
+        "description": "qui ?? Aurélie ?"
+      },
+      {
+        "id": "501",
+        "responsableId": "4",
+        "accountableId": "5",
+        "title": "écran Wellness",
+        "description": "non défini"
+      }
+    ],
+    "5": [
+      {
+        "id": "502",
+        "responsableId": "5",
+        "accountableId": "5",
+        "title": "Nettoyage",
+        "description": "non défini"
+      },
+      {
+        "id": "503",
+        "responsableId": "5",
+        "accountableId": "5",
+        "title": "Poubelles intérieur",
+        "description": "non défini"
+      }
+    ],
+    "6": [
+      {
+        "id": "203",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Système sonore (casino, casino club, \r\r\r\r\r\nmicros)",
+        "description": "Jean-François RENSON (hardware) 04-223-56-54"
+      },
+      {
+        "id": "204",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Deepidoo",
+        "description": "Christophe"
+      },
+      {
+        "id": "207",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Bornes recharges téléphones",
+        "description": "OneFlash --> Max Pirson - contenu --> Céline"
+      },
+      {
+        "id": "301",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "écrans mobiles des salles",
+        "description": "non défini"
+      },
+      {
+        "id": "302",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Bornes Jeux Luxury",
+        "description": "non défini"
+      },
+      {
+        "id": "303",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Box Luxury",
+        "description": "non défini"
+      },
+      {
+        "id": "304",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Nouveaux Membres",
+        "description": "non défini"
+      },
+      {
+        "id": "305",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Goodies",
+        "description": "non défini"
+      },
+      {
+        "id": "306",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Hôtesses",
+        "description": "non défini"
+      },
+      {
+        "id": "307",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Inscriptions Circus",
+        "description": "non défini"
+      },
+      {
+        "id": "308",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "Photomaton",
+        "description": "non défini"
+      },
+      {
+        "id": "309",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "réseaux sociaux - commentaires",
+        "description": "non défini"
+      },
+      {
+        "id": "310",
+        "responsableId": "6",
+        "accountableId": "3",
+        "title": "écrans infos des salles",
+        "description": "non défini"
+      }
+    ],
+    "7": [
+      {
+        "id": "210",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "achats internet",
+        "description": "carte bancaire"
+      },
+      {
+        "id": "209",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Amazon GMA",
+        "description": "tous les achats Amazon sur Gambling Management"
+      },
+      {
+        "id": "401",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "écrans casino, hall, toilettes",
+        "description": "non défini"
+      },
+      {
+        "id": "402",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "écrans salles de repos",
+        "description": "non défini"
+      },
+      {
+        "id": "409",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Mendicité",
+        "description": "non défini"
+      },
+      {
+        "id": "407",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Onboarding Gaming1",
+        "description": "non défini"
+      },
+      {
+        "id": "406",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Panneau LC",
+        "description": "non défini"
+      },
+      {
+        "id": "408",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Prévention",
+        "description": "non défini"
+      },
+      {
+        "id": "403",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Tournois de Blackjack",
+        "description": "non défini"
+      },
+      {
+        "id": "405",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Trousses de secours",
+        "description": "non défini"
+      },
+      {
+        "id": "404",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "VIP management",
+        "description": "non défini"
+      },
+      {
+        "id": "410",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Vitrine sortie",
+        "description": "non défini"
+      }
+    ],
+    "8": [
+      {
+        "id": "212",
+        "responsableId": "8",
+        "accountableId": "9",
+        "title": "Zenchef",
+        "description": "programme de réservation restaurant"
+      },
+      {
+        "id": "232",
+        "responsableId": "8",
+        "accountableId": "9",
+        "title": "Produits d'entretien pour la cuisine du restaurant",
+        "description": "Damien"
+      },
+      {
+        "id": "234",
+        "responsableId": "8",
+        "accountableId": "9",
+        "title": "contrôles AFSCA - LCDR",
+        "description": ""
+      }
+    ],
+    "9": [
+      {
+        "id": "504",
+        "responsableId": "9",
+        "accountableId": "5",
+        "title": "écrans chambres et ascenseurs",
+        "description": "non défini"
+      },
+      {
+        "id": "505",
+        "responsableId": "9",
+        "accountableId": "5",
+        "title": "Terminaux réception hôtel",
+        "description": "non défini"
+      },
+      {
+        "id": "506",
+        "responsableId": "9",
+        "accountableId": "5",
+        "title": "Vending machines",
+        "description": "non défini"
+      },
+      {
+        "id": "507",
+        "responsableId": "9",
+        "accountableId": "5",
+        "title": "Test05",
+        "description": "non défini"
+      },
+      {
+        "id": "509",
+        "responsableId": "9",
+        "accountableId": "5",
+        "title": "Achats NCR",
+        "description": "Amazon + carte crédit"
+      },
+      {
+        "id": "510",
+        "responsableId": "9",
+        "accountableId": "5",
+        "title": "Système sonore NCR",
+        "description": "LCDR, hôtel, salles"
+      }
+    ],
+    "10": [
+      {
+        "id": "225",
+        "responsableId": "10",
+        "accountableId": "9",
+        "title": "Logiciel Client 6000 (accès)",
+        "description": "Frank R",
+        "risquesEtPlans": []
+      },
+      {
+        "id": "228",
+        "responsableId": "10",
+        "accountableId": "9",
+        "title": "Caméras",
+        "description": "Frank R, Bruno Renard --> Frank + Karim"
+      },
+      {
+        "id": "231",
+        "responsableId": "10",
+        "accountableId": "9",
+        "title": "Badges d'accès",
+        "description": "Yves Leemans yle@loyaltyagency.com 0475/659058\n\n\n\n\n\ncollaborateurs : 125KHZ MF1K\n\n\n\n\n\nclients : 1KISO14443",
+        "risquesEtPlans": []
+      }
+    ],
+    "11": [
+      {
+        "id": "110",
+        "responsableId": "11",
+        "accountableId": "1",
+        "title": "écrans salle poker",
+        "description": "non défini"
+      },
+      {
+        "id": "111",
+        "responsableId": "11",
+        "accountableId": "1",
+        "title": "petits écrans Casino Club",
+        "description": "non défini"
+      }
+    ],
+    "12": [
+      {
+        "id": "202",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Bornes électriques",
+        "description": "Electraclear - technique --> Hugues\r\r\r\n\r\r\r\n\r\r\r\naccès au site pour donner une nouvelle carte : Christophe --> Hugues et Pierre"
+      },
+      {
+        "id": "227",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Skidata",
+        "description": "Frank R - Adrien"
+      },
+      {
+        "id": "601",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "écrans Casino Club",
+        "description": "non défini"
+      },
+      {
+        "id": "602",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Bornes paiement parking",
+        "description": "non défini"
+      },
+      {
+        "id": "603",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Accès parking",
+        "description": "barrière parking",
+        "backup": "",
+        "objectifs": "",
+        "commentaires": "",
+        "risquesEtPlans": [
+          {
+            "risque": "Nouveau risque",
+            "plan": "Plan d'action correspondant"
+          },
+          {
+            "risque": "Nouveau risque 2",
+            "plan": "Plan d'action correspondant"
+          },
+          {
+            "risque": "3",
+            "plan": "3"
+          }
+        ]
+      },
+      {
+        "id": "604",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Clim",
+        "description": "non défini"
+      },
+      {
+        "id": "605",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Luminaires",
+        "description": "non défini"
+      },
+      {
+        "id": "606",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Matériel bureau",
+        "description": "non défini"
+      },
+      {
+        "id": "607",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Containers / moloks",
+        "description": "non défini"
+      },
+      {
+        "id": "608",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Plantations",
+        "description": "non défini"
+      },
+      {
+        "id": "609",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Wellness (technique)",
+        "description": "non défini"
+      },
+      {
+        "id": "610",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Fumoirs",
+        "description": "non défini"
+      },
+      {
+        "id": "611",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Machines à Café kitchenette",
+        "description": "non défini"
+      },
+      {
+        "id": "612",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "Gestion des déchets",
+        "description": "non défini"
+      },
+      {
+        "id": "613",
+        "responsableId": "12",
+        "accountableId": "6",
+        "title": "éclairages extérieurs",
+        "description": "non défini"
+      }
+    ],
+    "13": [
+      {
+        "id": "205",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "AML",
+        "description": "Jean-Marc - Valentine Carruba - Frank R - Karim T"
+      },
+      {
+        "id": "233",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "Demeter - fiches clients",
+        "description": "créer, effacer, modifier"
+      },
+      {
+        "id": "701",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "écrans Betting",
+        "description": "non défini"
+      },
+      {
+        "id": "702",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "Bornes Appolonia",
+        "description": "non défini"
+      },
+      {
+        "id": "703",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "Betting",
+        "description": "non défini"
+      },
+      {
+        "id": "704",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "Cash Dev",
+        "description": "non défini"
+      },
+      {
+        "id": "705",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "Nouvelle roue",
+        "description": "non défini"
+      },
+      {
+        "id": "706",
+        "responsableId": "13",
+        "accountableId": "7",
+        "title": "KOM",
+        "description": "non défini"
+      }
+    ],
+    "14": [
+      {
+        "id": "229",
+        "responsableId": "14",
+        "accountableId": "9",
+        "title": "WIFI",
+        "description": "ICT (vérifier connexion des tablettes)"
+      }
+    ],
+    "15": [
+      {
+        "id": "211",
+        "responsableId": "15",
+        "accountableId": "9",
+        "title": "F&B manager - fournisseurs",
+        "description": "négociations, partenariats, etc --> ?"
+      },
+      {
+        "id": "214",
+        "responsableId": "15",
+        "accountableId": "9",
+        "title": "CCT90 (rapport, suivi)",
+        "description": "Karim T & Sonia --> Karim"
+      },
+      {
+        "id": "217",
+        "responsableId": "15",
+        "accountableId": "9",
+        "title": "Inventaire stock",
+        "description": "suivi, supervision stocks horeca --> Karim"
+      },
+      {
+        "id": "218",
+        "responsableId": "15",
+        "accountableId": "9",
+        "title": "ERP-factures",
+        "description": "horeca - Karim"
+      },
+      {
+        "id": "222",
+        "responsableId": "15",
+        "accountableId": "9",
+        "title": "Report des alertes media (trustyou…)",
+        "description": "Karim T"
+      },
+      {
+        "id": "223",
+        "responsableId": "15",
+        "accountableId": "9",
+        "title": "F&B manager :\r\r\r\r\r\nValidation des entrées et sorties du personnel, suivi des recommandés",
+        "description": "embauches Horeca - RH --> Karim"
+      }
+    ],
+    "16": [
+      {
+        "id": "208",
+        "responsableId": "16",
+        "accountableId": "9",
+        "title": "Stand Dany Covyn",
+        "description": "convention dans DGA contrat de convention de prestation de service"
+      },
+      {
+        "id": "213",
+        "responsableId": "16",
+        "accountableId": "9",
+        "title": "Logiciels Horeca",
+        "description": "Lightspeed - Shoghi Van Hove - s.vanhove@ict-pro.be (hardware) - Damien et Katia"
+      },
+      {
+        "id": "219",
+        "responsableId": "16",
+        "accountableId": "9",
+        "title": "contrôles AFSCA - Bar",
+        "description": ""
+      }
+    ],
+    "17": [
+      {
+        "id": "201",
+        "responsableId": "17",
+        "accountableId": "5",
+        "title": "Terminaux inscription accueil",
+        "description": "Lise, Appolonia"
+      },
+      {
+        "id": "508",
+        "responsableId": "17",
+        "accountableId": "5",
+        "title": "Vestiaire",
+        "description": "non défini"
+      }
+    ],
+    "18": [
+      {
+        "id": "226",
+        "responsableId": "18",
+        "accountableId": "9",
+        "title": "Logiciel Hikvision",
+        "description": "ICT --> martin"
+      }
+    ],
+    "19": [
+      {
+        "id": "220",
+        "responsableId": "19",
+        "accountableId": "1",
+        "title": "Bons repas croupiers",
+        "description": "historique envoyé par Michel --> mettre à jour le fichier"
+      }
+    ],
+    "20": [
+      {
+        "id": "221",
+        "responsableId": "20",
+        "accountableId": "9",
+        "title": "Fournisseurs (contrats)",
+        "description": "Pierre Deville + Hugues, Katia, Damien"
+      }
+    ],
+    "21": [
+      {
+        "id": "112",
+        "responsableId": "21",
+        "accountableId": "1",
+        "title": "Versements vers le joueur",
+        "description": "non défini"
+      },
+      {
+        "id": "113",
+        "responsableId": "21",
+        "accountableId": "1",
+        "title": "Virement instantanés",
+        "description": "non défini"
+      }
+    ],
+    "22": [
+      {
+        "id": "230",
+        "responsableId": "22",
+        "accountableId": "9",
+        "title": "Fermeture des portes sécurité",
+        "description": "Frank R"
+      }
+    ],
+    "23": [
+      {
+        "id": "802",
+        "responsableId": "23",
+        "accountableId": "8",
+        "title": "Aménagements salles de repos",
+        "description": "non défini"
+      },
+      {
+        "id": "803",
+        "responsableId": "23",
+        "accountableId": "8",
+        "title": "Test02",
+        "description": "non défini"
+      }
+    ]
+  },
+  "projets": {
+    "7": [
+      {
+        "id": "101",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Projet test",
+        "description": "deuxième essai",
+        "startDate": "2025-12-01",
+        "endDate": "2026-01-31"
+      },
+      {
+        "id": "102",
+        "responsableId": "7",
+        "accountableId": "4",
+        "title": "Deuxième test",
+        "description": "🟣 1. Un peu d’histoire – “Un siècle d’aventure”\r\nLe Casino de Namur a vu le jour en 1914.\r\nOui, la même année que la Grande Guerre. Autant dire qu’on a commencé fort.\r\nÀ l’époque, on venait ici pour danser, pour se divertir, pour échapper à la morosité du monde.\r\nEt finalement, plus d’un siècle plus tard… c’est encore un peu ça, notre mission.\r\nDu premier bâtiment, il reste aujourd’hui l’aile est, signée par Georges Hobbé, un grand nom de l’architecture belge — il a aussi conçu le Théâtre de Verdure de la Citadelle.\r\nCôté Wépion, nous avons inauguré en 2023 un hôtel Mercure quatre étoiles supérieur.\r\nEt au centre, le bâtiment des années 80, celui où bat le cœur du Casino.\r\nEn 2004, le groupe Circus reprend l’établissement.\r\nLiégeois à l’origine, le groupe s’est depuis exporté : France, Suisse, Pays-Bas, Portugal — on commence à être nombreux à parler liégeois à l’étranger, et c’est une bonne nouvelle pour la francophonie.\r\nEn 2006, nous misons sur un pari audacieux : le poker.\r\nÀ l’époque, c’était encore un mot qu’on prononçait du bout des lèvres.\r\nAujourd’hui, c’est notre fierté : numéro 1 en Europe de l’Ouest, avec des tournois chaque jour et des joueurs venus de partout.\r\nPuis viennent les crises.\r\n2009, d’abord — économique. Et puis plus tard, le Covid.\r\nJe suis arrivé ici en 2014, avec la mission de redresser la barre.\r\nAutant dire qu’il a fallu tenir la barre très fermement.\r\nLa période Covid a été d’une violence inouïe : fermeture totale, aucune activité terrestre.\r\nHeureusement, nos jeux en ligne ont permis de maintenir l’entreprise à flot — c’est le cas de le dire.\r\nEt en 2023, après la tempête, renaissance :\r\nle Circus Casino Resort, premier Casino Resort de Belgique.\r\nUn ensemble unique : hôtel Mercure, spa, séminaires, brasserie chic, et bien sûr, une offre de jeu repensée de fond en comble.",
+        "startDate": "2025-12-12",
+        "endDate": "2025-12-31"
+      }
+    ]
+  },
+  "deadlines": {
+    "101": [
+      {
+        "title": "phase 2",
+        "date": "2025-12-12",
+        "description": "yes"
+      },
+      {
+        "title": "phase 3",
+        "date": "2025-12-23",
+        "description": "test gsm"
+      },
+      {
+        "title": "phase 4",
+        "date": "2025-12-28",
+        "description": "on y est presque"
+      },
+      {
+        "title": "phase 5",
+        "date": "2025-12-30",
+        "description": "presque la fin"
+      },
+      {
+        "title": "6",
+        "date": "lmkhnjl",
+        "description": "ikuh"
+      },
+      {
+        "title": "wc",
+        "date": "f",
+        "description": ""
+      }
+    ],
+    "102": [
+      {
+        "title": "essai",
+        "date": "2025-12-20",
+        "description": "essai"
+      },
+      {
+        "title": "final",
+        "date": "2025-12-31",
+        "description": "on termine tout"
+      },
+      {
+        "title": "phase 3",
+        "date": "2026-01-10",
+        "description": "on vérifie"
+      },
+      {
+        "title": "lkml",
+        "date": "ljh",
+        "description": "khj"
+      }
+    ]
+  },
+  "exportDate": "2025-11-29T01:13:41.831Z"
+}
