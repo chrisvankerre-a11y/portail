@@ -1,0 +1,396 @@
+{
+  "actions": [
+    {
+      "id": "a01",
+      "titre": "illuminer les marches dans la salle de jeux",
+      "desc": "rendre les marches plus visibles",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a01o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a02",
+      "titre": "surveillance médicale",
+      "desc": "organiser la surveillance médicale",
+      "cout": "organisationnel",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a02o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a03",
+      "titre": "rince-œil",
+      "desc": "achat de rince-œil",
+      "cout": "faible",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a03o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a04",
+      "titre": "boiler vestaire dames",
+      "desc": "eau chaude dans les vestiaire",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a04o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a05",
+      "titre": "câblage régie informatique",
+      "desc": "remise aux normes",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a05o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a06",
+      "titre": "fuite d'eau chaufferie",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a06o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a07",
+      "titre": "clim bureaux",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a07o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a08",
+      "titre": "câblages électriques tables de jeux",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a08o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a09",
+      "titre": "achat d'un diable électrique",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a09o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a10",
+      "titre": "fuite local jardinage",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a10o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a11",
+      "titre": "PIU",
+      "desc": "",
+      "cout": "organisationnel",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a11o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a12",
+      "titre": "clim caisse",
+      "desc": "achat d'une nouvelle clim",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a12o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a13",
+      "titre": "exercice d'évacuation",
+      "desc": "",
+      "cout": "organisationnel",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a13o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a14",
+      "titre": "châssis salle de comptée",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a14o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a15",
+      "titre": "signal lumineux pour les vestiaires",
+      "desc": "au lieu du signal sonore (réception)",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a15o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a16",
+      "titre": "paroi salle de comptée",
+      "desc": "à renforcer",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a16o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a17",
+      "titre": "stockage réserve resto",
+      "desc": "remise aux normes",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a17o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a18",
+      "titre": "stockage réserve bar",
+      "desc": "remise aux normes",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a18o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a19",
+      "titre": "stockage réserve maintenance",
+      "desc": "remise aux normes",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a19o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a20",
+      "titre": "armoire réception casino",
+      "desc": "améliorer les espaces de rangement",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a20o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a21",
+      "titre": "régie streaming",
+      "desc": "remise aux normes",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a21o1", "year": 2026, "slot": "Q2", "statut": "prévue" },
+        { "id": "a21o2", "year": 2026, "slot": "Q3", "statut": "prévue" },
+        { "id": "a21o3", "year": 2026, "slot": "Q4", "statut": "prévue" },
+        { "id": "a21o4", "year": 2027, "slot": "Année", "statut": "prévue" },
+        { "id": "a21o5", "year": 2028, "slot": "Année", "statut": "prévue" },
+        { "id": "a21o6", "year": 2029, "slot": "Année", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a22",
+      "titre": "rétenteurs magnétiques",
+      "desc": "porte garage + couloir salle de repos",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a22o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a23",
+      "titre": "toîts ligne de vie",
+      "desc": "par une société agréée",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a23o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a24",
+      "titre": "Green Key",
+      "desc": "normes écologiques",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a24o1", "year": 2026, "slot": "Q1", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a25",
+      "titre": "formations agressivité",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a25o1", "year": 2026, "slot": "Q1", "statut": "prévue" },
+        { "id": "a25o2", "year": 2026, "slot": "Q2", "statut": "prévue" },
+        { "id": "a25o3", "year": 2026, "slot": "Q3", "statut": "prévue" },
+        { "id": "a25o4", "year": 2026, "slot": "Q4", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a26",
+      "titre": "aménagement face à la Blue Ocean",
+      "desc": "salle repos croupiers",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a26o1", "year": 2026, "slot": "Q4", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a27",
+      "titre": "formations premiers secours",
+      "desc": "",
+      "cout": "organisationnel",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a27o1", "year": 2026, "slot": "Q1", "statut": "prévue" },
+        { "id": "a27o2", "year": 2026, "slot": "Q2", "statut": "prévue" },
+        { "id": "a27o3", "year": 2026, "slot": "Q3", "statut": "prévue" },
+        { "id": "a27o4", "year": 2026, "slot": "Q4", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a28",
+      "titre": "communication",
+      "desc": "améliorer la communication",
+      "cout": "organisationnel",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a28o1", "year": 2026, "slot": "Q1", "statut": "prévue" },
+        { "id": "a28o2", "year": 2026, "slot": "Q2", "statut": "prévue" },
+        { "id": "a28o3", "year": 2026, "slot": "Q3", "statut": "prévue" },
+        { "id": "a28o4", "year": 2026, "slot": "Q4", "statut": "prévue" },
+        { "id": "a28o5", "year": 2027, "slot": "Année", "statut": "prévue" },
+        { "id": "a28o6", "year": 2028, "slot": "Année", "statut": "prévue" },
+        { "id": "a28o7", "year": 2029, "slot": "Année", "statut": "prévue" },
+        { "id": "a28o8", "year": 2030, "slot": "Année", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a29",
+      "titre": "Renforcement du sas jetons caisse",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a29o1", "year": 2027, "slot": "Année", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a30",
+      "titre": "triphasé cuisine Yacht Club",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a30o1", "year": 2027, "slot": "Année", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a31",
+      "titre": "hotte cuisine Yacht Club",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a31o1", "year": 2026, "slot": "Q2", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a32",
+      "titre": "analyse ergonomique",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a32o1", "year": 2027, "slot": "Année", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a33",
+      "titre": "répétiteur dans les bureaux",
+      "desc": "alarme incendie",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a33o1", "year": 2027, "slot": "Année", "statut": "prévue" }
+      ]
+    },
+    {
+      "id": "a34",
+      "titre": "éclairage bureaux",
+      "desc": "amélioration souhaitable",
+      "cout": "moyen",
+      "montant": null,
+      "commentGlobal": "",
+      "occurrences": [
+        { "id": "a34o1", "year": 2029, "slot": "Année", "statut": "prévue" }
+      ]
+    }
+  ]
+}

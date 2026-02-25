@@ -1,0 +1,149 @@
+{
+  "boxes": [
+    {
+      "id": "4a80831aeb6fe-176fd164a55a7",
+      "name": "LCDR"
+    },
+    {
+      "id": "ecd9bf626d87d8-4bb5b360074108",
+      "name": "Bar Casino"
+    },
+    {
+      "id": "236c230800f958-cba47f46fbb69",
+      "name": "Bar Casino Club"
+    },
+    {
+      "id": "e241c61513dc18-1249467759d7d8",
+      "name": "Réception Casino"
+    },
+    {
+      "id": "03534de6b76b08-f362b3c4f161b",
+      "name": "Réception Hôtel"
+    },
+    {
+      "id": "aa8814b573256-3ccf80ca4a16c8",
+      "name": "Caisse"
+    },
+    {
+      "id": "a43e2264f3fa68-00a1a330a09b98",
+      "name": "Poker (réserve jetons)"
+    },
+    {
+      "id": "14779161d084f-299e8a7a916488",
+      "name": "Wellness"
+    },
+    {
+      "id": "c3d51dfc78303-2fcf8f8b08da3",
+      "name": "Atelier"
+    },
+    {
+      "id": "92e87cfde53118-686327aa8914d",
+      "name": "Bureaux (évier)"
+    },
+    {
+      "id": "eb23522350e85-e9cb24d5162188",
+      "name": "Armoire Duty (face à la Blue)"
+    },
+    {
+      "id": "e49059ccf05ce8-a1af6d59e82da8",
+      "name": "Régie William"
+    },
+    {
+      "id": "8efe8b97833b68-21cb3a1d3596b",
+      "name": "Local Vélos (parking -1)"
+    }
+  ],
+  "inspections": [
+    {
+      "id": "72a1d1bb286f4-c8200736958a7",
+      "boxId": "8efe8b97833b68-21cb3a1d3596b",
+      "ts": 1766069673885,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "957c865ffa1b4-c99d0f2983419",
+      "boxId": "eb23522350e85-e9cb24d5162188",
+      "ts": 1766069684756,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "18182689f30378-2ac37df68c792",
+      "boxId": "c3d51dfc78303-2fcf8f8b08da3",
+      "ts": 1766069693380,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "7be3d69271291-898d2bb15b50b",
+      "boxId": "ecd9bf626d87d8-4bb5b360074108",
+      "ts": 1766069698060,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "fb9bd013eaa848-e104e12624476",
+      "boxId": "236c230800f958-cba47f46fbb69",
+      "ts": 1766069703205,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "a1b287765b7668-02f7c684830148",
+      "boxId": "92e87cfde53118-686327aa8914d",
+      "ts": 1766069708932,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "37328728ef2ef-68b04cbaea2ff",
+      "boxId": "aa8814b573256-3ccf80ca4a16c8",
+      "ts": 1766069713860,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "db15ff092e368-ca8d8cf250cd48",
+      "boxId": "4a80831aeb6fe-176fd164a55a7",
+      "ts": 1766069719261,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "12a6f6067d1a-b8349ac03f1848",
+      "boxId": "a43e2264f3fa68-00a1a330a09b98",
+      "ts": 1766069724212,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "6f10038b04745-d9a5f41d020db8",
+      "boxId": "e241c61513dc18-1249467759d7d8",
+      "ts": 1766069728828,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "a7ffd02294f9b-8e8655e1b89db",
+      "boxId": "03534de6b76b08-f362b3c4f161b",
+      "ts": 1766069734036,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "5093bef3d45f58-1c8e1185372b1",
+      "boxId": "e49059ccf05ce8-a1af6d59e82da8",
+      "ts": 1766069739292,
+      "status": "OK",
+      "missing": []
+    },
+    {
+      "id": "18532ea89d4fa8-c7d77b86148d8",
+      "boxId": "14779161d084f-299e8a7a916488",
+      "ts": 1766069744388,
+      "status": "OK",
+      "missing": []
+    }
+  ]
+}

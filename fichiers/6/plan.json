@@ -1,0 +1,625 @@
+{
+  "actions": [
+    {
+      "id": "08579e12-cf06-4b69-8093-9fb4c7d6b61c",
+      "titre": "illuminer les marches dans la salle de jeux",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "c1f3bb24-2f34-4ce1-9fd8-3b6bb4f2d0e5",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "f0ab3f0a-37a9-4b8c-8f6c-150f7209f2f4",
+      "titre": "surveillance médicale",
+      "desc": "",
+      "cout": "organisationnel",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "f14843-4d73-4121-b37c-ab6de3ffe13c",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "0f1d7df5-37f8-4f68-9dc1-7a9f7bb2ff58",
+      "titre": "pas de rince-œil",
+      "desc": "",
+      "cout": "faible",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "da5fd321-6a8b-4b1c-9c16-8b9fbfdd0bcb",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "e62fd0e7-4c65-4e68-bd1e-6d5c8dbf1c2e",
+      "titre": "pas d'eau chaude",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "6b0f7c78-2c8b-4a2a-86a6-3dc9f2a4c4a9",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "a3c7b9a6-2d21-4a4a-86a8-5cbe4d7b5f44",
+      "titre": "mise en conformité",
+      "desc": "câblage, ventilation, résistance au feu",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "c2c0a0a6-14c2-4e44-8e6c-5c7df4f3c07e",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "fb33f5e6-51a6-4f27-b2bb-9d8b0f9f36de",
+      "titre": "fuite d'eau",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "aa9d30aa-2d7c-4b6f-8b6c-9a1e2f3b4c5d",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "63b98a7a-4a7e-4c2b-8d24-2d1f9d46f4d4",
+      "titre": "clim",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "c57c1b7c-0fcb-4a57-a4bb-2f0d2a91a7b0",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "5f72f1b9-0c45-4c4a-9e0f-2d81b7fd8f86",
+      "titre": "câblages électriques",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "ef3b8d3b-1ad9-4a3f-8b4c-3b7e2b4c5d6e",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "a9db1a5d-b1a4-4d2b-8ad5-94f6f93e2f90",
+      "titre": "achat d'un diable électrique",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "3c8f7a2a-1b2c-4d5e-8f90-1a2b3c4d5e6f",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "2cb5d21a-7f91-4b6b-8b92-7b6d2c1e9a30",
+      "titre": "mauvaise isolation",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "b7a6c5d4-e3f2-1a0b-9c8d-7e6f5a4b3c2d",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "f3a6c1e2-9c0b-4c63-a7f0-1b2c3d4e5f60",
+      "titre": "pas de PIU",
+      "desc": "",
+      "cout": "organisationnel",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "1b2c3d4e-5f60-7a8b-9c0d-1e2f3a4b5c6d",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "b27d1e2f-3a4b-5c6d-7e8f-901a2b3c4d5e",
+      "titre": "clim fonctionne mal",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "e4f5a6b7-c8d9-4e3f-8a7b-6c5d4e3f2a1b",
+      "titre": "exercice d'évacuation",
+      "desc": "",
+      "cout": "organisationnel",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "4d3c2b1a-0f9e-8d7c-6b5a-4c3d2e1f0a9b",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
+      "titre": "châssis",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "0a1b2c3d-4e5f-6071-8293-a4b5c6d7e8f9",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6",
+      "titre": "vestiaire compliqué",
+      "desc": "à gérer quand un seul collaborateur en service",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "b1c2d3e4-f5a6-47b8-c9d0-e1f2a3b4c5d6",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "d2c3b4a5-6f70-41a2-b3c4-d5e6f7a8b9c0",
+      "titre": "paroi de la salle de comptée",
+      "desc": "trop fragile",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "e2f3a4b5-c6d7-48e9-f0a1-b2c3d4e5f607",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "6a7b8c9d-0e1f-42a3-b4c5-d6e7f8a9b0c1",
+      "titre": "stockage",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "7b8c9d0e-1f2a-43b4-c5d6-e7f8a9b0c1d2",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "8c9d0e1f-2a3b-44c5-d6e7-f8a9b0c1d2e3",
+      "titre": "stockage",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "9d0e1f2a-3b4c-45d6-e7f8-a9b0c1d2e3f4",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "0e1f2a3b-4c5d-46e7-f8a9-b0c1d2e3f405",
+      "titre": "stockage",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "1f2a3b4c-5d6e-47f8-a9b0-c1d2e3f40516",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "2a3b4c5d-6e7f-48a9-b0c1-d2e3f4051627",
+      "titre": "espaces de rangements",
+      "desc": "insuffisants et/ou mal utilisés",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "3b4c5d6e-7f80-49b0-c1d2-e3f405162738",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "4c5d6e7f-8091-4ac1-d2e3-f40516273849",
+      "titre": "pas aux normes",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "9dc207a0-a94f-435c-a249-24baaed62410",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "20f95aa4-bd45-4c86-a716-e35b0c79f4c7",
+          "year": 2026,
+          "slot": "Q3",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "c3c3f5d5-093b-451e-a74d-bc4bcd4a9c1c",
+          "year": 2026,
+          "slot": "Q4",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "c3f1c8bd-26bb-47bb-9a3d-4e3db9a985c8",
+          "year": 2027,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "a7f37a77-3b52-42d8-87b0-e7c86c9fe8d7",
+          "year": 2028,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "03ac0840-b2bf-42e0-9b51-6b6d1c0f5d2f",
+          "year": 2029,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "5d6e7f80-912a-4bd2-e3f4-05162738495a",
+      "titre": "porte Casino Club",
+      "desc": "laissée ouverte",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "6e7f8091-2a3b-4ce3-f405-162738495a6b",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "7f80912a-3b4c-4df4-0516-2738495a6b7c",
+      "titre": "pas sécurisés",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "8a9b0c1d-2e3f-4051-6273-8495a6b7c8d9",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "912a3b4c-5d6e-4e05-1627-38495a6b7c8d",
+      "titre": "procédure pour le",
+      "desc": "tri des déchets — à améliorer",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "a0b1c2d3-e4f5-4607-8192-a3b4c5d6e7f8",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "2b3c4d5e-6f70-4708-91a2-b3c4d5e6f708",
+      "titre": "contacts avec la clientèle",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "d3e4f506-1728-4a39-8b4c-5d6e7f80912a",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "b4c5d6e7-f809-412a-9b3c-4d5e6f708192",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "c5d6e7f8-0912-4a3b-8c4d-5e6f708192a3",
+          "year": 2026,
+          "slot": "Q3",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "d6e7f809-12a3-4b5c-8d6e-7f80912a3b4c",
+          "year": 2026,
+          "slot": "Q4",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "3c4d5e6f-7081-423b-9c4d-5e6f708192a3",
+      "titre": "manque d'espace",
+      "desc": "pendant les tournois de poker",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "4d5e6f70-8192-4a3b-8c4d-5e6f708192a3",
+          "year": 2026,
+          "slot": "Q4",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "5e6f7081-92a3-4b5c-9d6e-7f80912a3b4c",
+      "titre": "manque de formations",
+      "desc": "premiers secours",
+      "cout": "organisationnel",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "6f708192-a3b4-4c5d-8e6f-708192a3b4c5",
+          "year": 2026,
+          "slot": "Q1",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "708192a3-b4c5-4d6e-8f70-8192a3b4c5d6",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "8192a3b4-c5d6-4e7f-9081-92a3b4c5d6e7",
+          "year": 2026,
+          "slot": "Q3",
+          "statut": "prévue",
+          "comment": ""
+        },
+        {
+          "id": "92a3b4c5-d6e7-4f80-9192-a3b4c5d6e7f8",
+          "year": 2026,
+          "slot": "Q4",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "a3b4c5d6-e7f8-4091-a2b3-c4d5e6f70819",
+      "titre": "manque de communication de la part",
+      "desc": "des autres départements",
+      "cout": "organisationnel",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "b4c5d6e7-f809-41a2-b3c4-d5e6f708192a",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "c5d6e7f8-0912-42b3-c4d5-e6f708192a3b",
+      "titre": "Renforcement du sas jetons",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "d6e7f809-12a3-43c4-d5e6-f708192a3b4c",
+          "year": 2027,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "e7f80912-a3b4-44d5-e6f7-08192a3b4c5d",
+      "titre": "pas de triphasé",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "f80912a3-b4c5-45e6-f708-192a3b4c5d6e",
+          "year": 2027,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "0912a3b4-c5d6-46f7-0819-2a3b4c5d6e7f",
+      "titre": "pas de hotte",
+      "desc": "",
+      "cout": "élevé",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "12a3b4c5-d6e7-4708-192a-3b4c5d6e7f80",
+          "year": 2026,
+          "slot": "Q2",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "2a3b4c5d-6e7f-4809-2a3b-4c5d6e7f8091",
+      "titre": "manque d'analyse",
+      "desc": "ergonomique",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "3b4c5d6e-7f80-4910-2b3c-4d5e6f708192",
+          "year": 2027,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "4c5d6e7f-8091-4a21-3c4d-5e6f708192a3",
+      "titre": "répétiteur dans les bureaux",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "5d6e7f80-912a-4b32-4d5e-6f708192a3b4",
+          "year": 2027,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    },
+    {
+      "id": "6e7f8091-2a3b-4c43-5e6f-708192a3b4c5",
+      "titre": "éclairage",
+      "desc": "",
+      "cout": "moyen",
+      "montant": null,
+      "occurrences": [
+        {
+          "id": "7f80912a-3b4c-4d54-6f70-8192a3b4c5d6",
+          "year": 2029,
+          "slot": "Année",
+          "statut": "prévue",
+          "comment": ""
+        }
+      ]
+    }
+  ]
+}

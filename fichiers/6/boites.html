@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outils Prévention — Boîtes de secours</title>
+
+  <style>
+    :root{
+      color-scheme: light dark;
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --surface2:rgba(255,255,255,.78);
+      --text:#0b1220;
+      --muted:rgba(11,18,32,.70);
+      --border:rgba(15,23,42,.12);
+      --shadow:0 12px 32px rgba(2,6,23,.08);
+      --shadow2:0 8px 18px rgba(2,6,23,.08);
+      --brand:#2563eb;
+      --brand2:#7c3aed;
+      --ok:#16a34a;
+      --info:#0ea5e9;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:16px;
+      --radius-sm:12px;
+      --pad:16px;
+      --pad-lg:22px;
+      --focus:0 0 0 3px rgba(37,99,235,.35);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b1020;
+        --surface:#0f172a;
+        --surface2:rgba(15,23,42,.72);
+        --text:#e5e7eb;
+        --muted:rgba(229,231,235,.70);
+        --border:rgba(148,163,184,.18);
+        --shadow:0 18px 38px rgba(0,0,0,.50);
+        --shadow2:0 10px 22px rgba(0,0,0,.38);
+        --focus:0 0 0 3px rgba(96,165,250,.35);
+      }
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 12% 8%, rgba(37,99,235,.14), transparent 55%),
+        radial-gradient(1200px 800px at 88% 12%, rgba(124,58,237,.12), transparent 55%),
+        var(--bg);
+    }
+
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 14px 28px;}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+    .muted{color:var(--muted)}
+    .spacer{height:10px}
+
+    header{
+      position:sticky; top:0; z-index:20;
+      padding:14px 0 10px;
+      background:linear-gradient(to bottom, rgba(246,247,251,.92), rgba(246,247,251,.65), transparent);
+      backdrop-filter: blur(10px);
+    }
+    @media (prefers-color-scheme: dark){
+      header{
+        background:linear-gradient(to bottom, rgba(11,16,32,.92), rgba(11,16,32,.65), transparent);
+      }
+    }
+
+    .hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      box-shadow:var(--shadow2);
+      display:grid;place-items:center;color:#fff;flex:0 0 auto;
+    }
+    .logo svg{width:22px;height:22px;opacity:.95}
+    h1{margin:0;font-size:22px;letter-spacing:.2px}
+    .sub{margin-top:3px;color:var(--muted);font-size:13px}
+
+    .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 10px;border:1px solid var(--border);
+      border-radius:999px;background:var(--surface2);
+      color:var(--muted);font-size:12px;
+    }
+    .dot{width:8px;height:8px;border-radius:99px;background:var(--ok);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    @media (min-width: 980px){ .grid{grid-template-columns: 1.05fr .95fr} }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:var(--pad-lg);
+      box-shadow:var(--shadow2);
+      position:relative; overflow:hidden;
+    }
+    @media (prefers-color-scheme: dark){
+      .card{background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(15,23,42,.82))}
+    }
+    .card::before{
+      content:"";position:absolute;inset:-1px -1px auto -1px;height:3px;
+      background:linear-gradient(90deg, rgba(37,99,235,.9), rgba(124,58,237,.85));
+    }
+
+    h2{margin:0 0 10px;font-size:16px}
+    h3{margin:0 0 8px;font-size:14px}
+
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    label{font-size:12px;color:var(--muted)}
+    input,button,select,textarea{font:inherit}
+
+    input,textarea,select,button{
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(255,255,255,.72);
+      color:var(--text);
+      outline:none;
+    }
+    @media (prefers-color-scheme: dark){
+      input,textarea,select,button{background:rgba(15,23,42,.65)}
+    }
+    textarea{width:100%;resize:vertical;min-height:84px}
+    input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{box-shadow:var(--focus)}
+
+    button{
+      cursor:pointer;
+      transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease, opacity 120ms ease;
+      user-select:none;
+    }
+    button:hover{transform:translateY(-1px);box-shadow:var(--shadow2);border-color:rgba(37,99,235,.35)}
+    button:active{transform:translateY(0)}
+    .btnPrimary{
+      background:linear-gradient(135deg, rgba(37,99,235,.95), rgba(124,58,237,.90));
+      border-color:transparent;color:#fff;
+    }
+    .btnGhost{background:rgba(255,255,255,.55)}
+    @media (prefers-color-scheme: dark){ .btnGhost{background:rgba(15,23,42,.55)} }
+    .btnDanger{
+      border-color:rgba(239,68,68,.35);
+      background:rgba(239,68,68,.10);
+      color:rgba(239,68,68,.95);
+    }
+    .btnDanger:hover{border-color:rgba(239,68,68,.55);background:rgba(239,68,68,.13)}
+    .btnSmall{padding:8px 10px;border-radius:12px;font-size:13px}
+
+    .pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      font-size:12px;color:var(--muted);
+      background:rgba(255,255,255,.55);
+    }
+    @media (prefers-color-scheme: dark){ .pill{background:rgba(15,23,42,.55)} }
+    .ok{border-color:rgba(22,163,74,.35); color:rgba(22,163,74,.95); background:rgba(22,163,74,.10)}
+    .nok{border-color:rgba(239,68,68,.35); color:rgba(239,68,68,.95); background:rgba(239,68,68,.10)}
+    .pillStrong{color:var(--text); background:var(--surface2)}
+
+    .tableWrap{
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background:rgba(255,255,255,.55);
+      box-shadow:0 1px 0 rgba(2,6,23,.03);
+    }
+    @media (prefers-color-scheme: dark){ .tableWrap{background:rgba(15,23,42,.55)} }
+
+    table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+    th,td{padding:10px 10px;border-bottom:1px solid rgba(148,163,184,.18);vertical-align:top;text-align:left}
+    thead th{
+      position:sticky; top:0; z-index:5;
+      background:rgba(250,250,250,.92);
+      backdrop-filter: blur(8px);
+      border-bottom:1px solid rgba(148,163,184,.25);
+      font-weight:600;
+    }
+    @media (prefers-color-scheme: dark){ thead th{background:rgba(15,23,42,.92)} }
+    tbody tr:hover td{background:rgba(37,99,235,.05)}
+    @media (prefers-color-scheme: dark){ tbody tr:hover td{background:rgba(96,165,250,.06)} }
+    .activeRow td{background:rgba(37,99,235,.08)}
+    @media (prefers-color-scheme: dark){ .activeRow td{background:rgba(96,165,250,.10)} }
+
+    details{border:1px solid var(--border);border-radius:var(--radius);padding:12px 12px;background:rgba(255,255,255,.50)}
+    @media (prefers-color-scheme: dark){ details{background:rgba(15,23,42,.50)} }
+    details>summary{cursor:pointer;color:var(--muted);font-size:13px}
+
+    .splitLine{border:none;border-top:1px dashed rgba(148,163,184,.28);margin:16px 0}
+
+    .rightTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+    .statusPill{min-width:120px;justify-content:center}
+    .hint{font-size:12px;color:var(--muted);line-height:1.35}
+
+    /* rendre le bouton "x" historique plus clean */
+    .xbtn{
+      border:none;background:transparent;cursor:pointer;
+      opacity:.55;padding:4px 6px;border-radius:10px;
+    }
+    .xbtn:hover{opacity:1; background:rgba(239,68,68,.08)}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.5l7.8 4.5v10l-7.8 4.5L4.2 17V7L12 2.5z" stroke="white" stroke-width="1.6" opacity="0.95"/>
+            <path d="M12 7.2l4 2.3v5L12 16.8 8 14.5v-5L12 7.2z" fill="white" opacity="0.85"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Boîtes de secours</h1>
+          <div class="sub">Offline • LocalStorage • contrôles OK/NOK • export JSON/CSV</div>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="chip"><span class="dot" aria-hidden="true"></span>Prêt hors-ligne</span>
+        <span class="chip mono">op_local_v1</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <!-- Colonne gauche: Boîtes -->
+    <section class="card" aria-label="Boîtes">
+      <h2>Boîtes</h2>
+
+      <div class="row" style="margin-bottom:10px;">
+        <input id="boxName" placeholder='ex: "boîte cuisine", "boîte WC", "deuxième boîte WC"' style="flex:1; min-width: 280px;" />
+        <button id="addBoxBtn" class="btnPrimary">Ajouter</button>
+      </div>
+
+      <div class="row" style="margin-bottom:12px;">
+        <input id="searchBox" placeholder="Rechercher…" style="flex:1; min-width: 220px;" />
+        <button id="resetBtn" class="btnGhost" title="Réinitialiser la recherche">Reset</button>
+      </div>
+
+      <div class="tableWrap" role="region" aria-label="Liste des boîtes">
+        <table>
+          <thead>
+            <tr>
+              <th>Boîte</th>
+              <th>Dernier contrôle</th>
+              <th>Statut</th>
+              <th style="width:1%"></th>
+            </tr>
+          </thead>
+          <tbody id="boxesTbody"></tbody>
+        </table>
+      </div>
+
+      <div class="spacer"></div>
+
+      <details>
+        <summary>Sauvegarde & restauration</summary>
+        <div class="spacer"></div>
+        <div class="row">
+          <button id="exportJsonBtn" class="btnGhost">Exporter JSON</button>
+
+          <label class="pill" style="cursor:pointer;">
+            Importer JSON
+            <input id="importJsonInput" type="file" accept="application/json" style="display:none;">
+          </label>
+
+          <button id="exportCsvBtn" class="btnGhost">Exporter CSV (contrôles)</button>
+          <button id="wipeBtn" class="btnDanger" title="Efface toutes les données locales">Tout effacer</button>
+        </div>
+        <p class="hint">Conseil : export JSON de temps en temps (backup). Le CSV est utile pour un rapport rapide.</p>
+      </details>
+    </section>
+
+    <!-- Colonne droite: Contrôle -->
+    <section class="card" aria-label="Contrôle">
+      <h2>Contrôle</h2>
+      <div id="inspectEmpty" class="muted">Sélectionne une boîte à gauche.</div>
+
+      <div id="inspectPanel" style="display:none;">
+        <div class="rightTop">
+          <div>
+            <div class="pill pillStrong">Boîte : <strong id="inspectBoxName"></strong></div>
+            <div class="hint" style="margin-top:6px;">Date : <span id="inspectDate"></span></div>
+          </div>
+          <button id="renameBtn" class="btnGhost">Renommer</button>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button id="markOkBtn" class="btnPrimary">Marquer OK</button>
+          <button id="markNokBtn" class="btnGhost">Marquer NOK</button>
+          <span id="currentStatus" class="pill muted statusPill">—</span>
+        </div>
+
+        <div id="nokPanel" style="margin-top:12px; display:none;">
+          <h3>Matériel manquant / à remplacer</h3>
+          <textarea id="missingText" rows="6" placeholder="- compresses stériles
+- antiseptique
+- pansements
+…"></textarea>
+          <div class="hint">Astuce : une ligne = un item. Tu peux copier-coller une liste.</div>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button id="saveInspectionBtn" class="btnGhost">Enregistrer les défauts</button>
+          <button id="deleteBoxBtn" class="btnDanger">Supprimer la boîte</button>
+        </div>
+
+        <hr class="splitLine" />
+
+        <h3>Historique</h3>
+        <div class="tableWrap" role="region" aria-label="Historique des contrôles">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Détails</th>
+                <th style="width:1%"></th>
+              </tr>
+            </thead>
+            <tbody id="historyTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  // --- Storage schema (LocalStorage) ---
+  // state = { boxes: [{id, name}], inspections: [{id, boxId, ts, status: 'OK'|'NOK', missing: string[]}] }
+  const KEY = "op_local_v1";
+
+  const $ = (id) => document.getElementById(id);
+
+  const ui = {
+    boxName: $("boxName"),
+    addBoxBtn: $("addBoxBtn"),
+    searchBox: $("searchBox"),
+    resetBtn: $("resetBtn"),
+    boxesTbody: $("boxesTbody"),
+
+    inspectEmpty: $("inspectEmpty"),
+    inspectPanel: $("inspectPanel"),
+    inspectBoxName: $("inspectBoxName"),
+    inspectDate: $("inspectDate"),
+    renameBtn: $("renameBtn"),
+    markOkBtn: $("markOkBtn"),
+    markNokBtn: $("markNokBtn"),
+    currentStatus: $("currentStatus"),
+    nokPanel: $("nokPanel"),
+    missingText: $("missingText"),
+    saveInspectionBtn: $("saveInspectionBtn"),
+    deleteBoxBtn: $("deleteBoxBtn"),
+    historyTbody: $("historyTbody"),
+
+    exportJsonBtn: $("exportJsonBtn"),
+    importJsonInput: $("importJsonInput"),
+    exportCsvBtn: $("exportCsvBtn"),
+    wipeBtn: $("wipeBtn"),
+  };
+
+  let state = loadState();
+  let selectedBoxId = null;
+  let draftStatus = null; // 'OK'|'NOK'|null
+
+  function nowTs() { return Date.now(); }
+  function fmtDate(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString("fr-BE", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+  }
+  function uuid() {
+    // simple enough for local usage
+    return Math.random().toString(16).slice(2) + "-" + Math.random().toString(16).slice(2);
+  }
+  function normalizeName(s) {
+    return s.trim().replace(/\s+/g, " ");
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return { boxes: [], inspections: [] };
+      const parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.boxes) || !Array.isArray(parsed.inspections)) throw new Error("bad schema");
+      return parsed;
+    } catch {
+      return { boxes: [], inspections: [] };
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  }
+
+  function getBox(id) {
+    return state.boxes.find(b => b.id === id) || null;
+  }
+
+  function inspectionsForBox(boxId) {
+    return state.inspections
+      .filter(i => i.boxId === boxId)
+      .sort((a,b) => b.ts - a.ts);
+  }
+
+  function lastInspection(boxId) {
+    const list = inspectionsForBox(boxId);
+    return list.length ? list[0] : null;
+  }
+
+  function renderBoxes() {
+    const q = ui.searchBox.value.trim().toLowerCase();
+    const rows = state.boxes
+      .slice()
+      .sort((a,b) => a.name.localeCompare(b.name, "fr"))
+      .filter(b => !q || b.name.toLowerCase().includes(q));
+
+    ui.boxesTbody.innerHTML = rows.map(b => {
+      const li = lastInspection(b.id);
+      const last = li ? fmtDate(li.ts) : "—";
+      const status = li ? li.status : "—";
+      const pill = status === "OK" ? `<span class="pill ok">OK</span>` :
+                   status === "NOK" ? `<span class="pill nok">NOK</span>` :
+                   `<span class="pill muted">—</span>`;
+      const active = b.id === selectedBoxId ? `class="activeRow"` : "";
+      return `<tr ${active}>
+        <td>
+          <button data-pick="${b.id}" class="btnSmall" style="border:none;background:transparent;padding:0;text-align:left;cursor:pointer;">
+            <strong>${escapeHtml(b.name)}</strong>
+          </button>
+        </td>
+        <td>${escapeHtml(last)}</td>
+        <td>${pill}</td>
+        <td><button data-pick="${b.id}" class="btnGhost btnSmall">Ouvrir</button></td>
+      </tr>`;
+    }).join("");
+
+    ui.boxesTbody.querySelectorAll("[data-pick]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectBox(btn.getAttribute("data-pick"));
+      });
+    });
+  }
+
+  function renderInspectPanel() {
+    const box = selectedBoxId ? getBox(selectedBoxId) : null;
+    if (!box) {
+      ui.inspectEmpty.style.display = "";
+      ui.inspectPanel.style.display = "none";
+      return;
+    }
+
+    ui.inspectEmpty.style.display = "none";
+    ui.inspectPanel.style.display = "";
+
+    ui.inspectBoxName.textContent = box.name;
+    ui.inspectDate.textContent = new Date().toLocaleString("fr-BE");
+    ui.missingText.value = "";
+    draftStatus = null;
+    setDraftStatus(null);
+
+    renderHistory();
+  }
+
+  function setDraftStatus(st) {
+    draftStatus = st;
+    if (st === "OK") {
+      ui.currentStatus.className = "pill ok statusPill";
+      ui.currentStatus.textContent = "OK (draft)";
+      ui.nokPanel.style.display = "none";
+    } else if (st === "NOK") {
+      ui.currentStatus.className = "pill nok statusPill";
+      ui.currentStatus.textContent = "NOK (draft)";
+      ui.nokPanel.style.display = "";
+    } else {
+      ui.currentStatus.className = "pill muted statusPill";
+      ui.currentStatus.textContent = "—";
+      ui.nokPanel.style.display = "none";
+    }
+  }
+
+  function renderHistory() {
+    const list = inspectionsForBox(selectedBoxId);
+
+    ui.historyTbody.innerHTML = list.map(i => {
+      const pill = i.status === "OK"
+        ? `<span class="pill ok">OK</span>`
+        : `<span class="pill nok">NOK</span>`;
+
+      const details = i.status === "NOK"
+        ? `<div class="mono">${escapeHtml((i.missing || []).join("\n"))}</div>`
+        : `<span class="muted">—</span>`;
+
+      return `<tr>
+        <td>${escapeHtml(fmtDate(i.ts))}</td>
+        <td>${pill}</td>
+        <td>${details}</td>
+        <td style="text-align:right; width:1%; white-space:nowrap;">
+          <button
+            data-del-inspection="${i.id}"
+            title="Supprimer ce contrôle"
+            class="xbtn"
+          >✕</button>
+        </td>
+      </tr>`;
+    }).join("") || `<tr><td colspan="4"><em>Aucun contrôle enregistré.</em></td></tr>`;
+
+    ui.historyTbody.querySelectorAll("[data-del-inspection]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.inspections = state.inspections.filter(x => x.id !== btn.getAttribute("data-del-inspection"));
+        saveState();
+        renderBoxes();
+        renderHistory();
+      });
+    });
+  }
+
+  function deleteInspection(id) {
+    state.inspections = state.inspections.filter(i => i.id !== id);
+    saveState();
+    renderBoxes();
+    renderHistory();
+  }
+
+  function addBox() {
+    const name = normalizeName(ui.boxName.value);
+    if (!name) return;
+    const exists = state.boxes.some(b => b.name.toLowerCase() === name.toLowerCase());
+    if (exists) { alert("Cette boîte existe déjà."); return; }
+
+    const box = { id: uuid(), name };
+    state.boxes.push(box);
+    saveState();
+    ui.boxName.value = "";
+    renderBoxes();
+    selectBox(box.id);
+  }
+
+  function selectBox(id) {
+    selectedBoxId = id;
+    renderBoxes();
+    renderInspectPanel();
+  }
+
+  function renameSelectedBox() {
+    const box = getBox(selectedBoxId);
+    if (!box) return;
+    const next = normalizeName(prompt("Nouveau nom de la boîte :", box.name) || "");
+    if (!next) return;
+
+    const exists = state.boxes.some(b => b.id !== box.id && b.name.toLowerCase() === next.toLowerCase());
+    if (exists) { alert("Une boîte avec ce nom existe déjà."); return; }
+
+    box.name = next;
+    saveState();
+    renderBoxes();
+    renderInspectPanel();
+  }
+
+  function deleteSelectedBox() {
+    const box = getBox(selectedBoxId);
+    if (!box) return;
+    const ok = confirm(`Supprimer "${box.name}" ?\n\nCela supprime aussi son historique de contrôles.`);
+    if (!ok) return;
+
+    state.boxes = state.boxes.filter(b => b.id !== box.id);
+    state.inspections = state.inspections.filter(i => i.boxId !== box.id);
+    saveState();
+    selectedBoxId = null;
+    renderBoxes();
+    renderInspectPanel();
+  }
+
+  function quickOkInspection() {
+    const box = getBox(selectedBoxId);
+    if (!box) return;
+
+    const entry = {
+      id: uuid(),
+      boxId: box.id,
+      ts: nowTs(),
+      status: "OK",
+      missing: [],
+    };
+
+    state.inspections.push(entry);
+    saveState();
+    renderBoxes();
+    renderHistory();
+
+    setDraftStatus(null);
+    ui.missingText.value = "";
+  }
+
+  function saveInspection() {
+    const box = getBox(selectedBoxId);
+    if (!box) return;
+
+    if (draftStatus !== "OK" && draftStatus !== "NOK") {
+      alert("Choisis d'abord OK ou NOK.");
+      return;
+    }
+
+    const missing = draftStatus === "NOK"
+      ? ui.missingText.value.split("\n").map(s => normalizeName(s)).filter(Boolean)
+      : [];
+
+    const entry = {
+      id: uuid(),
+      boxId: box.id,
+      ts: nowTs(),
+      status: draftStatus,
+      missing,
+    };
+
+    state.inspections.push(entry);
+    saveState();
+    renderBoxes();
+    renderHistory();
+    setDraftStatus(null);
+    ui.missingText.value = "";
+  }
+
+  function exportJson() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    downloadBlob(blob, `outils-prevention-backup-${dateStamp()}.json`);
+  }
+
+  async function importJson(file) {
+    const text = await file.text();
+    const incoming = JSON.parse(text);
+    if (!incoming || !Array.isArray(incoming.boxes) || !Array.isArray(incoming.inspections)) {
+      alert("JSON invalide (schéma inattendu).");
+      return;
+    }
+    state = incoming;
+    saveState();
+    selectedBoxId = null;
+    ui.searchBox.value = "";
+    renderBoxes();
+    renderInspectPanel();
+    alert("Import terminé.");
+  }
+
+  function exportCsv() {
+    const header = ["box_name","timestamp","status","missing_items"].join(",");
+    const lines = state.inspections
+      .slice()
+      .sort((a,b)=> b.ts - a.ts)
+      .map(i => {
+        const box = getBox(i.boxId);
+        const boxName = box ? box.name : "(supprimée)";
+        const missing = (i.missing || []).join(" | ");
+        return [
+          csvCell(boxName),
+          csvCell(fmtDate(i.ts)),
+          csvCell(i.status),
+          csvCell(missing),
+        ].join(",");
+      });
+    const csv = [header, ...lines].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    downloadBlob(blob, `outils-prevention-inspections-${dateStamp()}.csv`);
+  }
+
+  function wipeAll() {
+    const ok = confirm("Tout effacer ? (boîtes + historique)\n\nPense à exporter un JSON avant si nécessaire.");
+    if (!ok) return;
+    state = { boxes: [], inspections: [] };
+    saveState();
+    selectedBoxId = null;
+    renderBoxes();
+    renderInspectPanel();
+  }
+
+  function dateStamp() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}${m}${day}`;
+  }
+
+  function downloadBlob(blob, filename) {
+    const a = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 250);
+  }
+
+  function csvCell(s) {
+    const str = String(s ?? "");
+    if (/[",\n]/.test(str)) return `"${str.replaceAll('"','""')}"`;
+    return str;
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  // --- Wire events ---
+  ui.addBoxBtn.addEventListener("click", addBox);
+  ui.boxName.addEventListener("keydown", (e) => { if (e.key === "Enter") addBox(); });
+
+  ui.searchBox.addEventListener("input", renderBoxes);
+  ui.resetBtn.addEventListener("click", () => { ui.searchBox.value = ""; renderBoxes(); });
+
+  ui.renameBtn.addEventListener("click", renameSelectedBox);
+  ui.deleteBoxBtn.addEventListener("click", deleteSelectedBox);
+
+  ui.markOkBtn.addEventListener("click", () => quickOkInspection());
+
+  ui.markNokBtn.addEventListener("click", () => setDraftStatus("NOK"));
+  ui.saveInspectionBtn.addEventListener("click", saveInspection);
+
+  ui.exportJsonBtn.addEventListener("click", exportJson);
+  ui.importJsonInput.addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) await importJson(f);
+    ui.importJsonInput.value = "";
+  });
+  ui.exportCsvBtn.addEventListener("click", exportCsv);
+  ui.wipeBtn.addEventListener("click", wipeAll);
+
+  // --- Initial render ---
+  renderBoxes();
+  renderInspectPanel();
+</script>
+</body>
+</html>

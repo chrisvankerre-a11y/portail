@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Plan global de prévention</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root{
+    color-scheme: light dark;
+    --bg:#f6f7fb;
+    --surface:#ffffff;
+    --surface2:rgba(255,255,255,.78);
+    --text:#0b1220;
+    --muted:rgba(11,18,32,.70);
+    --border:rgba(15,23,42,.12);
+    --shadow:0 12px 32px rgba(2,6,23,.08);
+    --shadow2:0 8px 18px rgba(2,6,23,.08);
+    --brand:#2563eb;
+    --brand2:#7c3aed;
+    --ok:#16a34a;
+    --info:#0ea5e9;
+    --warn:#f59e0b;
+    --danger:#ef4444;
+    --radius:16px;
+    --radius-sm:12px;
+    --pad:16px;
+    --pad-lg:22px;
+    --focus:0 0 0 3px rgba(37,99,235,.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b1020;
+      --surface:#0f172a;
+      --surface2:rgba(15,23,42,.72);
+      --text:#e5e7eb;
+      --muted:rgba(229,231,235,.70);
+      --border:rgba(148,163,184,.18);
+      --shadow:0 18px 38px rgba(0,0,0,.50);
+      --shadow2:0 10px 22px rgba(0,0,0,.38);
+      --focus:0 0 0 3px rgba(96,165,250,.35);
+    }
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 800px at 12% 8%, rgba(37,99,235,.14), transparent 55%),
+      radial-gradient(1200px 800px at 88% 12%, rgba(124,58,237,.12), transparent 55%),
+      var(--bg);
+  }
+
+  .wrap{max-width:1600px;margin:0 auto;padding:18px 14px 28px;}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .muted{color:var(--muted)}
+  .spacer{height:8px}
+
+  header{
+    position:sticky; top:0; z-index:20;
+    padding:14px 0 10px;
+    background:linear-gradient(to bottom, rgba(246,247,251,.92), rgba(246,247,251,.65), transparent);
+    backdrop-filter: blur(10px);
+  }
+  @media (prefers-color-scheme: dark){
+    header{
+      background:linear-gradient(to bottom, rgba(11,16,32,.92), rgba(11,16,32,.65), transparent);
+    }
+  }
+  .hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:44px;height:44px;border-radius:14px;
+    background:linear-gradient(135deg,var(--brand),var(--brand2));
+    box-shadow:var(--shadow2);
+    display:grid;place-items:center;color:#fff;flex:0 0 auto;
+  }
+  .logo svg{width:22px;height:22px;opacity:.95}
+  h1{margin:0;font-size:22px;letter-spacing:.2px}
+  .sub{margin-top:3px;color:var(--muted);font-size:13px}
+
+  .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 10px;border:1px solid var(--border);
+    border-radius:999px;background:var(--surface2);
+    color:var(--muted);font-size:12px;
+  }
+  .dot{width:8px;height:8px;border-radius:99px;background:var(--ok);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+
+  /* layout: haut (éditeur) puis bas (plan pleine largeur) */
+  .stack{display:flex;flex-direction:column;gap:14px}
+
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:var(--pad-lg);
+    box-shadow:var(--shadow2);
+    position:relative; overflow:hidden;
+  }
+  @media (prefers-color-scheme: dark){
+    .card{background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(15,23,42,.82))}
+  }
+  .card::before{
+    content:"";position:absolute;inset:-1px -1px auto -1px;height:3px;
+    background:linear-gradient(90deg, rgba(37,99,235,.9), rgba(124,58,237,.85));
+  }
+
+  .sectionTitle{margin:0 0 10px;font-size:16px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+
+  input,select,textarea,button{
+    font:inherit;
+    padding:9px 10px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:rgba(255,255,255,.72);
+    color:var(--text);
+    outline:none;
+  }
+  @media (prefers-color-scheme: dark){
+    input,select,textarea,button{background:rgba(15,23,42,.65)}
+  }
+  textarea{resize:vertical;min-height:42px;width:100%}
+  input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{
+    box-shadow:var(--focus);
+  }
+
+  button{cursor:pointer; transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease}
+  button:hover{transform:translateY(-1px); box-shadow:var(--shadow2); border-color:rgba(37,99,235,.35)}
+  button:active{transform:translateY(0)}
+  .btnPrimary{
+    background:linear-gradient(135deg, rgba(37,99,235,.95), rgba(124,58,237,.90));
+    border-color:transparent;
+    color:#fff;
+  }
+  .btnPrimary:hover{border-color:transparent}
+  .btnGhost{
+    background:rgba(255,255,255,.55);
+  }
+  @media (prefers-color-scheme: dark){
+    .btnGhost{background:rgba(15,23,42,.55)}
+  }
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .toolbar .group{display:flex;flex-direction:column}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 10px;border-radius:999px;
+    border:1px solid var(--border);
+    font-size:12px;color:var(--muted);
+    background:rgba(255,255,255,.55);
+  }
+  @media (prefers-color-scheme: dark){ .pill{background:rgba(15,23,42,.55)} }
+
+  .slotlist{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+  .slotchip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 10px;border:1px solid var(--border);
+    border-radius:999px;background:var(--surface2);
+    box-shadow:0 1px 0 rgba(2,6,23,.03);
+  }
+  .slotchip .x{
+    border:none;background:transparent;cursor:pointer;
+    opacity:.75;padding:0 4px;line-height:1;
+  }
+  .slotchip .x:hover{opacity:1}
+
+  /* Table wrappers */
+  #gridWrap{
+    overflow:auto;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:rgba(255,255,255,.55);
+    box-shadow:0 1px 0 rgba(2,6,23,.03);
+  }
+  @media (prefers-color-scheme: dark){
+    #gridWrap{background:rgba(15,23,42,.55)}
+  }
+
+  /* Scrollbar horizontale en haut (synchro) */
+  #gridWrapTop{
+    overflow-x:auto;
+    overflow-y:hidden;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:rgba(255,255,255,.55);
+    box-shadow:0 1px 0 rgba(2,6,23,.03);
+  }
+  @media (prefers-color-scheme: dark){
+    #gridWrapTop{background:rgba(15,23,42,.55)}
+  }
+  #gridWrapTop .scrollInner{height:1px;}
+
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+  th,td{padding:10px 10px;border-bottom:1px solid rgba(148,163,184,.18);vertical-align:top}
+  thead th{
+    position:sticky; top:0; z-index:5;
+    background:rgba(250,250,250,.92);
+    backdrop-filter: blur(8px);
+    text-align:left; font-weight:600;
+    border-bottom:1px solid rgba(148,163,184,.25);
+  }
+  @media (prefers-color-scheme: dark){
+    thead th{background:rgba(15,23,42,.92)}
+  }
+  tbody tr:hover td{background:rgba(37,99,235,.05)}
+  @media (prefers-color-scheme: dark){
+    tbody tr:hover td{background:rgba(96,165,250,.06)}
+  }
+
+  .cellWrap{display:flex;gap:8px;align-items:center}
+  .cellWrap select{padding:7px 8px}
+
+  .iconbtn{
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.60);
+    padding:7px 9px;border-radius:12px;
+    cursor:pointer; opacity:.90; line-height:1;
+    transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
+  }
+  @media (prefers-color-scheme: dark){
+    .iconbtn{background:rgba(15,23,42,.60)}
+  }
+  .iconbtn:hover{opacity:1; transform:translateY(-1px); box-shadow:var(--shadow2); border-color:rgba(37,99,235,.35)}
+  .iconbtn:active{transform:translateY(0)}
+
+  .sticky{position:sticky; z-index:3; background:rgba(255,255,255,.92); backdrop-filter: blur(8px)}
+  .stickyHead{position:sticky; z-index:6}
+  @media (prefers-color-scheme: dark){
+    .sticky{background:rgba(15,23,42,.92)}
+  }
+
+  .titleRow{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+  .hint{font-size:12px;color:var(--muted)}
+  .divider{height:1px;background:rgba(148,163,184,.18);margin:12px 0}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.5l7.8 4.5v10l-7.8 4.5L4.2 17V7L12 2.5z" stroke="white" stroke-width="1.6" opacity="0.95"/>
+            <path d="M12 7.2l4 2.3v5L12 16.8 8 14.5v-5L12 7.2z" fill="white" opacity="0.85"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Plan global de prévention</h1>
+          <div class="sub">Vue calendrier (grille) • filtre “1 créneau = 1 colonne” • export PDF/JSON</div>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="chip"><span class="dot" aria-hidden="true"></span>Offline (LocalStorage)</span>
+        <span class="chip"><span class="mono">op_plan_prevention_v7</span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="stack">
+
+    <!-- TOP: create/edit -->
+    <div class="card">
+      <h2 class="sectionTitle">Créer / modifier une action</h2>
+
+      <div class="row">
+        <div style="flex:2; min-width: 240px;">
+          <label>Action (titre)</label>
+          <input id="aTitre" placeholder="ex: Exercice d’évacuation">
+        </div>
+
+        <div style="flex:3; min-width: 360px;">
+          <label>Description</label>
+          <input id="aDesc" placeholder="ex: organisation + briefing + débriefing">
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <div>
+          <label>Coût</label>
+          <select id="aCout">
+            <option>organisationnel</option>
+            <option>faible</option>
+            <option>moyen</option>
+            <option>élevé</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Montant estimé (€)</label>
+          <input id="aMontant" type="number" min="0" step="1" placeholder="optionnel">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card" style="padding:16px; box-shadow:none; background:transparent;">
+        <h3 class="sectionTitle" style="font-size:14px;margin-bottom:8px;">Créneaux à planifier</h3>
+
+        <div class="row">
+          <div>
+            <label>Année</label>
+            <select id="pYear"></select>
+          </div>
+
+          <div>
+            <label>Créneau</label>
+            <select id="pSlot"></select>
+          </div>
+
+          <div>
+            <label>&nbsp;</label>
+            <button id="btnAddSlot" class="btnGhost">Ajouter ce créneau</button>
+          </div>
+
+          <div class="hint" style="align-self:center;">
+            (Année 1 : Q1–Q4, années suivantes : “Année”)
+          </div>
+        </div>
+
+        <div id="slotList" class="slotlist"></div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <button id="btnSaveAction" class="btnPrimary">Enregistrer</button>
+        <button id="btnResetAction" class="btnGhost">Réinitialiser</button>
+        <span id="actionHint" class="hint" style="align-self:center;"></span>
+      </div>
+    </div>
+
+    <!-- BOTTOM: plan full width -->
+    <div class="card">
+      <div class="titleRow">
+        <div>
+          <h2 class="sectionTitle" style="margin-bottom:6px;">Plan</h2>
+          <div class="hint">Filtre = n’affiche que les actions du créneau + 1 seule colonne de créneau.</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="group">
+            <label>Filtrer par créneau</label>
+            <select id="filterSlot"></select>
+          </div>
+
+          <div class="group">
+            <label>&nbsp;</label>
+            <button id="btnClearFilter" class="btnGhost">Tout afficher</button>
+          </div>
+
+          <div class="group">
+            <label>&nbsp;</label>
+            <button id="btnExportPdf" class="btnGhost">Export PDF</button>
+          </div>
+
+          <div class="group">
+            <label>&nbsp;</label>
+            <button id="btnExport" class="btnGhost">Export JSON</button>
+          </div>
+
+          <div class="group">
+            <label>&nbsp;</label>
+            <button id="btnImport" class="btnGhost">Import JSON</button>
+            <input type="file" id="fileImport" accept="application/json" style="display:none;">
+          </div>
+        </div>
+      </div>
+
+      <!-- top scrollbar -->
+      <div id="gridWrapTop"><div class="scrollInner"></div></div>
+      <div class="spacer"></div>
+
+      <div id="gridWrap">
+        <table id="gridTable">
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="hint">Astuce : scroll horizontal dans la grille — les 4 premières colonnes restent “sticky”.</div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(() => {
+  const START_YEAR = 2026;
+  const YEARS = [0,1,2,3,4].map(i => START_YEAR + i);
+  const FIRST_YEAR = START_YEAR;
+
+  const KEY = "op_plan_prevention_v7";
+  const STATUS = ["prévue","effectuée","reportée","annulée","post-posée"];
+
+  let state = { actions: [] };
+  let editingActionId = null;
+  let pendingSlots = [];
+  let filterKey = "ALL"; // "ALL" or "year|slot"
+
+  const el = id => document.getElementById(id);
+
+  const aTitre = el("aTitre");
+  const aDesc  = el("aDesc");
+  const aCout  = el("aCout");
+  const aMontant = el("aMontant");
+  const actionHint = el("actionHint");
+
+  const pYear = el("pYear");
+  const pSlot = el("pSlot");
+  const slotList = el("slotList");
+
+  const thead = el("thead");
+  const tbody = el("tbody");
+  const filterSlot = el("filterSlot");
+
+  const gridWrap = el("gridWrap");
+  const gridWrapTop = el("gridWrapTop");
+
+  function uuid() { return crypto.randomUUID(); }
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      state = raw ? JSON.parse(raw) : { actions: [] };
+      if (!Array.isArray(state.actions)) state = { actions: [] };
+
+      for (const a of state.actions) {
+        if (!Array.isArray(a.occurrences)) a.occurrences = [];
+        a.occurrences = a.occurrences.map(o => ({
+          id: o.id || uuid(),
+          year: Number(o.year),
+          slot: o.slot,
+          statut: o.statut || "prévue"
+        }));
+        const m = new Map();
+        for (const o of a.occurrences) m.set(`${o.year}|${o.slot}`, o);
+        a.occurrences = Array.from(m.values());
+        if (typeof a.commentGlobal !== "string") a.commentGlobal = "";
+      }
+    } catch {
+      state = { actions: [] };
+    }
+  }
+
+  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+  function normalizeMoney(v) {
+    if (v === "" || v === null || v === undefined) return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function escapeHtml(s) {
+    return (s ?? "").toString()
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+  }
+
+  function occMap(a) {
+    const m = new Map();
+    for (const o of (a.occurrences || [])) m.set(`${o.year}|${o.slot}`, o);
+    return m;
+  }
+
+  // -------- Filter slots --------
+  function filterOptions() {
+    const opts = [];
+    opts.push({ k: "ALL", label: "Tous" });
+    ["Q1","Q2","Q3","Q4"].forEach(q => opts.push({ k: `${FIRST_YEAR}|${q}`, label: `${FIRST_YEAR} ${q}` }));
+    YEARS.slice(1).forEach(y => opts.push({ k: `${y}|Année`, label: `${y}` }));
+    return opts;
+  }
+
+  function buildFilterOptions() {
+    const opts = filterOptions();
+    filterSlot.innerHTML = opts.map(o => `<option value="${o.k}">${o.label}</option>`).join("");
+    filterSlot.value = filterKey;
+  }
+
+  function slotLabelFromKey(k) {
+    if (k === "ALL") return "Tous";
+    const [y,s] = k.split("|");
+    return s === "Année" ? y : `${y} ${s}`;
+  }
+
+  function actionHasSlot(a, key) {
+    if (key === "ALL") return true;
+    return occMap(a).has(key);
+  }
+
+  // -------- Columns --------
+  function baseCols() {
+    return [
+      { key: "action", label: "Action", stickyLeft: 0,   minW: 240 },
+      { key: "desc",   label: "Description", stickyLeft: 240, minW: 320 },
+      { key: "cout",   label: "Coût", stickyLeft: 560,  minW: 120 },
+      { key: "montant",label: "Montant", stickyLeft: 680,minW: 120 }
+    ];
+  }
+
+  function slotColForFilter() {
+    if (filterKey === "ALL") return null;
+    const [y,s] = filterKey.split("|");
+    return {
+      key: `slot:${filterKey}`,
+      label: slotLabelFromKey(filterKey),
+      year: Number(y),
+      slot: s,
+      minW: 180
+    };
+  }
+
+  function allSlotCols() {
+    const cols = [];
+    ["Q1","Q2","Q3","Q4"].forEach(q => cols.push({
+      key: `${FIRST_YEAR}-${q}`, label: `${FIRST_YEAR} ${q}`, year: FIRST_YEAR, slot: q, minW: 160
+    }));
+    YEARS.slice(1).forEach(y => cols.push({
+      key: `${y}-Année`, label: `${y}`, year: y, slot: "Année", minW: 160
+    }));
+    return cols;
+  }
+
+  function columns() {
+    const cols = [...baseCols()];
+    if (filterKey === "ALL") cols.push(...allSlotCols());
+    else cols.push(slotColForFilter());
+    cols.push({ key: "comments", label: "Commentaires", minW: 260 });
+    return cols;
+  }
+
+  function buildHeader() {
+    const cols = columns();
+    const tr = document.createElement("tr");
+
+    for (const c of cols) {
+      const th = document.createElement("th");
+      th.textContent = c.label;
+      th.style.minWidth = (c.minW || 120) + "px";
+
+      if (c.stickyLeft !== undefined) {
+        th.className = "stickyHead";
+        th.style.left = c.stickyLeft + "px";
+      }
+      tr.appendChild(th);
+    }
+    thead.innerHTML = "";
+    thead.appendChild(tr);
+  }
+
+  // -------- Slots input UI --------
+  function buildYearOptions() {
+    pYear.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join("");
+    pYear.value = YEARS[0];
+  }
+
+  function buildSlotOptionsForYear(year) {
+    const y = Number(year);
+    if (y === FIRST_YEAR) {
+      pSlot.innerHTML = ["Q1","Q2","Q3","Q4"].map(s => `<option value="${s}">${s}</option>`).join("");
+      pSlot.value = "Q1";
+    } else {
+      pSlot.innerHTML = `<option value="Année">Année</option>`;
+      pSlot.value = "Année";
+    }
+  }
+
+  function slotKey(s) { return `${s.year}|${s.slot}`; }
+
+  function renderSlotChips() {
+    slotList.innerHTML = "";
+    if (!pendingSlots.length) {
+      slotList.innerHTML = `<span class="muted">Aucun créneau ajouté (ajoute au moins 1 créneau).</span>`;
+      return;
+    }
+    const rank = (s) => (s.slot === "Q1" ? 1 : s.slot === "Q2" ? 2 : s.slot === "Q3" ? 3 : s.slot === "Q4" ? 4 : 9);
+    const sorted = [...pendingSlots].sort((a,b) => (a.year - b.year) || (rank(a) - rank(b)));
+
+    for (const s of sorted) {
+      const chip = document.createElement("div");
+      chip.className = "slotchip";
+      chip.innerHTML = `<span class="mono">${s.year}</span> <span>${s.slot}</span> <button class="x" title="Retirer">✕</button>`;
+      chip.querySelector("button.x").onclick = () => {
+        const k = slotKey(s);
+        pendingSlots = pendingSlots.filter(x => slotKey(x) !== k);
+        renderSlotChips();
+      };
+      slotList.appendChild(chip);
+    }
+  }
+
+  function addPendingSlot() {
+    const year = Number(pYear.value);
+    const slot = pSlot.value;
+
+    if (!YEARS.includes(year)) return alert("Année hors fenêtre.");
+    if (year === FIRST_YEAR && !["Q1","Q2","Q3","Q4"].includes(slot)) return alert("Pour l’année 1 : Q1..Q4.");
+    if (year !== FIRST_YEAR && slot !== "Année") return alert("Pour années 2-5 : 'Année' uniquement.");
+
+    const s = { year, slot };
+    const k = slotKey(s);
+    if (pendingSlots.some(x => slotKey(x) === k)) return;
+    pendingSlots.push(s);
+    renderSlotChips();
+  }
+
+  // -------- CRUD actions --------
+  function resetActionForm() {
+    editingActionId = null;
+    pendingSlots = [];
+    aTitre.value = "";
+    aDesc.value = "";
+    aCout.value = "organisationnel";
+    aMontant.value = "";
+    actionHint.textContent = "";
+    renderSlotChips();
+  }
+
+  function saveAction() {
+    const titre = aTitre.value.trim();
+    if (!titre) return alert("Titre manquant");
+    if (!pendingSlots.length) return alert("Ajoute au moins un créneau avant d’enregistrer.");
+
+    const base = {
+      id: editingActionId || uuid(),
+      titre,
+      desc: aDesc.value.trim(),
+      cout: aCout.value,
+      montant: normalizeMoney(aMontant.value),
+      commentGlobal: editingActionId ? (state.actions.find(a => a.id === editingActionId)?.commentGlobal || "") : "",
+      occurrences: []
+    };
+
+    if (editingActionId) {
+      const existing = state.actions.find(a => a.id === editingActionId);
+      if (!existing) return alert("Action introuvable.");
+
+      const m = new Map();
+      for (const o of (existing.occurrences || [])) m.set(`${o.year}|${o.slot}`, o);
+
+      for (const ps of pendingSlots) {
+        const key = `${ps.year}|${ps.slot}`;
+        if (m.has(key)) continue;
+        m.set(key, { id: uuid(), year: ps.year, slot: ps.slot, statut: "prévue" });
+      }
+
+      base.occurrences = Array.from(m.values());
+      const idx = state.actions.findIndex(a => a.id === base.id);
+      state.actions[idx] = base;
+    } else {
+      base.occurrences = pendingSlots.map(ps => ({
+        id: uuid(),
+        year: ps.year,
+        slot: ps.slot,
+        statut: "prévue"
+      }));
+      state.actions.push(base);
+    }
+
+    save();
+    resetActionForm();
+    render();
+  }
+
+  function editAction(actionId) {
+    const a = state.actions.find(x => x.id === actionId);
+    if (!a) return;
+
+    editingActionId = actionId;
+    aTitre.value = a.titre || "";
+    aDesc.value = a.desc || "";
+    aCout.value = a.cout || "organisationnel";
+    aMontant.value = a.montant ?? "";
+    actionHint.textContent = `Modification : ${a.titre} (ajoute de nouveaux créneaux si besoin)`;
+
+    pendingSlots = [];
+    renderSlotChips();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function duplicateOccurrenceTo(actionId, fromYear, fromSlot) {
+    const a = state.actions.find(x => x.id === actionId);
+    if (!a) return;
+    const m = occMap(a);
+    const fromKey = `${fromYear}|${fromSlot}`;
+    if (!m.has(fromKey)) return;
+
+    const next = prompt("Nouvelle planification (ex: 2026 Q2 ou 2028 Année) :", `${FIRST_YEAR} Q1`);
+    if (!next) return;
+
+    const parts = next.trim().split(/\s+/);
+    const y = Number(parts[0]);
+    const s = parts[1] || (y === FIRST_YEAR ? "Q1" : "Année");
+
+    if (!YEARS.includes(y)) return alert("Année hors fenêtre.");
+    if (y === FIRST_YEAR && !["Q1","Q2","Q3","Q4"].includes(s)) return alert("Pour l’année 1 : Q1..Q4.");
+    if (y !== FIRST_YEAR && s !== "Année") return alert("Pour années 2-5 : 'Année' uniquement.");
+
+    const key = `${y}|${s}`;
+    if (m.has(key)) return alert("Cette action est déjà planifiée sur ce créneau.");
+
+    a.occurrences.push({ id: uuid(), year: y, slot: s, statut: "prévue" });
+    save();
+    render();
+  }
+
+  // -------- Top scrollbar sync --------
+  function syncTopScrollbarWidth() {
+    const w = el("gridTable").scrollWidth || 0;
+    const inner = gridWrapTop.querySelector(".scrollInner");
+    inner.style.width = w + "px";
+  }
+
+  function setupScrollSync() {
+    let lock = false;
+
+    gridWrapTop.addEventListener("scroll", () => {
+      if (lock) return;
+      lock = true;
+      gridWrap.scrollLeft = gridWrapTop.scrollLeft;
+      lock = false;
+    });
+
+    gridWrap.addEventListener("scroll", () => {
+      if (lock) return;
+      lock = true;
+      gridWrapTop.scrollLeft = gridWrap.scrollLeft;
+      lock = false;
+    });
+  }
+
+  // -------- Render --------
+  function render() {
+    buildHeader();
+    tbody.innerHTML = "";
+
+    const cols = columns();
+    const actionsAll = [...state.actions].sort((a,b) => (a.titre||"").localeCompare(b.titre||""));
+    const actions = actionsAll.filter(a => actionHasSlot(a, filterKey));
+
+    if (!actions.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="${cols.length}" class="muted">Aucune action pour ce créneau.</td>`;
+      tbody.appendChild(tr);
+      requestAnimationFrame(syncTopScrollbarWidth);
+      return;
+    }
+
+    for (const a of actions) {
+      const m = occMap(a);
+      const tr = document.createElement("tr");
+
+      for (const c of cols) {
+        const td = document.createElement("td");
+        td.style.minWidth = (c.minW || 120) + "px";
+
+        if (c.stickyLeft !== undefined) {
+          td.className = "sticky";
+          td.style.left = c.stickyLeft + "px";
+        }
+
+        if (c.key === "action") {
+          td.innerHTML = `
+            <div style="display:flex; justify-content: space-between; gap:10px;">
+              <div><strong>${escapeHtml(a.titre)}</strong></div>
+              <button class="iconbtn" title="Modifier">✎</button>
+            </div>
+          `;
+          td.querySelector("button").onclick = () => editAction(a.id);
+        }
+        else if (c.key === "desc") {
+          td.innerHTML = a.desc ? escapeHtml(a.desc) : `<span class="muted">—</span>`;
+        }
+        else if (c.key === "cout") {
+          td.innerHTML = `<span class="pill">${escapeHtml(a.cout || "")}</span>`;
+        }
+        else if (c.key === "montant") {
+          td.innerHTML = a.montant != null ? `<span class="pill mono">${a.montant}€</span>` : `<span class="muted">—</span>`;
+        }
+        else if (c.key === "comments") {
+          const ta = document.createElement("textarea");
+          ta.value = a.commentGlobal || "";
+          ta.placeholder = "suivi (optionnel)…";
+          ta.onchange = () => { a.commentGlobal = ta.value; save(); };
+          td.appendChild(ta);
+        }
+        else {
+          const key = filterKey === "ALL"
+            ? `${c.year}|${c.slot}`
+            : filterKey;
+
+          const occ = m.get(key);
+          if (!occ) {
+            td.innerHTML = "";
+          } else {
+            const wrap = document.createElement("div");
+            wrap.className = "cellWrap";
+
+            const sel = document.createElement("select");
+            for (const s of STATUS) {
+              const opt = document.createElement("option");
+              opt.textContent = s;
+              opt.selected = (s === occ.statut);
+              sel.appendChild(opt);
+            }
+            sel.onchange = () => { occ.statut = sel.value; save(); };
+
+            const btn = document.createElement("button");
+            btn.className = "iconbtn";
+            btn.title = "Dupliquer (reporter) vers…";
+            btn.textContent = "⤴";
+            btn.onclick = () => {
+              const [yy, ss] = key.split("|");
+              duplicateOccurrenceTo(a.id, Number(yy), ss);
+            };
+
+            wrap.appendChild(sel);
+            wrap.appendChild(btn);
+            td.appendChild(wrap);
+          }
+        }
+
+        tr.appendChild(td);
+      }
+
+      tbody.appendChild(tr);
+    }
+
+    requestAnimationFrame(syncTopScrollbarWidth);
+  }
+
+  // -------- Export (PDF) --------
+  function cloneForExport(rootEl) {
+    const clone = rootEl.cloneNode(true);
+
+    clone.querySelectorAll(".sticky, .stickyHead").forEach(n => {
+      n.style.position = "static";
+      n.style.left = "";
+      n.style.zIndex = "";
+    });
+    clone.querySelectorAll("button").forEach(b => b.remove());
+
+    clone.querySelectorAll("select").forEach(sel => {
+      const span = document.createElement("span");
+      span.textContent = sel.options[sel.selectedIndex]?.textContent || "";
+      span.style.display = "inline-block";
+      span.style.padding = "4px 8px";
+      span.style.border = "1px solid #ddd";
+      span.style.borderRadius = "999px";
+      span.style.fontSize = "12px";
+      sel.replaceWith(span);
+    });
+
+    clone.querySelectorAll("textarea").forEach(ta => {
+      const div = document.createElement("div");
+      div.textContent = ta.value || "";
+      div.style.minHeight = "18px";
+      div.style.whiteSpace = "pre-wrap";
+      div.style.border = "1px solid #eee";
+      div.style.borderRadius = "10px";
+      div.style.padding = "6px 8px";
+      ta.replaceWith(div);
+    });
+
+    return clone;
+  }
+
+  function exportPdf() {
+    const table = el("gridTable");
+    const clonedTable = cloneForExport(table);
+
+    const title = `Plan global de prévention — ${slotLabelFromKey(filterKey)}`;
+    const now = new Date();
+    const stamp = now.toISOString().slice(0,10);
+
+    const w = window.open("", "_blank");
+    if (!w) return alert("Popup bloquée (autorise les popups pour exporter).");
+
+    w.document.open();
+    w.document.write(`<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>${title}</title>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color:#111; }
+  h1 { font-size: 16px; margin: 0 0 6px; }
+  .meta { font-size: 12px; opacity: .75; margin-bottom: 10px; }
+  table { width:100%; border-collapse:collapse; font-size: 11px; }
+  th, td { border:1px solid #e5e5e5; padding:6px; vertical-align: top; }
+  th { background:#fafafa; font-weight: 600; }
+  tr { page-break-inside: avoid; }
+  thead { display: table-header-group; }
+</style>
+</head>
+<body>
+  <h1>${escapeHtml(title)}</h1>
+  <div class="meta">Export: ${stamp}</div>
+  <div id="mount"></div>
+</body>
+</html>`);
+    w.document.close();
+
+    w.document.getElementById("mount").appendChild(clonedTable);
+
+    setTimeout(() => {
+      w.focus();
+      w.print();
+    }, 150);
+  }
+
+  // -------- Import/Export JSON --------
+  function exportJson() {
+    const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "plan_prevention.json";
+    a.click();
+  }
+
+  function importJson(file) {
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const obj = JSON.parse(r.result);
+        if (!obj || !Array.isArray(obj.actions)) throw new Error("format");
+        state = obj;
+        save();
+        load();
+        render();
+      } catch {
+        alert("JSON invalide");
+      }
+    };
+    r.readAsText(file);
+  }
+
+  // -------- Wire --------
+  el("btnAddSlot").onclick = addPendingSlot;
+  el("btnSaveAction").onclick = saveAction;
+  el("btnResetAction").onclick = resetActionForm;
+
+  el("btnExport").onclick = exportJson;
+  el("btnImport").onclick = () => el("fileImport").click();
+  el("fileImport").onchange = e => importJson(e.target.files[0]);
+
+  el("btnExportPdf").onclick = exportPdf;
+
+  filterSlot.onchange = () => { filterKey = filterSlot.value; render(); };
+  el("btnClearFilter").onclick = () => { filterKey = "ALL"; filterSlot.value = "ALL"; render(); };
+
+  pYear.onchange = () => buildSlotOptionsForYear(pYear.value);
+
+  // init
+  buildYearOptions();
+  buildSlotOptionsForYear(YEARS[0]);
+  renderSlotChips();
+
+  load();
+  buildFilterOptions();
+  setupScrollSync();
+  render();
+})();
+</script>
+
+</body>
+</html>

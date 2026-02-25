@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outils Prévention — Accidents</title>
+
+  <style>
+    :root{
+      color-scheme: light dark;
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --surface2:rgba(255,255,255,.78);
+      --text:#0b1220;
+      --muted:rgba(11,18,32,.70);
+      --border:rgba(15,23,42,.12);
+      --shadow:0 12px 32px rgba(2,6,23,.08);
+      --shadow2:0 8px 18px rgba(2,6,23,.08);
+      --brand:#2563eb;
+      --brand2:#7c3aed;
+      --ok:#16a34a;
+      --info:#0ea5e9;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:16px;
+      --radius-sm:12px;
+      --pad:16px;
+      --pad-lg:22px;
+      --focus:0 0 0 3px rgba(37,99,235,.35);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b1020;
+        --surface:#0f172a;
+        --surface2:rgba(15,23,42,.72);
+        --text:#e5e7eb;
+        --muted:rgba(229,231,235,.70);
+        --border:rgba(148,163,184,.18);
+        --shadow:0 18px 38px rgba(0,0,0,.50);
+        --shadow2:0 10px 22px rgba(0,0,0,.38);
+        --focus:0 0 0 3px rgba(96,165,250,.35);
+      }
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 12% 8%, rgba(37,99,235,.14), transparent 55%),
+        radial-gradient(1200px 800px at 88% 12%, rgba(124,58,237,.12), transparent 55%),
+        var(--bg);
+    }
+
+    .wrap{max-width:1400px;margin:0 auto;padding:18px 14px 28px;}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+    .muted{color:var(--muted)}
+    .small{font-size:12px}
+    .spacer{height:10px}
+
+    header{
+      position:sticky; top:0; z-index:20;
+      padding:14px 0 10px;
+      background:linear-gradient(to bottom, rgba(246,247,251,.92), rgba(246,247,251,.65), transparent);
+      backdrop-filter: blur(10px);
+    }
+    @media (prefers-color-scheme: dark){
+      header{
+        background:linear-gradient(to bottom, rgba(11,16,32,.92), rgba(11,16,32,.65), transparent);
+      }
+    }
+
+    .hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      box-shadow:var(--shadow2);
+      display:grid;place-items:center;color:#fff;flex:0 0 auto;
+    }
+    .logo svg{width:22px;height:22px;opacity:.95}
+    h1{margin:0;font-size:22px;letter-spacing:.2px}
+    .sub{margin-top:3px;color:var(--muted);font-size:13px}
+
+    .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 10px;border:1px solid var(--border);
+      border-radius:999px;background:var(--surface2);
+      color:var(--muted);font-size:12px;
+    }
+
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:var(--pad-lg);
+      box-shadow:var(--shadow2);
+      position:relative; overflow:hidden;
+      margin-top:14px;
+    }
+    @media (prefers-color-scheme: dark){
+      .card{background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(15,23,42,.82))}
+    }
+    .card::before{
+      content:"";position:absolute;inset:-1px -1px auto -1px;height:3px;
+      background:linear-gradient(90deg, rgba(37,99,235,.9), rgba(124,58,237,.85));
+    }
+
+    h2{margin:0 0 10px;font-size:16px}
+
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+
+    input,select,textarea,button{font:inherit}
+    input,select,textarea,button{
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(255,255,255,.72);
+      color:var(--text);
+      outline:none;
+    }
+    @media (prefers-color-scheme: dark){
+      input,select,textarea,button{background:rgba(15,23,42,.65)}
+    }
+    textarea{min-height:42px;resize:vertical;width:100%}
+    input[type="date"]{padding:8px 10px}
+
+    input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{box-shadow:var(--focus)}
+
+    button{
+      cursor:pointer;
+      transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease, opacity 120ms ease;
+      user-select:none;
+    }
+    button:hover{transform:translateY(-1px); box-shadow:var(--shadow2); border-color:rgba(37,99,235,.35)}
+    button:active{transform:translateY(0)}
+
+    /* mapping des classes existantes */
+    button.primary{
+      background:linear-gradient(135deg, rgba(37,99,235,.95), rgba(124,58,237,.90));
+      border-color:transparent;
+      color:#fff;
+    }
+    button.primary:hover{border-color:transparent}
+    button.danger{
+      border-color:rgba(239,68,68,.35);
+      background:rgba(239,68,68,.10);
+      color:rgba(239,68,68,.95);
+    }
+    button.danger:hover{border-color:rgba(239,68,68,.55); background:rgba(239,68,68,.13)}
+    button.ghost{background:rgba(255,255,255,.55)}
+    @media (prefers-color-scheme: dark){ button.ghost{background:rgba(15,23,42,.55)} }
+
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width: 980px){ .grid{grid-template-columns:1fr 1fr} }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:5px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      background:rgba(255,255,255,.55);
+    }
+    @media (prefers-color-scheme: dark){ .pill{background:rgba(15,23,42,.55)} }
+    .pillStrong{color:var(--text); background:var(--surface2)}
+    .pillOk{border-color:rgba(22,163,74,.35); color:rgba(22,163,74,.95); background:rgba(22,163,74,.10)}
+    .pillWarn{border-color:rgba(245,158,11,.45); color:rgba(245,158,11,.95); background:rgba(245,158,11,.12)}
+    .pillInfo{border-color:rgba(14,165,233,.35); color:rgba(14,165,233,.95); background:rgba(14,165,233,.10)}
+
+    .table-wrap{
+      overflow:auto;
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.55);
+      box-shadow:0 1px 0 rgba(2,6,23,.03);
+    }
+    @media (prefers-color-scheme: dark){ .table-wrap{background:rgba(15,23,42,.55)} }
+
+    table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+    th,td{padding:10px 10px;border-bottom:1px solid rgba(148,163,184,.18);vertical-align:top}
+    th{
+      text-align:left;
+      position:sticky; top:0;
+      background:rgba(250,250,250,.92);
+      backdrop-filter: blur(8px);
+      z-index:1;
+      border-bottom:1px solid rgba(148,163,184,.25);
+      font-weight:600;
+      white-space:nowrap;
+    }
+    @media (prefers-color-scheme: dark){ th{background:rgba(15,23,42,.92)} }
+    tr:hover td{background:rgba(37,99,235,.05)}
+    @media (prefers-color-scheme: dark){ tr:hover td{background:rgba(96,165,250,.06)} }
+
+    .actions{display:flex;gap:8px;justify-content:flex-end}
+    .xbtn{
+      border:none;background:transparent;
+      padding:6px 8px;border-radius:10px;
+      opacity:.65;cursor:pointer;
+    }
+    .xbtn:hover{background:rgba(2,6,23,.06);opacity:1;transform:none;box-shadow:none;border-color:transparent}
+    @media (prefers-color-scheme: dark){
+      .xbtn:hover{background:rgba(255,255,255,.08)}
+    }
+
+    a.linklike{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid rgba(148,163,184,.55);
+      padding-bottom:1px;
+    }
+    a.linklike:hover{border-bottom-color:rgba(37,99,235,.60)}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.5l7.8 4.5v10l-7.8 4.5L4.2 17V7L12 2.5z" stroke="white" stroke-width="1.6" opacity="0.95"/>
+            <path d="M12 7.2l4 2.3v5L12 16.8 8 14.5v-5L12 7.2z" fill="white" opacity="0.85"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Accidents</h1>
+          <div class="sub">Offline • LocalStorage (<span class="mono">op_accidents_v1</span>)</div>
+        </div>
+      </div>
+      <div class="meta">
+        <a class="chip linklike" href="./index.html" title="Retour accueil">← Accueil</a>
+        <span class="chip">Registre + filtres + export</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <div class="row" style="justify-content: space-between; align-items:center;">
+      <div class="row" style="align-items:center;">
+        <div class="pill pillStrong" id="kpiCount">0 entrées</div>
+        <div class="pill pillInfo" id="kpiIT">0 avec IT</div>
+        <div class="pill pillWarn" id="kpiJours">0 jours IT</div>
+      </div>
+      <div class="row" style="align-items:center;">
+        <button class="ghost" id="btnExportJson">Export JSON</button>
+        <button class="ghost" id="btnImportJson">Import JSON</button>
+        <button class="ghost" id="btnExportCsv">Export CSV</button>
+      </div>
+    </div>
+    <div class="small muted" style="margin-top:10px;">
+      Import JSON : fusion par <span class="mono">id</span> (les ids identiques sont remplacés).
+    </div>
+    <input id="fileImport" type="file" accept="application/json" style="display:none;" />
+  </div>
+
+  <div class="card">
+    <h2>Ajouter / modifier</h2>
+    <div class="grid">
+      <div class="row">
+        <div style="flex:1; min-width: 160px;">
+          <label>Date accident</label>
+          <input id="fDate" type="date" />
+        </div>
+
+        <div style="flex:1; min-width: 240px;">
+          <label>AT / CT</label>
+          <select id="fType">
+            <option value="Accident du travail">Accident du travail</option>
+            <option value="Accident sur le chemin du travail">Accident sur le chemin du travail</option>
+          </select>
+        </div>
+
+        <div style="flex:1; min-width: 140px;">
+          <label>IT / SANS IT</label>
+          <select id="fIT">
+            <option value="IT">IT</option>
+            <option value="SANS IT">SANS IT</option>
+          </select>
+        </div>
+
+        <div style="flex:1; min-width: 120px;">
+          <label>Jours IT</label>
+          <input id="fJoursIT" type="number" min="0" step="1" placeholder="ex: 12" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="flex:1; min-width: 170px;">
+          <label>Statut dossier</label>
+          <select id="fStatut">
+            <option value="accepté">accepté</option>
+            <option value="refusé">refusé</option>
+            <option value="en suspens">en suspens</option>
+          </select>
+        </div>
+
+        <div style="flex:1; min-width: 170px;">
+          <label>État lésions (libre)</label>
+          <input id="fEtat" type="text" placeholder="ex: Evolutif / Guéri / ..." />
+        </div>
+
+        <div style="flex:1; min-width: 120px;">
+          <label>Sexe</label>
+          <select id="fSexe">
+            <option value="M">M</option>
+            <option value="F">F</option>
+          </select>
+        </div>
+
+        <div style="flex:1; min-width: 120px;">
+          <label>Âge</label>
+          <input id="fAge" type="number" min="0" step="1" placeholder="ex: 43" />
+        </div>
+
+        <div style="flex:1; min-width: 180px;">
+          <label>Département</label>
+          <input id="fDept" type="text" placeholder="texte libre" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="flex:2; min-width: 280px;">
+          <label>Description (libre)</label>
+          <textarea id="fDesc" placeholder="ex: coupure couteau à pain"></textarea>
+        </div>
+
+        <div style="flex:2; min-width: 280px;">
+          <label>Pièce jointe (chemin local)</label>
+          <input id="fPJ" type="text" placeholder="ex: C:\dossier\scan.pdf ou \\serveur\..." />
+          <div class="small muted" style="margin-top:6px;">
+            Stocké tel quel. L’ouverture via clic peut être bloquée selon navigateur.
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="justify-content: space-between; align-items:center;">
+        <div class="muted small" id="editHint">Mode ajout</div>
+        <div class="actions">
+          <button class="ghost" id="btnReset">Réinitialiser</button>
+          <button class="primary" id="btnSave">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Recherche / filtres</h2>
+    <div class="row">
+      <div style="flex:2; min-width: 240px;">
+        <label>Recherche texte (description, département, état, PJ)</label>
+        <input id="qText" type="text" placeholder="ex: trotinette / agress / 2024" />
+      </div>
+
+      <div style="flex:1; min-width: 180px;">
+        <label>Année</label>
+        <select id="qYear">
+          <option value="">Toutes</option>
+        </select>
+      </div>
+
+      <div style="flex:1; min-width: 240px;">
+        <label>AT / CT</label>
+        <select id="qType">
+          <option value="">Tous</option>
+          <option value="Accident du travail">Accident du travail</option>
+          <option value="Accident sur le chemin du travail">Accident sur le chemin du travail</option>
+        </select>
+      </div>
+
+      <div style="flex:1; min-width: 140px;">
+        <label>IT</label>
+        <select id="qIT">
+          <option value="">Tous</option>
+          <option value="IT">IT</option>
+          <option value="SANS IT">SANS IT</option>
+        </select>
+      </div>
+
+      <div style="flex:1; min-width: 170px;">
+        <label>Statut</label>
+        <select id="qStatut">
+          <option value="">Tous</option>
+          <option value="accepté">accepté</option>
+          <option value="refusé">refusé</option>
+          <option value="en suspens">en suspens</option>
+        </select>
+      </div>
+
+      <div>
+        <button class="ghost" id="btnClearFilters">Effacer filtres</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content: space-between; align-items:center;">
+      <h2 style="margin:0;">Registre</h2>
+      <div class="muted small" id="countFiltered"></div>
+    </div>
+    <div class="table-wrap" style="margin-top:12px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>AT / CT</th>
+            <th>IT</th>
+            <th>Jours IT</th>
+            <th>Statut</th>
+            <th>État lésions</th>
+            <th>Sexe</th>
+            <th>Âge</th>
+            <th>Département</th>
+            <th>Description</th>
+            <th>Pièce jointe</th>
+            <th style="width:110px;"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(() => {
+  const KEY = "op_accidents_v1";
+
+  /** @type {Array<any>} */
+  let state = [];
+  let editingId = null;
+
+  // ---- DOM
+  const el = (id) => document.getElementById(id);
+
+  const fDate = el("fDate");
+  const fType = el("fType");
+  const fIT = el("fIT");
+  const fJoursIT = el("fJoursIT");
+  const fStatut = el("fStatut");
+  const fEtat = el("fEtat");
+  const fSexe = el("fSexe");
+  const fAge = el("fAge");
+  const fDept = el("fDept");
+  const fDesc = el("fDesc");
+  const fPJ = el("fPJ");
+
+  const editHint = el("editHint");
+  const tbody = el("tbody");
+
+  const qText = el("qText");
+  const qYear = el("qYear");
+  const qType = el("qType");
+  const qIT = el("qIT");
+  const qStatut = el("qStatut");
+
+  const kpiCount = el("kpiCount");
+  const kpiIT = el("kpiIT");
+  const kpiJours = el("kpiJours");
+  const countFiltered = el("countFiltered");
+
+  const btnSave = el("btnSave");
+  const btnReset = el("btnReset");
+  const btnClearFilters = el("btnClearFilters");
+  const btnExportJson = el("btnExportJson");
+  const btnImportJson = el("btnImportJson");
+  const btnExportCsv = el("btnExportCsv");
+  const fileImport = el("fileImport");
+
+  // ---- Utils
+  const uuid = () => (crypto?.randomUUID ? crypto.randomUUID() : ("id_" + Math.random().toString(16).slice(2) + Date.now()));
+
+  const norm = (s) => (s ?? "").toString().trim().toLowerCase();
+  const safeInt = (v) => {
+    if (v === "" || v === null || v === undefined) return null;
+    const n = Number(v);
+    if (!Number.isFinite(n)) return null;
+    return Math.trunc(n);
+  };
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      state = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(state)) state = [];
+    } catch {
+      state = [];
+    }
+  }
+
+  function save() {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  }
+
+  function enforceFormRules() {
+    const isIT = fIT.value === "IT";
+    fJoursIT.disabled = !isIT;
+    if (!isIT) fJoursIT.value = "";
+  }
+
+  function resetForm() {
+    editingId = null;
+    editHint.textContent = "Mode ajout";
+    btnSave.textContent = "Enregistrer";
+
+    fDate.value = "";
+    fType.value = "Accident du travail";
+    fIT.value = "IT";
+    fJoursIT.value = "";
+    fStatut.value = "accepté";
+    fEtat.value = "";
+    fSexe.value = "M";
+    fAge.value = "";
+    fDept.value = "";
+    fDesc.value = "";
+    fPJ.value = "";
+
+    enforceFormRules();
+  }
+
+  function validateForm() {
+    if (!fDate.value) return "Date manquante";
+    if (!["Accident du travail", "Accident sur le chemin du travail"].includes(fType.value)) return "AT/CT invalide";
+    if (!["IT", "SANS IT"].includes(fIT.value)) return "IT/SANS IT invalide";
+    if (!["accepté", "refusé", "en suspens"].includes(fStatut.value)) return "Statut invalide";
+    if (!["M", "F"].includes(fSexe.value)) return "Sexe invalide";
+
+    const age = safeInt(fAge.value);
+    if (age !== null && age < 0) return "Âge invalide";
+
+    if (fIT.value === "IT") {
+      const j = safeInt(fJoursIT.value);
+      if (j === null) return "Jours IT requis si IT";
+      if (j < 0) return "Jours IT invalide";
+    }
+    return null;
+  }
+
+  function upsertFromForm() {
+    const err = validateForm();
+    if (err) { alert(err); return; }
+
+    const obj = {
+      id: editingId ?? uuid(),
+      date: fDate.value, // YYYY-MM-DD
+      type: fType.value,
+      it: fIT.value,
+      joursIT: (fIT.value === "IT") ? safeInt(fJoursIT.value) : null,
+      statut: fStatut.value,
+      etatLesions: (fEtat.value || "").trim(),
+      sexe: fSexe.value,
+      age: safeInt(fAge.value),
+      departement: (fDept.value || "").trim(),
+      description: (fDesc.value || "").trim(),
+      pieceJointe: (fPJ.value || "").trim()
+    };
+
+    const idx = state.findIndex(x => x.id === obj.id);
+    if (idx >= 0) state[idx] = obj;
+    else state.push(obj);
+
+    // tri date desc, puis id
+    state.sort((a,b) => (b.date || "").localeCompare(a.date || "") || (a.id || "").localeCompare(b.id || ""));
+
+    save();
+    resetForm();
+    renderAll();
+  }
+
+  function startEdit(id) {
+    const obj = state.find(x => x.id === id);
+    if (!obj) return;
+
+    editingId = id;
+    editHint.textContent = "Modification en cours";
+    btnSave.textContent = "Mettre à jour";
+
+    fDate.value = obj.date || "";
+    fType.value = obj.type || "Accident du travail";
+    fIT.value = obj.it || "IT";
+    fJoursIT.value = (obj.joursIT ?? "") === null ? "" : String(obj.joursIT ?? "");
+    fStatut.value = obj.statut || "accepté";
+    fEtat.value = obj.etatLesions || "";
+    fSexe.value = obj.sexe || "M";
+    fAge.value = (obj.age ?? "") === null ? "" : String(obj.age ?? "");
+    fDept.value = obj.departement || "";
+    fDesc.value = obj.description || "";
+    fPJ.value = obj.pieceJointe || "";
+
+    enforceFormRules();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function removeOne(id) {
+    const idx = state.findIndex(x => x.id === id);
+    if (idx < 0) return;
+    state.splice(idx, 1);
+    save();
+    if (editingId === id) resetForm();
+    renderAll();
+  }
+
+  function applyFilters(items) {
+    const t = norm(qText.value);
+    const y = qYear.value;
+    const ty = qType.value;
+    const it = qIT.value;
+    const st = qStatut.value;
+
+    return items.filter(x => {
+      if (y && (x.date || "").slice(0,4) !== y) return false;
+      if (ty && x.type !== ty) return false;
+      if (it && x.it !== it) return false;
+      if (st && x.statut !== st) return false;
+
+      if (t) {
+        const hay = [
+          x.date, x.type, x.it, x.statut,
+          x.etatLesions, x.sexe, x.age,
+          x.departement, x.description, x.pieceJointe
+        ].map(v => norm(v)).join(" ");
+        if (!hay.includes(t)) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderKPIs(items) {
+    const total = items.length;
+    const withIT = items.filter(x => x.it === "IT").length;
+    const jours = items.reduce((acc, x) => acc + (Number.isFinite(x.joursIT) ? x.joursIT : 0), 0);
+
+    kpiCount.textContent = `${total} entrées`;
+    kpiIT.textContent = `${withIT} avec IT`;
+    kpiJours.textContent = `${jours} jours IT`;
+  }
+
+  function renderYearOptions() {
+    const years = Array.from(new Set(state.map(x => (x.date || "").slice(0,4)).filter(Boolean))).sort().reverse();
+    const current = qYear.value;
+    qYear.innerHTML = `<option value="">Toutes</option>` + years.map(y => `<option value="${y}">${y}</option>`).join("");
+    if (years.includes(current)) qYear.value = current;
+  }
+
+  function renderTable(items) {
+    tbody.innerHTML = "";
+
+    items.forEach(x => {
+      const tr = document.createElement("tr");
+
+      const pj = (x.pieceJointe || "").trim();
+      const pjCell = pj
+        ? `<span class="mono" title="${escapeHtml(pj)}">${escapeHtml(shorten(pj, 26))}</span>`
+        : `<span class="muted">—</span>`;
+
+      tr.innerHTML = `
+        <td class="mono">${escapeHtml(x.date || "")}</td>
+        <td>${escapeHtml(x.type || "")}</td>
+        <td>${escapeHtml(x.it || "")}</td>
+        <td class="mono">${x.it === "IT" ? escapeHtml(String(x.joursIT ?? "")) : "—"}</td>
+        <td>${escapeHtml(x.statut || "")}</td>
+        <td>${escapeHtml(x.etatLesions || "")}</td>
+        <td>${escapeHtml(x.sexe || "")}</td>
+        <td class="mono">${x.age ?? ""}</td>
+        <td>${escapeHtml(x.departement || "")}</td>
+        <td>${escapeHtml(x.description || "")}</td>
+        <td>${pjCell}</td>
+        <td>
+          <div class="actions">
+            <button class="xbtn" title="Modifier">✎</button>
+            <button class="xbtn" title="Supprimer">✕</button>
+          </div>
+        </td>
+      `;
+
+      const [btnEdit, btnDel] = tr.querySelectorAll("button.xbtn");
+      btnEdit.addEventListener("click", () => startEdit(x.id));
+      btnDel.addEventListener("click", () => removeOne(x.id));
+
+      tbody.appendChild(tr);
+    });
+
+    countFiltered.textContent = `${items.length} affiché(s) / ${state.length} total`;
+  }
+
+  function renderAll() {
+    renderYearOptions();
+    const filtered = applyFilters(state);
+    renderKPIs(filtered);
+    renderTable(filtered);
+  }
+
+  function escapeHtml(s) {
+    return (s ?? "").toString()
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+  }
+
+  function shorten(s, n) {
+    s = (s ?? "").toString();
+    if (s.length <= n) return s;
+    return s.slice(0, n-1) + "…";
+  }
+
+  // ---- Export / Import
+  function download(filename, content, mime="application/octet-stream") {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportJson() {
+    const payload = { key: KEY, exportedAt: new Date().toISOString(), items: state };
+    download(`accidents_export_${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(payload, null, 2), "application/json");
+  }
+
+  function exportCsv() {
+    const header = [
+      "DATE ACCIDENT","AT / CT","IT / sans IT","jours IT","Statut dossier","Etat lésions","Sexe","Âge","Département","description","pièce jointe","id"
+    ];
+    const rows = state.map(x => [
+      x.date ?? "",
+      x.type ?? "",
+      x.it ?? "",
+      (x.it === "IT" ? (x.joursIT ?? "") : ""),
+      x.statut ?? "",
+      x.etatLesions ?? "",
+      x.sexe ?? "",
+      (x.age ?? ""),
+      x.departement ?? "",
+      x.description ?? "",
+      x.pieceJointe ?? "",
+      x.id ?? ""
+    ]);
+
+    const csv = [header, ...rows].map(r => r.map(csvCell).join(";")).join("\n");
+    download(`accidents_export_${new Date().toISOString().slice(0,10)}.csv`, csv, "text/csv;charset=utf-8");
+  }
+
+  function csvCell(v) {
+    const s = (v ?? "").toString();
+    if (/[;"\n\r]/.test(s)) return `"${s.replaceAll('"','""')}"`;
+    return s;
+  }
+
+  function importJsonFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const obj = JSON.parse(reader.result);
+        const items = Array.isArray(obj?.items) ? obj.items : (Array.isArray(obj) ? obj : null);
+        if (!items) throw new Error("Format JSON inattendu");
+
+        const map = new Map(state.map(x => [x.id, x]));
+        for (const it of items) {
+          if (!it || !it.id) continue;
+          map.set(it.id, it);
+        }
+        state = Array.from(map.values());
+        state.sort((a,b) => (b.date || "").localeCompare(a.date || "") || (a.id || "").localeCompare(b.id || ""));
+        save();
+        resetForm();
+        renderAll();
+      } catch (e) {
+        alert("Import JSON impossible : " + (e?.message || e));
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ---- Events
+  fIT.addEventListener("change", enforceFormRules);
+
+  btnSave.addEventListener("click", upsertFromForm);
+  btnReset.addEventListener("click", resetForm);
+
+  [qText, qYear, qType, qIT, qStatut].forEach(x => x.addEventListener("input", renderAll));
+  btnClearFilters.addEventListener("click", () => {
+    qText.value = "";
+    qYear.value = "";
+    qType.value = "";
+    qIT.value = "";
+    qStatut.value = "";
+    renderAll();
+  });
+
+  btnExportJson.addEventListener("click", exportJson);
+  btnExportCsv.addEventListener("click", exportCsv);
+  btnImportJson.addEventListener("click", () => fileImport.click());
+  fileImport.addEventListener("change", () => {
+    const f = fileImport.files?.[0];
+    fileImport.value = "";
+    if (f) importJsonFile(f);
+  });
+
+  // ---- Init
+  load();
+  state.sort((a,b) => (b.date || "").localeCompare(a.date || "") || (a.id || "").localeCompare(b.id || ""));
+  resetForm();
+  renderAll();
+})();
+</script>
+</body>
+</html>

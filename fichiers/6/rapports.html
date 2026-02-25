@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outils Prévention — Rapports</title>
+
+  <style>
+    :root{
+      color-scheme: light dark;
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --surface2:rgba(255,255,255,.78);
+      --text:#0b1220;
+      --muted:rgba(11,18,32,.70);
+      --border:rgba(15,23,42,.12);
+      --shadow:0 12px 32px rgba(2,6,23,.08);
+      --shadow2:0 8px 18px rgba(2,6,23,.08);
+      --brand:#2563eb;
+      --brand2:#7c3aed;
+      --ok:#16a34a;
+      --info:#0ea5e9;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:16px;
+      --radius-sm:12px;
+      --pad:16px;
+      --pad-lg:22px;
+      --focus:0 0 0 3px rgba(37,99,235,.35);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b1020;
+        --surface:#0f172a;
+        --surface2:rgba(15,23,42,.72);
+        --text:#e5e7eb;
+        --muted:rgba(229,231,235,.70);
+        --border:rgba(148,163,184,.18);
+        --shadow:0 18px 38px rgba(0,0,0,.50);
+        --shadow2:0 10px 22px rgba(0,0,0,.38);
+        --focus:0 0 0 3px rgba(96,165,250,.35);
+      }
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 12% 8%, rgba(37,99,235,.14), transparent 55%),
+        radial-gradient(1200px 800px at 88% 12%, rgba(124,58,237,.12), transparent 55%),
+        var(--bg);
+    }
+
+    .wrap{max-width:1400px;margin:0 auto;padding:18px 14px 28px;}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .muted{color:var(--muted)}
+    .small{font-size:12px}
+    .spacer{height:10px}
+
+    header{
+      position:sticky; top:0; z-index:20;
+      padding:14px 0 10px;
+      background:linear-gradient(to bottom, rgba(246,247,251,.92), rgba(246,247,251,.65), transparent);
+      backdrop-filter: blur(10px);
+    }
+    @media (prefers-color-scheme: dark){
+      header{ background:linear-gradient(to bottom, rgba(11,16,32,.92), rgba(11,16,32,.65), transparent); }
+    }
+
+    .hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      box-shadow:var(--shadow2);
+      display:grid;place-items:center;color:#fff;flex:0 0 auto;
+    }
+    .logo svg{width:22px;height:22px;opacity:.95}
+    h1{margin:0;font-size:22px;letter-spacing:.2px}
+    .sub{margin-top:3px;color:var(--muted);font-size:13px}
+
+    .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 10px;border:1px solid var(--border);
+      border-radius:999px;background:var(--surface2);
+      color:var(--muted);font-size:12px;
+      text-decoration:none;
+    }
+    .chip:hover{border-color:rgba(37,99,235,.35)}
+    .dot{width:8px;height:8px;border-radius:99px;background:var(--ok);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:var(--pad-lg);
+      box-shadow:var(--shadow2);
+      position:relative; overflow:hidden;
+      margin-top:14px;
+    }
+    @media (prefers-color-scheme: dark){
+      .card{background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(15,23,42,.82))}
+    }
+    .card::before{
+      content:"";position:absolute;inset:-1px -1px auto -1px;height:3px;
+      background:linear-gradient(90deg, rgba(37,99,235,.9), rgba(124,58,237,.85));
+    }
+
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .grow{flex:1}
+
+    button{
+      font:inherit;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(255,255,255,.72);
+      color:var(--text);
+      cursor:pointer;
+      outline:none;
+      transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease, opacity 120ms ease;
+      user-select:none;
+    }
+    @media (prefers-color-scheme: dark){
+      button{background:rgba(15,23,42,.65)}
+    }
+    button:hover{transform:translateY(-1px); box-shadow:var(--shadow2); border-color:rgba(37,99,235,.35)}
+    button:active{transform:translateY(0)}
+    button:focus-visible{box-shadow:var(--focus), var(--shadow2)}
+
+    .btnPrimary{
+      background:linear-gradient(135deg, rgba(37,99,235,.95), rgba(124,58,237,.90));
+      border-color:transparent;color:#fff;
+    }
+    .btnPrimary:hover{border-color:transparent}
+    .btnDanger{
+      border-color:rgba(239,68,68,.35);
+      background:rgba(239,68,68,.10);
+      color:rgba(239,68,68,.95);
+    }
+    .btnDanger:hover{border-color:rgba(239,68,68,.55); background:rgba(239,68,68,.13)}
+    .btnGhost{background:rgba(255,255,255,.55)}
+    @media (prefers-color-scheme: dark){ .btnGhost{background:rgba(15,23,42,.55)} }
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--surface2);
+      font-size:12px;color:var(--muted);
+    }
+    .pillStrong{color:var(--text)}
+    .msg{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.55);
+    }
+    @media (prefers-color-scheme: dark){ .msg{background:rgba(15,23,42,.55)} }
+
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    @media (min-width: 980px){ .grid{grid-template-columns: 520px 1fr} }
+
+    .list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .item{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:12px 12px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:rgba(255,255,255,.65);
+      transition:border-color 120ms ease, background 120ms ease, transform 120ms ease;
+    }
+    @media (prefers-color-scheme: dark){ .item{background:rgba(15,23,42,.62)} }
+    .item:hover{border-color:rgba(37,99,235,.25)}
+    .item.active{
+      border-color:rgba(37,99,235,.35);
+      background:rgba(37,99,235,.06);
+    }
+    @media (prefers-color-scheme: dark){
+      .item.active{background:rgba(96,165,250,.08)}
+    }
+
+    .item-title{display:flex;flex-direction:column;gap:2px}
+    .ym{font-weight:700}
+    .viewerWrap{
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      overflow:hidden;
+      background:rgba(255,255,255,.55);
+      box-shadow:0 1px 0 rgba(2,6,23,.03);
+    }
+    @media (prefers-color-scheme: dark){ .viewerWrap{background:rgba(15,23,42,.55)} }
+    .viewer{
+      width:100%;
+      height:78vh;
+      border:none;
+      display:block;
+      background:transparent;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.55);
+    }
+    @media (prefers-color-scheme: dark){ .kbd{background:rgba(15,23,42,.55)} }
+
+    .hint{font-size:12px;color:var(--muted);line-height:1.35}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.5l7.8 4.5v10l-7.8 4.5L4.2 17V7L12 2.5z" stroke="white" stroke-width="1.6" opacity="0.95"/>
+            <path d="M12 7.2l4 2.3v5L12 16.8 8 14.5v-5L12 7.2z" fill="white" opacity="0.85"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Rapports</h1>
+          <div class="sub">
+            PDFs nommés <span class="mono">YYYY-MM.pdf</span> • dossier <span class="mono">./rapports/</span>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <a class="chip" href="./index.html" title="Retour accueil">← Accueil</a>
+        <span class="chip"><span class="dot" aria-hidden="true"></span>Offline</span>
+        <span class="chip mono">op_rapports_names_v1</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <div class="row" style="justify-content: space-between; align-items:flex-start;">
+      <div class="row">
+        <button id="btnImport" class="btnPrimary">Importer le dossier</button>
+        <button id="btnClear" class="btnDanger">Vider la liste</button>
+        <span class="pill pillStrong" id="kpi">0</span>
+      </div>
+      <div class="hint">
+        Après refresh : preview parfois OK, ouverture fiable nécessite parfois réimport.<br/>
+        Astuce : clique sur un item puis <span class="kbd">Voir</span> / <span class="kbd">Ouvrir</span>.
+      </div>
+    </div>
+
+    <input id="fallbackPicker" type="file" accept="application/pdf" multiple webkitdirectory style="display:none;" />
+    <div id="message" class="msg" style="display:none;"></div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <div class="row" style="justify-content: space-between; align-items:flex-end;">
+        <h2 style="margin:0;">Liste des rapports</h2>
+        <div class="small muted">Tri décroissant par <span class="mono">YYYY-MM</span>.</div>
+      </div>
+      <div class="list" id="list"></div>
+    </section>
+
+    <section class="card">
+      <div class="row" style="justify-content: space-between; align-items:flex-end;">
+        <h2 style="margin:0;">Aperçu</h2>
+        <div class="small muted" id="previewLabel">—</div>
+      </div>
+      <div class="viewerWrap" style="margin-top:12px;">
+        <iframe id="viewer" class="viewer" src="about:blank" title="Aperçu PDF"></iframe>
+      </div>
+    </section>
+  </div>
+
+<script>
+(() => {
+  const REPORTS_DIR = "./rapports/";
+  const KEY = "op_rapports_names_v1";
+  const ymPdfRe = /^\d{4}-\d{2}\.pdf$/i;
+
+  const btnImport = document.getElementById("btnImport");
+  const btnClear = document.getElementById("btnClear");
+  const fallbackPicker = document.getElementById("fallbackPicker");
+  const listEl = document.getElementById("list");
+  const msg = document.getElementById("message");
+  const kpi = document.getElementById("kpi");
+
+  const viewer = document.getElementById("viewer");
+  const previewLabel = document.getElementById("previewLabel");
+
+  let names = [];
+  const sessionFiles = new Map();
+  let selected = null;
+  let currentObjectUrl = null;
+
+  function cleanObjectUrl() {
+    if (currentObjectUrl) {
+      URL.revokeObjectURL(currentObjectUrl);
+      currentObjectUrl = null;
+    }
+  }
+
+  function showMsg(t){ msg.style.display="block"; msg.textContent=t; }
+  function clearMsg(){ msg.style.display="none"; msg.textContent=""; }
+
+  function load(){
+    try {
+      const raw = localStorage.getItem(KEY);
+      names = JSON.parse(raw)?.names || [];
+    } catch { names=[]; }
+  }
+
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify({ names }));
+  }
+
+  function sortedNames(){
+    return [...names].sort((a,b)=>b.slice(0,7).localeCompare(a.slice(0,7)));
+  }
+
+  function render(){
+    listEl.innerHTML="";
+    kpi.textContent = names.length;
+
+    if (!names.length){
+      listEl.innerHTML = `<div class="small muted">Aucun rapport importé.</div>`;
+      return;
+    }
+
+    for (const file of sortedNames()){
+      const ym = file.slice(0,7);
+      const row = document.createElement("div");
+      row.className = "item" + (selected===file?" active":"");
+      row.innerHTML = `
+        <div class="item-title">
+          <div class="mono ym">${ym}</div>
+          <div class="small muted">${file}</div>
+        </div>
+        <div class="row">
+          <button class="btnGhost" data-see>Voir</button>
+          <button class="btnGhost" data-open>Ouvrir</button>
+        </div>
+      `;
+
+      row.querySelector("[data-see]").onclick = () => preview(file);
+      row.querySelector("[data-open]").onclick = () => openTab(file);
+
+      listEl.appendChild(row);
+    }
+  }
+
+  function preview(file){
+    selected = file;
+    render();
+    cleanObjectUrl();
+
+    const f = sessionFiles.get(file);
+    previewLabel.textContent = file;
+
+    if (f){
+      currentObjectUrl = URL.createObjectURL(f);
+      viewer.src = currentObjectUrl;
+    } else {
+      viewer.src = REPORTS_DIR + file;
+    }
+  }
+
+  function openTab(file){
+    clearMsg();
+    const f = sessionFiles.get(file);
+
+    if (f){
+      const url = URL.createObjectURL(f);
+      window.open(url, "_blank");
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    } else {
+      const url = REPORTS_DIR + file;
+      window.open(url, "_blank");
+    }
+  }
+
+  function importEntries(entries){
+    names = [];
+    sessionFiles.clear();
+
+    for (const e of entries){
+      const base = e.name.split("/").pop();
+      if (!ymPdfRe.test(base)) continue;
+      names.push(base);
+      e.getFile().then(f=>sessionFiles.set(base,f)).catch(()=>{});
+    }
+
+    names = [...new Set(names)];
+    save();
+    render();
+    showMsg(`${names.length} rapport(s) importé(s).`);
+  }
+
+  async function importDir(){
+    if (!window.showDirectoryPicker) return false;
+    try {
+      const dir = await window.showDirectoryPicker({mode:"read"});
+      const entries=[];
+      for await (const [name,handle] of dir.entries()){
+        if (handle.kind==="file")
+          entries.push({name,getFile:()=>handle.getFile()});
+      }
+      importEntries(entries);
+      return true;
+    } catch { return true; }
+  }
+
+  btnImport.onclick = async ()=>{
+    clearMsg();
+    const ok = await importDir();
+    if (!ok) fallbackPicker.click();
+  };
+
+  fallbackPicker.onchange = ()=>{
+    const files=[...fallbackPicker.files];
+    fallbackPicker.value="";
+    importEntries(files.map(f=>({name:f.webkitRelativePath||f.name,getFile:async()=>f})));
+  };
+
+  btnClear.onclick = ()=>{
+    names=[]; sessionFiles.clear();
+    save(); render();
+    viewer.src="about:blank";
+    previewLabel.textContent="—";
+    showMsg("Liste vidée.");
+  };
+
+  load();
+  render();
+  showMsg("Importer le dossier puis utiliser « Voir » ou « Ouvrir ».");
+})();
+</script>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Déclaration Incendie (Réception)</title>
+  <style>
+    body { font-family: system-ui, Arial; margin: 16px; max-width: 900px; }
+    .card { border:1px solid #ddd; border-radius:10px; padding:12px; margin-top:12px; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+    label { display:flex; flex-direction:column; font-size:12px; gap:4px; flex: 1; min-width: 220px; }
+    input, select, textarea, button { font: inherit; padding:8px; }
+    textarea { min-height: 90px; }
+    .muted { color:#666; font-size: 12px; }
+    code, pre { background:#fafafa; border:1px solid #eee; border-radius:8px; padding:10px; overflow:auto; }
+    button { cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h2 style="margin:0">Déclaration centrale incendie (Réception)</h2>
+  <div class="muted">Aucun historique ici. Chaque envoi génère un email Outlook + un bloc encodable pour archivage FM.</div>
+
+  <div class="card">
+    <div class="row">
+      <label>
+        Type
+        <select id="type">
+          <option value="DEF">Défaut</option>
+          <option value="ALARM">Alarme</option>
+          <option value="TEST">Test</option>
+          <option value="INFO">Info</option>
+        </select>
+      </label>
+
+      <label>
+        Zone
+        <input id="zone" placeholder="Bât A - RDC" />
+      </label>
+
+      <label>
+        Détecteur / point
+        <input id="device" placeholder="B1-02" />
+      </label>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <label style="min-width: 100%">
+        Description
+        <textarea id="message" placeholder="Ce que la réception constate sur la centrale, contexte, etc."></textarea>
+      </label>
+    </div>
+
+    <div class="row" style="margin-top:10px; align-items:end">
+      <label>
+        Destinataires (To)
+        <input id="to" value="hugues.thiry@casinoresortnamur.be;christophe.vankerrebroeck@casinoresortnamur.be" />
+      </label>
+      <button id="btnSend" style="height: 40px;">Ouvrir email</button>
+    </div>
+
+    <div class="muted" style="margin-top:8px">
+      Astuce FM : copier-coller uniquement le bloc entre BEGIN/END pour décoder le JSON.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="align-items:end">
+      <button id="btnPreview" style="height: 40px;">Aperçu payload</button>
+      <span class="muted" id="status"></span>
+    </div>
+    <pre id="preview" style="display:none; margin-top:10px;"></pre>
+  </div>
+
+<script>
+  const els = {
+    type: document.getElementById("type"),
+    zone: document.getElementById("zone"),
+    device: document.getElementById("device"),
+    message: document.getElementById("message"),
+    to: document.getElementById("to"),
+    btnSend: document.getElementById("btnSend"),
+    btnPreview: document.getElementById("btnPreview"),
+    preview: document.getElementById("preview"),
+    status: document.getElementById("status"),
+  };
+
+  function nowIso() {
+    return new Date().toISOString();
+  }
+
+  function sanitize(s) {
+    return (s || "").trim();
+  }
+
+  // base64url (sans + / =), compatible mail body
+  function base64UrlEncode(str) {
+    const utf8 = new TextEncoder().encode(str);
+    let bin = "";
+    utf8.forEach(b => bin += String.fromCharCode(b));
+    const b64 = btoa(bin);
+    return b64.replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+  }
+
+  function buildEvent() {
+    const ev = {
+      v: 1,
+      ts: nowIso(),
+      type: els.type.value,
+      zone: sanitize(els.zone.value),
+      device: sanitize(els.device.value),
+      message: sanitize(els.message.value),
+    };
+
+    if (!ev.zone && !ev.device && !ev.message) {
+      throw new Error("Renseigne au moins zone, détecteur ou description.");
+    }
+    return ev;
+  }
+
+  function buildMail(ev, payloadB64Url) {
+    const subject = `[Incendie] ${ev.type} - ${ev.zone || ""} - ${ev.device || ""}`.replace(/\s+/g, " ").trim();
+
+    const human = `
+Nouvel événement centrale incendie
+
+Date/heure : ${ev.ts}
+Type      : ${ev.type}
+Zone      : ${ev.zone || ""}
+Détecteur : ${ev.device || ""}
+
+Description :
+${ev.message || ""}
+`.trim();
+
+    const machine = `
+---BEGIN INCENDIE EVENT (v1)---
+${payloadB64Url}
+---END INCENDIE EVENT---
+`.trim();
+
+    const body = `${human}\n\n${machine}\n`;
+
+    // mailto: ne gère pas les PJ
+    const to = sanitize(els.to.value);
+    const mailto =
+      "mailto:" + encodeURIComponent(to) +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+
+    return mailto;
+  }
+
+  function showPreview(ev, payloadB64Url) {
+    const json = JSON.stringify(ev, null, 2);
+    els.preview.style.display = "block";
+    els.preview.textContent =
+      "JSON:\n" + json + "\n\n" +
+      "BLOC À COPIER-COLLER (pour FM):\n" +
+      "---BEGIN INCENDIE EVENT (v1)---\n" +
+      payloadB64Url + "\n" +
+      "---END INCENDIE EVENT---\n";
+  }
+
+  async function doSend() {
+    els.status.textContent = "";
+    const ev = buildEvent();
+    const payload = base64UrlEncode(JSON.stringify(ev));
+    const mailto = buildMail(ev, payload);
+    // doit rester dans un geste utilisateur (clic) pour éviter blocage
+    window.location.href = mailto;
+    els.status.textContent = "Email préparé (Outlook).";
+  }
+
+  function doPreview() {
+    els.status.textContent = "";
+    const ev = buildEvent();
+    const payload = base64UrlEncode(JSON.stringify(ev));
+    showPreview(ev, payload);
+    els.status.textContent = "Aperçu généré.";
+  }
+
+  els.btnSend.addEventListener("click", () => {
+    try { doSend(); } catch (e) { alert(e?.message || String(e)); }
+  });
+
+  els.btnPreview.addEventListener("click", () => {
+    try { doPreview(); } catch (e) { alert(e?.message || String(e)); }
+  });
+</script>
+</body>
+</html>
