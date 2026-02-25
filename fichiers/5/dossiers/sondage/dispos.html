@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulaire de Disponibilités</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h1 { color: #2c3e50; text-align: center; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #34495e; color: white; }
+    .availability-option { cursor: pointer; padding: 5px; margin: 2px; border-radius: 3px; display: inline-block; width: 25px; height: 25px; }
+    .available { background-color: #2ecc71; color: white; }
+    .unavailable { background-color: #e74c3c; color: white; }
+    .maybe { background-color: #f39c12; color: white; }
+    input[type="radio"] { display: none; }
+    input[type="radio"]:checked + .availability-option { transform: scale(1.2); }
+    .save-btn { background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 10px 0; }
+    .admin-section { background: #fff3cd; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ffc107; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📅 Mes Disponibilités</h1>
+
+    <!-- SECTION ADMIN (organisateur seulement) -->
+    <div class="admin-section">
+      <h3>⚙️ Configuration (à modifier avant envoi)</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+        <div>
+          <label>Date de début:</label>
+          <input type="date" id="startDate" value="2025-11-10" style="width: 100%; padding: 5px;">
+        </div>
+        <div>
+          <label>Date de fin:</label>
+          <input type="date" id="endDate" value="2025-11-23" style="width: 100%; padding: 5px;">
+        </div>
+      </div>
+      <div>
+        <label>Créneaux (séparés par des virgules):</label>
+        <input type="text" id="slotsInput" value="Matin, Après-midi, Soir" style="width: 100%; padding: 5px;">
+      </div>
+      <button onclick="updateConfig()" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Appliquer la configuration</button>
+      <button onclick="generateFinalVersion()" style="background: #9c27b0; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px;">🛠️ Générer version finale</button>
+    </div>
+
+    <!-- SECTION PARTICIPANT -->
+    <div style="text-align: center; margin: 15px 0;">
+      <input type="text" id="userName" placeholder="Votre nom" style="padding: 8px; width: 200px;">
+    </div>
+
+    <div style="text-align: center; margin: 10px 0;">
+      <button onclick="fillAll('available')" style="background: #2ecc71; color: white; border: none; padding: 8px; margin: 2px; border-radius: 3px; cursor: pointer;">✓ Tout disponible</button>
+      <button onclick="fillAll('unavailable')" style="background: #e74c3c; color: white; border: none; padding: 8px; margin: 2px; border-radius: 3px; cursor: pointer;">✗ Tout indisponible</button>
+      <button onclick="fillAll('maybe')" style="background: #f39c12; color: white; border: none; padding: 8px; margin: 2px; border-radius: 3px; cursor: pointer;">? Tout peut-être</button>
+    </div>
+
+    <div id="calendar">
+      <!-- Tableau généré dynamiquement -->
+    </div>
+
+    <div style="text-align: center;">
+      <button class="save-btn" onclick="generateCode()">📋 Générer le code à envoyer</button>
+    </div>
+
+    <div id="codeOutput" style="display: none; background: #e7f3ff; padding: 15px; border-radius: 5px; margin: 10px 0;">
+      <h3>✅ Code à copier :</h3>
+      <p><small>Copiez ce code et envoyez-le à l'organisateur</small></p>
+      <div id="codeText" style="background: white; padding: 10px; border: 1px solid #3498db; border-radius: 3px; font-family: monospace; cursor: pointer; max-height: 200px; overflow-y: auto;" onclick="copyCode()"></div>
+      <button onclick="sendEmail()" style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; margin-top: 10px;">📧 Envoyer par email</button>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Modèle de données (pour l’IA) :
+     *
+     * FormApp.state.config: {
+     *   startDate: "YYYY-MM-DD",
+     *   endDate:   "YYYY-MM-DD",
+     *   slots:     string[]   // ex: ["Matin", "Après-midi", "Soir"]
+     * }
+     *
+     * FormApp.state.userSelections: {
+     *   [dateISO: string]: { [slotLabel: string]: "available" | "unavailable" | "maybe" }
+     * }
+     *
+     * Sortie (code à envoyer) :
+     *   - un snippet auto-exécuté qui utilise l’API du récap :
+     *       participants, availabilityData, updateDisplay()
+     *     et qui stocke les données au format slots-v1.
+     */
+
+    const FormApp = {
+      dayNames: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+
+      state: {
+        config: {
+          startDate: "2025-11-10",
+          endDate: "2025-11-23",
+          slots: ["Matin", "Après-midi", "Soir"]
+        },
+        userSelections: {}
+      },
+
+      // ---------- INIT ----------
+      init() {
+        this.syncConfigInputs();
+        this.renderTable();
+      },
+
+      syncConfigInputs() {
+        const { startDate, endDate, slots } = this.state.config;
+        const startInput = document.getElementById("startDate");
+        const endInput = document.getElementById("endDate");
+        const slotsInput = document.getElementById("slotsInput");
+
+        if (startInput) startInput.value = startDate;
+        if (endInput) endInput.value = endDate;
+        if (slotsInput) slotsInput.value = slots.join(", ");
+      },
+
+      // ---------- CONFIG ADMIN ----------
+      applyConfigFromUI() {
+        const cfg = this.state.config;
+        cfg.startDate = document.getElementById("startDate").value;
+        cfg.endDate = document.getElementById("endDate").value;
+        cfg.slots = document
+          .getElementById("slotsInput")
+          .value.split(",")
+          .map(s => s.trim())
+          .filter(Boolean);
+
+        this.renderTable();
+
+        alert(
+          "Configuration mise à jour ! Les dates sont maintenant du " +
+          this.formatDate(cfg.startDate) +
+          " au " +
+          this.formatDate(cfg.endDate)
+        );
+      },
+
+      formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.getDate() + "/" + (date.getMonth() + 1);
+      },
+
+      // ---------- DATES / TABLE ----------
+      generateDates() {
+        const { startDate, endDate } = this.state.config;
+        const result = [];
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+          result.push(new Date(d));
+        }
+        return result;
+      },
+
+      renderTable() {
+        const dates = this.generateDates();
+        const cfg = this.state.config;
+        const userSelections = this.state.userSelections;
+
+        let html = "<table><thead><tr><th>Date</th><th>Jour</th>";
+        cfg.slots.forEach(slot => {
+          html += "<th>" + slot + "</th>";
+        });
+        html += "</tr></thead><tbody>";
+
+        dates.forEach(date => {
+          const dateStr = date.toISOString().split("T")[0];
+          const day = date.getDate();
+          const month = date.getMonth() + 1;
+          const dayName = this.dayNames[date.getDay()];
+
+          html += "<tr>";
+          html += "<td>" + day + "/" + month + "</td>";
+          html += "<td>" + dayName + "</td>";
+
+          if (!userSelections[dateStr]) {
+            userSelections[dateStr] = {};
+          }
+
+          cfg.slots.forEach(slot => {
+            const current = userSelections[dateStr][slot] || "";
+            html += "<td>";
+            html +=
+              '<label>' +
+              '<input type="radio" name="' + dateStr + "-" + slot + '" value="available" ' +
+              'onchange="setSelection(\'' + dateStr + '\', \'' + slot + '\', \'available\')"' +
+              (current === "available" ? " checked" : "") +
+              '><span class="availability-option available">✓</span></label>';
+
+            html +=
+              '<label>' +
+              '<input type="radio" name="' + dateStr + "-" + slot + '" value="unavailable" ' +
+              'onchange="setSelection(\'' + dateStr + '\', \'' + slot + '\', \'unavailable\')"' +
+              (current === "unavailable" ? " checked" : "") +
+              '><span class="availability-option unavailable">✗</span></label>';
+
+            html +=
+              '<label>' +
+              '<input type="radio" name="' + dateStr + "-" + slot + '" value="maybe" ' +
+              'onchange="setSelection(\'' + dateStr + '\', \'' + slot + '\', \'maybe\')"' +
+              (current === "maybe" ? " checked" : "") +
+              '><span class="availability-option maybe">?</span></label>';
+
+            html += "</td>";
+          });
+
+          html += "</tr>";
+        });
+
+        html += "</tbody></table>";
+        document.getElementById("calendar").innerHTML = html;
+      },
+
+      // ---------- SÉLECTIONS ----------
+      setSelection(dateISO, slotLabel, status) {
+        const userSelections = this.state.userSelections;
+        if (!userSelections[dateISO]) {
+          userSelections[dateISO] = {};
+        }
+        userSelections[dateISO][slotLabel] = status;
+      },
+
+      fillAll(status) {
+        const dates = this.generateDates();
+        const cfg = this.state.config;
+        const userSelections = this.state.userSelections;
+
+        dates.forEach(date => {
+          const dateStr = date.toISOString().split("T")[0];
+          if (!userSelections[dateStr]) {
+            userSelections[dateStr] = {};
+          }
+          cfg.slots.forEach(slot => {
+            userSelections[dateStr][slot] = status;
+          });
+        });
+
+        this.renderTable();
+      },
+
+      // ---------- GÉNÉRATION DU CODE À ENVOYER ----------
+      generateCode() {
+        const userName = document.getElementById("userName").value.trim();
+        if (!userName) {
+          alert("Veuillez entrer votre nom");
+          return;
+        }
+
+        const cfg = this.state.config;
+        const userSelections = this.state.userSelections;
+
+        // 1) Aplatir {date -> slot -> status} vers { "date|slotKey": status }
+        const flatData = {};
+        Object.keys(userSelections).forEach(dateISO => {
+          const slotsForDate = userSelections[dateISO];
+          Object.keys(slotsForDate).forEach(slotLabel => {
+            const slotKey = slotLabel.toLowerCase().replace(/ /g, "-");
+            const key = dateISO + "|" + slotKey;
+            flatData[key] = slotsForDate[slotLabel];
+          });
+        });
+
+        // 2) Décrire la liste de slots
+        const slotsData = cfg.slots.map(label => ({
+          label,
+          key: label.toLowerCase().replace(/ /g, "-")
+        }));
+
+        // 3) Snippet auto-exécuté compatible avec RecapApp (slots-v1)
+        const snippet =
+          '(()=>{' +
+          'const n=' + JSON.stringify(userName) + ';' +
+          "const r=" + JSON.stringify(flatData) + ";" +
+          "const s=" + JSON.stringify(slotsData) + ";" +
+          "if(!participants.includes(n))participants.push(n);" +
+          'availabilityData[n]=Object.assign({__slots:s,__v:"slots-v1"},r);' +
+          'if(typeof updateDisplay==="function")updateDisplay();' +
+          "})();";
+
+        document.getElementById("codeText").textContent = snippet;
+        document.getElementById("codeOutput").style.display = "block";
+      },
+
+      copyCodeToClipboard() {
+        const codeText = document.getElementById("codeText").textContent;
+        navigator.clipboard.writeText(codeText).then(() => {
+          const el = document.getElementById("codeText");
+          const original = el.textContent;
+          el.textContent = "✅ Code copié !";
+          setTimeout(() => { el.textContent = original; }, 2000);
+        });
+      },
+
+      sendCodeByEmail() {
+        const userName = document.getElementById("userName").value.trim();
+        const code = document.getElementById("codeText").textContent;
+        const subject = "Mes disponibilités - " + userName;
+        const body =
+          "Bonjour,\n\nVoici mes disponibilités :\n\n" +
+          code +
+          "\n\nCordialement,\n" + userName;
+
+        window.location.href =
+          "mailto:?subject=" + encodeURIComponent(subject) +
+          "&body=" + encodeURIComponent(body);
+      },
+
+      // ---------- VERSION FINALE (SANS SECTION ADMIN) ----------
+      generateFinalVersionFile() {
+        const cfg = this.state.config;
+
+        const finalHTML = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mes Disponibilités</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h1 { color: #2c3e50; text-align: center; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #34495e; color: white; }
+    .availability-option { cursor: pointer; padding: 5px; margin: 2px; border-radius: 3px; display: inline-block; width: 25px; height: 25px; }
+    .available { background-color: #2ecc71; color: white; }
+    .unavailable { background-color: #e74c3c; color: white; }
+    .maybe { background-color: #f39c12; color: white; }
+    input[type="radio"] { display: none; }
+    input[type="radio"]:checked + .availability-option { transform: scale(1.2); }
+    .save-btn { background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📅 Mes Disponibilités</h1>
+    <p style="text-align: center; color: #666;">Période du ${this.formatDate(cfg.startDate)} au ${this.formatDate(cfg.endDate)}</p>
+
+    <div style="text-align: center; margin: 15px 0;">
+      <input type="text" id="userName" placeholder="Votre nom" style="padding: 8px; width: 200px;">
+    </div>
+
+    <div style="text-align: center; margin: 10px 0;">
+      <button onclick="fillAll('available')" style="background: #2ecc71; color: white; border: none; padding: 8px; margin: 2px; border-radius: 3px; cursor: pointer;">✓ Tout</button>
+      <button onclick="fillAll('unavailable')" style="background: #e74c3c; color: white; border: none; padding: 8px; margin: 2px; border-radius: 3px; cursor: pointer;">✗ Tout</button>
+      <button onclick="fillAll('maybe')" style="background: #f39c12; color: white; border: none; padding: 8px; margin: 2px; border-radius: 3px; cursor: pointer;">? Tout</button>
+    </div>
+
+    <div id="calendar"></div>
+
+    <div style="text-align: center;">
+      <button class="save-btn" onclick="generateCode()">Générer le code</button>
+    </div>
+
+    <div id="codeOutput" style="display: none; background: #e7f3ff; padding: 15px; border-radius: 5px; margin: 10px 0;">
+      <h3>Code à copier:</h3>
+      <div id="codeText" style="background: white; padding: 10px; border: 1px solid #3498db; border-radius: 3px; font-family: monospace; cursor: pointer;" onclick="copyCode()"></div>
+      <button onclick="sendEmail()" style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; margin-top: 10px;">Envoyer par email</button>
+    </div>
+  </div>
+
+  <script>
+    // Même modèle que FormApp mais sans section admin
+    let config = {
+      startDate: ${JSON.stringify(cfg.startDate)},
+      endDate: ${JSON.stringify(cfg.endDate)},
+      slots: ${JSON.stringify(cfg.slots)}
+    };
+    let userSelections = {};
+    const dayNames = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+    function generateDates() {
+      const dates = [];
+      const start = new Date(config.startDate);
+      const end = new Date(config.endDate);
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) dates.push(new Date(d));
+      return dates;
+    }
+
+    function renderTable() {
+      const dates = generateDates();
+      let html = '<table><thead><tr><th>Date</th><th>Jour</th>';
+      config.slots.forEach(slot => { html += '<th>' + slot + '</th>'; });
+      html += '</tr></thead><tbody>';
+
+      dates.forEach(date => {
+        const dateStr = date.toISOString().split('T')[0];
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const dayName = dayNames[date.getDay()];
+
+        html += '<tr>';
+        html += '<td>' + day + '/' + month + '</td>';
+        html += '<td>' + dayName + '</td>';
+
+        if (!userSelections[dateStr]) userSelections[dateStr] = {};
+
+        config.slots.forEach(slot => {
+          const current = userSelections[dateStr][slot] || '';
+          html += '<td>';
+          html += '<label><input type="radio" name="' + dateStr + '-' + slot + '" value="available" onchange="setSelection(\\'' + dateStr + '\\', \\''
+            + slot + '\\', \\'available\\')"' + (current === 'available' ? ' checked' : '') + '><span class="availability-option available">✓</span></label>';
+          html += '<label><input type="radio" name="' + dateStr + '-' + slot + '" value="unavailable" onchange="setSelection(\\'' + dateStr + '\\', \\''
+            + slot + '\\', \\'unavailable\\')"' + (current === 'unavailable' ? ' checked' : '') + '><span class="availability-option unavailable">✗</span></label>';
+          html += '<label><input type="radio" name="' + dateStr + '-' + slot + '" value="maybe" onchange="setSelection(\\'' + dateStr + '\\', \\''
+            + slot + '\\', \\'maybe\\')"' + (current === 'maybe' ? ' checked' : '') + '><span class="availability-option maybe">?</span></label>';
+          html += '</td>';
+        });
+
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      document.getElementById('calendar').innerHTML = html;
+    }
+
+    function setSelection(date, slot, value) {
+      if (!userSelections[date]) userSelections[date] = {};
+      userSelections[date][slot] = value;
+    }
+
+    function fillAll(status) {
+      const dates = generateDates();
+      dates.forEach(date => {
+        const dateStr = date.toISOString().split('T')[0];
+        if (!userSelections[dateStr]) userSelections[dateStr] = {};
+        config.slots.forEach(slot => { userSelections[dateStr][slot] = status; });
+      });
+      renderTable();
+    }
+
+    function generateCode() {
+      const userName = document.getElementById('userName').value.trim();
+      if (!userName) { alert('Veuillez entrer votre nom'); return; }
+
+      const flatData = {};
+      Object.keys(userSelections).forEach(date => {
+        Object.keys(userSelections[date]).forEach(slot => {
+          const key = date + '|' + slot.toLowerCase().replace(/ /g, '-');
+          flatData[key] = userSelections[date][slot];
+        });
+      });
+
+      const slotsData = config.slots.map(s => ({ label: s, key: s.toLowerCase().replace(/ /g, '-') }));
+
+      const code = '(()=>{const n="' + userName + '";const r=' + JSON.stringify(flatData) + ';const s=' + JSON.stringify(slotsData) + ';if(!participants.includes(n))participants.push(n);availabilityData[n]={__slots:s,__v:"slots-v1",...r};if(typeof updateDisplay==="function")updateDisplay();})();';
+
+      document.getElementById('codeText').textContent = code;
+      document.getElementById('codeOutput').style.display = 'block';
+    }
+
+    function copyCode() {
+      const codeText = document.getElementById('codeText').textContent;
+      navigator.clipboard.writeText(codeText).then(() => {
+        const el = document.getElementById('codeText');
+        const original = el.textContent;
+        el.textContent = '✅ Code copié !';
+        setTimeout(() => { el.textContent = original; }, 2000);
+      });
+    }
+
+    function sendEmail() {
+      const userName = document.getElementById('userName').value.trim();
+      const code = document.getElementById('codeText').textContent;
+      const subject = 'Mes disponibilités - ' + userName;
+      const body = 'Bonjour,\\n\\nVoici mes disponibilités :\\n\\n' + code + '\\n\\nCordialement,\\n' + userName;
+      window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    }
+
+    document.addEventListener('DOMContentLoaded', renderTable);
+  <\/script>
+</body>
+</html>`;
+
+        const blob = new Blob([finalHTML], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "formulaire-disponibilites.html";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    };
+
+    // ---------- WRAPPERS GLOBAUX POUR LE HTML ----------
+    function updateConfig() { FormApp.applyConfigFromUI(); }
+    function generateFinalVersion() { FormApp.generateFinalVersionFile(); }
+    function fillAll(status) { FormApp.fillAll(status); }
+    function generateCode() { FormApp.generateCode(); }
+    function copyCode() { FormApp.copyCodeToClipboard(); }
+    function sendEmail() { FormApp.sendCodeByEmail(); }
+    function setSelection(date, slot, value) { FormApp.setSelection(date, slot, value); }
+
+    document.addEventListener("DOMContentLoaded", () => FormApp.init());
+  </script>
+</body>
+</html>
