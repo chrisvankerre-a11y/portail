@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Organigramme</title>
+
+  <link rel="stylesheet" href="../admin/style.css" />
+  <script src="../admin/access.js"></script>
+
+  <style>
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 14px; }
+    .card { border: 1px solid #e5e5e5; border-radius: 10px; padding: 14px; background: #fff; }
+    .card h3 { margin: 0 0 8px 0; font-size: 1.05rem; }
+    .card p { margin: 0 0 12px 0; opacity: 0.85; }
+    .hidden { display: none !important; }
+    .muted { opacity: 0.7; }
+  </style>
+</head>
+
+<body onload="protectPagePerm('2')">
+  <h1>Organigramme</h1>
+
+  <ul>
+    <li><a href="../../Portail.html">← Retour au portail</a></li>
+  </ul>
+
+  <hr>
+
+  <div id="accessNote" class="muted"></div>
+
+  <div class="cards">
+    <div id="card1" class="card hidden">
+      <h3>Document 1</h3>
+      <p>Ouvrir l'Organigramme (complet)</p>
+      <button type="button" onclick="window.open('dossiers/org1.html', 'noopener')">Ouvrir</button>
+    </div>
+
+    <div id="card2" class="card hidden">
+      <h3>Document 2</h3>
+      <p>Ouvrir l'Organigramme</p>
+      <button type="button" onclick="window.open('dossiers/org2.html', '_blank', 'noopener')">Ouvrir</button>
+    </div>
+
+    <div id="card3" class="card hidden">
+      <h3>Document 3</h3>
+      <p>Ouvrir le document PDF.</p>
+      <button type="button" onclick="window.open('dossiers/3.pdf', '_blank', 'noopener')">Ouvrir 3.pdf</button>
+    </div>
+  </div>
+
+  <script>
+    // Règle demandée:
+    // - code a => accès uniquement à 1.pdf
+    // - code e => accès à 1.pdf, 2.pdf, 3.pdf
+    // Sans lire le "code" directement: on s'appuie sur les permissions calculées par access.js.
+    // Avec tes règles globales: a = pages 1,2,3 et e = tout.
+    // Donc:
+    // - doc1 => perm "2" (a et e l'ont)
+    // - doc2 & doc3 => une perm hors {1,2,3}, par ex "4" (e l'a, a ne l'a pas)
+
+    function _hasPerm(p) {
+      try {
+        if (typeof window.hasPerm === 'function') return !!window.hasPerm(String(p));
+        if (typeof window.hasPermission === 'function') return !!window.hasPermission(String(p));
+        if (typeof window.checkPerm === 'function') return !!window.checkPerm(String(p));
+        if (typeof window.userHasPerm === 'function') return !!window.userHasPerm(String(p));
+      } catch (_) {}
+
+      const candidates = [
+        window.perms,
+        window.permissions,
+        window.userPerms,
+        window.currentPerms,
+        window.allowedPerms,
+        window.ACCESS_PERMS
+      ];
+      for (const c of candidates) {
+        if (!c) continue;
+        if (Array.isArray(c)) return c.map(String).includes(String(p));
+        if (typeof c === 'string') {
+          const parts = c.split(/[^0-9]+/).filter(Boolean);
+          return parts.includes(String(p));
+        }
+        if (typeof c === 'object') {
+          if (Object.prototype.hasOwnProperty.call(c, String(p))) return !!c[String(p)];
+        }
+      }
+      return false;
+    }
+
+    function applyCat2Access() {
+      const c1 = document.getElementById('card1');
+      const c2 = document.getElementById('card2');
+      const c3 = document.getElementById('card3');
+      const note = document.getElementById('accessNote');
+
+      c1.classList.add('hidden');
+      c2.classList.add('hidden');
+      c3.classList.add('hidden');
+
+      const canDoc1 = _hasPerm('2');
+      const canDocs23 = _hasPerm('4') || _hasPerm('5') || _hasPerm('6');
+
+      if (canDoc1) c1.classList.remove('hidden');
+      if (canDocs23) {
+        c2.classList.remove('hidden');
+        c3.classList.remove('hidden');
+      }
+
+      if (!canDoc1 && !canDocs23) {
+        note.textContent = "Accès insuffisant pour afficher les documents de cette page.";
+      } else {
+        note.textContent = '';
+      }
+    }
+
+    window.addEventListener('load', applyCat2Access);
+    window.applyCat2Access = applyCat2Access;
+  </script>
+</body>
+</html>
