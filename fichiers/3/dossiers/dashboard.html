@@ -1,0 +1,3466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard DG - Version Unifiée</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --accountable-color: #9b59b6;
+            --project-color: #e67e22;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255,255,255,0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Page d'accueil */
+        .welcome-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .welcome-section p {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin-bottom: 40px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .action-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .action-card p {
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .action-card.import {
+            border-top-color: var(--success-color);
+        }
+        
+        .action-card.export {
+            border-top-color: var(--warning-color);
+        }
+        
+        .action-card.danger {
+            border-top-color: var(--danger-color);
+        }
+        
+        /* Responsables List */
+        .responsables-list, .accountables-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .responsable-card, .accountable-card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .accountable-card {
+            border-left: 4px solid var(--accountable-color);
+        }
+        
+        .responsable-card:hover, .accountable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .responsable-name, .accountable-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .accountable-name {
+            color: var(--accountable-color);
+        }
+        
+        .responsable-role, .accountable-role {
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+        
+        .task-count {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        
+        .accountable-task-count {
+            background-color: var(--accountable-color);
+        }
+        
+        .project-count {
+            display: inline-block;
+            background-color: var(--project-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        
+        /* Toutes les tâches - Style spécifique */
+        .all-tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .all-task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .all-task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .task-name {
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .task-name:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .responsable-link {
+            cursor: pointer;
+            color: var(--secondary-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .accountable-link {
+            cursor: pointer;
+            color: var(--accountable-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background-color: rgba(155, 89, 182, 0.1);
+            margin-left: 10px;
+        }
+        
+        .responsable-link:hover {
+            color: white;
+            background-color: var(--secondary-color);
+        }
+        
+        .accountable-link:hover {
+            color: white;
+            background-color: var(--accountable-color);
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .badge-responsable {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .badge-accountable {
+            background-color: var(--accountable-color);
+            color: white;
+        }
+        
+        /* Task Details */
+        .task-details {
+            display: block;
+        }
+        
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        
+        .detail-section h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            padding: 8px 12px;
+            background-color: var(--light-color);
+            border-radius: 4px;
+            min-height: 40px;
+        }
+        
+        .detail-value.editable {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .detail-value.editable:hover {
+            background-color: #e0e6ea;
+        }
+        
+        .detail-value textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        
+        /* Styles pour les risques */
+        .risk-item {
+            background-color: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .risk-title {
+            font-weight: 600;
+            color: var(--danger-color);
+        }
+        
+        .remove-risk {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .add-risk-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .file-import {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .file-import p {
+            margin-bottom: 10px;
+        }
+        
+        .import-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-accountable {
+            background-color: var(--accountable-color);
+            color: white;
+        }
+        
+        .btn-accountable:hover {
+            background-color: #8e44ad;
+        }
+        
+        .btn-project {
+            background-color: var(--project-color);
+            color: white;
+        }
+        
+        .btn-project:hover {
+            background-color: #d35400;
+        }
+
+        /* Détails projet */
+        .project-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid var(--project-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .project-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--project-color);
+            padding-bottom: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .deadlines-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+        }
+
+        .deadlines-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .deadline-item {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 3px solid var(--project-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deadline-info {
+            flex: 1;
+        }
+
+        .delete-deadline-btn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .delete-deadline-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .add-deadline-btn {
+            background-color: var(--project-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .add-deadline-btn:hover {
+            background-color: #d35400;
+        }
+
+        /* Styles pour les selects */
+        .team-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .team-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .team-select:hover {
+            border-color: #bbb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .responsables-list, .accountables-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .import-actions {
+                flex-direction: column;
+            }
+            
+            .all-task-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .risk-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+.risk-item {
+    background-color: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.risk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.risk-title {
+    font-weight: 600;
+    color: var(--danger-color);
+}
+
+.remove-risk {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.add-risk-btn {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Menu -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>Dashboard DG</h1>
+            </div>
+            <ul class="menu">
+                <li class="menu-item active" data-target="accueil">Accueil</li>
+                <li class="menu-item" data-target="responsables">Liste des chefs d'opérations</li>
+                <li class="menu-item" data-target="accountables">Liste des accountables</li>
+                <li class="menu-item" data-target="toutes-taches">Toutes les tâches</li>
+                <li class="menu-item" data-target="projets">Liste des projets</li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Page d'Accueil -->
+            <div id="accueil" class="content-section">
+                <div class="welcome-section">
+                    <h1>Dashboard Direction Générale</h1>
+                    <p>Gérez vos chefs d'opérations, accountables, tâches et projets en toute simplicité</p>
+                </div>
+
+                <div class="actions-grid">
+                    <!-- Import Section -->
+                    <div class="action-card import">
+                        <h3>📥 Importer des données</h3>
+                        <p>Importez vos données depuis des fichiers Excel</p>
+                        <div class="buttons">
+                            <button class="btn btn-success" id="importResponsablesHome">Importer chefs d'opérations</button>
+                            <button class="btn btn-success" id="importAccountablesHome">Importer accountables</button>
+                            <button class="btn btn-success" id="importTachesHome">Importer tâches</button>
+                            <button class="btn btn-success" id="importProjetsHome">Importer projets</button>
+                        </div>
+                    </div>
+
+                    <!-- Export Section -->
+                    <div class="action-card export">
+                        <h3>📤 Exporter des données</h3>
+                        <p>Exportez vos données vers Excel pour sauvegarde ou partage</p>
+                        <div class="buttons">
+                            <button class="btn btn-primary" id="exportResponsablesHome">Exporter chefs d'opérations</button>
+                            <button class="btn btn-accountable" id="exportAccountablesHome">Exporter accountables</button>
+                            <button class="btn btn-primary" id="exportTachesHome">Exporter tâches</button>
+                            <button class="btn btn-project" id="exportProjetsHome">Exporter projets</button>
+                        </div>
+                    </div>
+
+                    <!-- Backup Section -->
+                    <div class="action-card">
+                        <h3>💾 Sauvegarde complète</h3>
+                        <p>Créez un fichier HTML autonome avec toutes vos données</p>
+                        <div class="buttons">
+                            <button class="btn btn-secondary" id="exportHTMLWithData">Exporter HTML</button>
+                            <button class="btn btn-secondary" id="importHTMLData">Importer HTML</button>
+	                    <button class="btn btn-secondary" id="exportStaticHTML">Exporter HTML statique</button>
+  			</div>
+                    </div>
+
+                    <!-- Administration Section -->
+                    <div class="action-card danger">
+                        <h3>⚙️ Administration</h3>
+                        <p>Actions de gestion avancées</p>
+                        <div class="buttons">
+                            <button class="btn btn-danger" id="resetDataHome">Réinitialiser</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zones d'import cachées -->
+                <div class="file-import" style="display: none; margin-top: 30px;" id="responsablesImportArea">
+                    <h3>Importer les chefs d'opérations</h3>
+                    <p>Format attendu : Colonnes [ID, Nom, Rôle]</p>
+                    <input type="file" id="responsablesExcelFile" accept=".xlsx, .xls">
+                    <div class="import-actions">
+                        <button class="btn btn-success" id="uploadResponsablesExcel">Importer les données</button>
+                        <button class="btn btn-secondary" id="cancelResponsablesImport">Annuler</button>
+                    </div>
+                </div>
+
+                <div class="file-import" style="display: none; margin-top: 30px;" id="accountablesImportArea">
+                    <h3>Importer les accountables</h3>
+                    <p>Format attendu : Colonnes [ID, Nom, Rôle]</p>
+                    <input type="file" id="accountablesExcelFile" accept=".xlsx, .xls">
+                    <div class="import-actions">
+                        <button class="btn btn-success" id="uploadAccountablesExcel">Importer les données</button>
+                        <button class="btn btn-secondary" id="cancelAccountablesImport">Annuler</button>
+                    </div>
+                </div>
+
+                <div class="file-import" style="display: none; margin-top: 30px;" id="tachesImportArea">
+                    <h3>Importer les tâches</h3>
+                    <p>Format attendu : Colonnes [ID, Responsable, Accountable, Titre, Description]</p>
+                    <input type="file" id="tachesExcelFile" accept=".xlsx, .xls">
+                    <div class="import-actions">
+                        <button class="btn btn-success" id="uploadTachesExcel">Importer les données</button>
+                        <button class="btn btn-secondary" id="cancelTachesImport">Annuler</button>
+                    </div>
+                </div>
+
+                <div class="file-import" style="display: none; margin-top: 30px;" id="projetsImportArea">
+                    <h3>Importer les projets</h3>
+                    <p>Format attendu : Colonnes [ID, Responsable, Accountable, Titre, Description, Date Début, Date Fin]</p>
+                    <input type="file" id="projetsExcelFile" accept=".xlsx, .xls">
+                    <div class="import-actions">
+                        <button class="btn btn-success" id="uploadProjetsExcel">Importer les données</button>
+                        <button class="btn btn-secondary" id="cancelProjetsImport">Annuler</button>
+                    </div>
+                </div>
+
+			<div style="margin-top:20px;padding:12px;border:1px solid #facc15;border-radius:8px;background:#fffbea;color:#92400e;display:flex;align-items:center;gap:8px;font:15px/1.4 system-ui;">
+  <span style="font-size:20px;">⚠️</span>
+  <span>Après modification : <strong>sauvegardez vos données (en bas à gauche)</strong> puis fermez la page.</span>
+</div>
+
+			
+			</div>
+            
+            <!-- Responsables Section -->
+            <div id="responsables" class="content-section" style="display: none;">
+                <div class="header">
+                    <h2>Liste des chefs d'opérations</h2>
+                    <button class="btn btn-primary" id="exportResponsables">Exporter</button>
+                </div>
+                
+                <div class="card">
+                    <div class="responsables-list" id="responsablesContainer">
+                        <!-- Les chefs d'opérations seront chargés ici dynamiquement -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Accountables Section -->
+            <div id="accountables" class="content-section" style="display: none;">
+                <div class="header">
+                    <h2>Liste des accountables</h2>
+                    <button class="btn btn-accountable" id="exportAccountables">Exporter</button>
+                </div>
+                
+                <div class="card">
+                    <div class="accountables-list" id="accountablesContainer">
+                        <!-- Les accountables seront chargés ici dynamiquement -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Toutes les Tâches Section -->
+            <div id="toutes-taches" class="content-section" style="display: none;">
+                <div class="header">
+                    <h2 id="tachesTitle">Toutes les tâches</h2>
+                    <button class="btn btn-primary" id="exportTaches">Exporter</button>
+                </div>
+                
+                <div class="card">
+                    <div class="all-tasks-list" id="allTasksContainer">
+                        <!-- Toutes les tâches seront chargées ici dynamiquement -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Détails de la tâche -->
+            <div id="taskDetails" class="content-section" style="display: none;">
+                <div class="header">
+                    <h2 id="taskDetailsTitle">Détails de la tâche</h2>
+                    <div>
+                        <button class="btn btn-danger" id="deleteTask">Effacer la tâche</button>
+                        <button class="btn btn-secondary" id="backToPrevious">Retour</button>
+                        <button class="btn btn-success" id="saveTask">Enregistrer</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="task-details" id="taskDetailsContent">
+                        <!-- Les détails de la tâche seront chargés ici dynamiquement -->
+                    </div>
+                    
+                    <div class="file-import">
+                        <p>Mettre à jour cette tâche via fichier Excel</p>
+                        <input type="file" id="taskExcelFile" accept=".xlsx, .xls">
+                        <div class="import-actions">
+                            <button class="btn btn-primary" id="uploadTaskExcel">Importer</button>
+                            <button class="btn btn-secondary" id="exportTaskExcel">Exporter cette tâche</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projets Section -->
+            <div id="projets" class="content-section" style="display: none;">
+                <div class="header">
+                    <h2 id="projetsTitle">Tous les projets</h2>
+                    <button class="btn btn-project" id="exportProjets">Exporter</button>
+                </div>
+                
+                <div class="card">
+                    <div class="all-tasks-list" id="projetsContainer">
+                        <!-- Les projets seront chargés ici dynamiquement -->
+                    </div>
+                    <div id="projetDetailsContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+// Token utilisé uniquement pour la sauvegarde
+let GITHUB_TOKEN = localStorage.getItem("gh_token") || null;
+
+function askTokenIfNeeded() {
+  if (GITHUB_TOKEN) return true;
+  const t = prompt("Colle ton token GitHub (scope: gist)");
+  if (!t) return false;
+  GITHUB_TOKEN = t.trim();
+  localStorage.setItem("gh_token", GITHUB_TOKEN);
+  return true;
+}
+
+        // Données
+        let responsablesData = [];
+        let accountablesData = [];
+        let tasksData = {};
+        let projetsData = {};
+        let deadlinesData = {};
+        let currentResponsableId = null;
+        let currentAccountableId = null;
+        let currentTaskId = null;
+        let previousSection = 'accueil';
+
+        // Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initialisation du dashboard...');
+            chargerDonnees();
+            initialiserNavigation();
+            initialiserEvenements();
+            repairExistingData();
+            console.log('Dashboard initialisé avec succès');
+        });
+
+        function initialiserNavigation() {
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    console.log('Navigation vers:', target);
+                    
+                    document.getElementById('exportStaticHTML').addEventListener('click', exporterHTMLStatique);
+
+      		    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    document.getElementById(target).style.display = 'block';
+                    
+                    if (target === 'responsables') {
+                        afficherResponsables();
+                    } else if (target === 'accountables') {
+                        afficherAccountables();
+                    } else if (target === 'toutes-taches') {
+                        afficherToutesTaches();
+                    } else if (target === 'projets') {
+                        afficherProjets();
+                    }
+                });
+            });
+        }
+
+        function initialiserEvenements() {
+            console.log('Initialisation des événements...');
+            
+            // Boutons d'import (montrer les zones d'import)
+            document.getElementById('importResponsablesHome').addEventListener('click', () => montrerImport('responsables'));
+            document.getElementById('importAccountablesHome').addEventListener('click', () => montrerImport('accountables'));
+            document.getElementById('importTachesHome').addEventListener('click', () => montrerImport('taches'));
+            document.getElementById('importProjetsHome').addEventListener('click', () => montrerImport('projets'));
+
+            // Boutons d'upload (importer les données)
+            document.getElementById('uploadResponsablesExcel').addEventListener('click', importerResponsables);
+            document.getElementById('uploadAccountablesExcel').addEventListener('click', importerAccountables);
+            document.getElementById('uploadTachesExcel').addEventListener('click', importerTaches);
+            document.getElementById('uploadProjetsExcel').addEventListener('click', importerProjets);
+
+            // BOUTONS D'EXPORT CORRIGÉS
+            document.getElementById('exportResponsablesHome').addEventListener('click', exporterResponsables);
+            document.getElementById('exportAccountablesHome').addEventListener('click', exporterAccountables);
+            document.getElementById('exportTachesHome').addEventListener('click', exporterTaches);
+            document.getElementById('exportProjetsHome').addEventListener('click', exporterProjets);
+
+            // Boutons dans les sections
+            document.getElementById('exportResponsables').addEventListener('click', exporterResponsables);
+            document.getElementById('exportAccountables').addEventListener('click', exporterAccountables);
+            document.getElementById('exportTaches').addEventListener('click', exporterTaches);
+            document.getElementById('exportProjets').addEventListener('click', exporterProjets);
+
+            // Annulations
+            document.getElementById('cancelResponsablesImport').addEventListener('click', cacherImports);
+            document.getElementById('cancelAccountablesImport').addEventListener('click', cacherImports);
+            document.getElementById('cancelTachesImport').addEventListener('click', cacherImports);
+            document.getElementById('cancelProjetsImport').addEventListener('click', cacherImports);
+
+            // FONCTION RÉINITIALISER CORRIGÉE
+            document.getElementById('resetDataHome').addEventListener('click', reinitialiserDonnees);
+            
+            // EXPORT HTML FONCTIONNEL
+            document.getElementById('exportHTMLWithData').addEventListener('click', exporterHTML);
+            document.getElementById('importHTMLData').addEventListener('click', importerHTML);
+
+            // Événements pour les détails de tâche
+            document.getElementById('backToPrevious').addEventListener('click', function() {
+                showSection(previousSection);
+            });
+            document.getElementById('saveTask').addEventListener('click', saveTaskDetails);
+            document.getElementById('deleteTask').addEventListener('click', deleteCurrentTask);
+            document.getElementById('uploadTaskExcel').addEventListener('click', importTaskFromExcel);
+            document.getElementById('exportTaskExcel').addEventListener('click', exportCurrentTaskToExcel);
+
+            console.log('Événements initialisés');
+        }
+
+        function montrerImport(type) {
+            cacherImports();
+            document.getElementById(`${type}ImportArea`).style.display = 'block';
+        }
+
+        function cacherImports() {
+            document.getElementById('responsablesImportArea').style.display = 'none';
+            document.getElementById('accountablesImportArea').style.display = 'none';
+            document.getElementById('tachesImportArea').style.display = 'none';
+            document.getElementById('projetsImportArea').style.display = 'none';
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-target') === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            if (sectionId !== 'taskDetails') {
+                previousSection = sectionId;
+            }
+        }
+
+        // FONCTIONS D'EXPORT
+        function exporterResponsables() {
+            console.log('Export des chefs d\'opérations...');
+            try {
+                if (!responsablesData || responsablesData.length === 0) {
+                    alert('Aucun responsable à exporter.');
+                    return;
+                }
+
+                const data = [['ID', 'Nom', 'Rôle']];
+                
+                responsablesData.forEach(resp => {
+                    data.push([
+                        resp.id || '',
+                        resp.name || '',
+                        resp.role || ''
+                    ]);
+                });
+                
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Responsables");
+                XLSX.writeFile(wb, "responsables_export.xlsx");
+                alert(`${responsablesData.length} chefs d opérations exportés avec succès !`);
+            } catch (error) {
+                console.error('Erreur export chefs d\'opérations:', error);
+                alert('Erreur lors de l\'export des chefs d\'opérations: ' + error.message);
+            }
+        }
+
+        function exporterAccountables() {
+            console.log('Export des accountables...');
+            try {
+                if (!accountablesData || accountablesData.length === 0) {
+                    alert('Aucun accountable à exporter.');
+                    return;
+                }
+
+                const data = [['ID', 'Nom', 'Rôle']];
+                
+                accountablesData.forEach(acc => {
+                    data.push([
+                        acc.id || '',
+                        acc.name || '',
+                        acc.role || ''
+                    ]);
+                });
+                
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Accountables");
+                XLSX.writeFile(wb, "accountables_export.xlsx");
+                alert(`${accountablesData.length} accountables exportés avec succès !`);
+            } catch (error) {
+                console.error('Erreur export accountables:', error);
+                alert('Erreur lors de l\'export des accountables: ' + error.message);
+            }
+        }
+
+        function exporterTaches() {
+            console.log('Export des tâches...');
+            try {
+                const allTasks = Object.values(tasksData).flat();
+                if (!allTasks || allTasks.length === 0) {
+                    alert('Aucune tâche à exporter.');
+                    return;
+                }
+
+                const data = [['ID', 'Responsable', 'Accountable', 'Titre', 'Description']];
+                
+                allTasks.forEach(task => {
+                    const responsable = responsablesData.find(r => r.id === task.responsableId);
+                    const accountable = accountablesData.find(a => a.id === task.accountableId);
+                    
+                    data.push([
+                        task.id || '',
+                        responsable ? responsable.name : 'Inconnu',
+                        accountable ? accountable.name : 'Inconnu',
+                        task.title || '',
+                        task.description || ''
+                    ]);
+                });
+                
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Tâches");
+                XLSX.writeFile(wb, "taches_export.xlsx");
+                alert(`${allTasks.length} tâches exportées avec succès !`);
+            } catch (error) {
+                console.error('Erreur export tâches:', error);
+                alert('Erreur lors de l\'export des tâches: ' + error.message);
+            }
+        }
+
+        function exporterProjets() {
+            console.log('Export des projets...');
+            try {
+                const allProjets = Object.values(projetsData).flat();
+                if (!allProjets || allProjets.length === 0) {
+                    alert('Aucun projet à exporter.');
+                    return;
+                }
+
+                const data = [['ID', 'Responsable', 'Accountable', 'Titre', 'Description', 'Date Début', 'Date Fin']];
+                
+                allProjets.forEach(projet => {
+                    const responsable = responsablesData.find(r => r.id === projet.responsableId);
+                    const accountable = accountablesData.find(a => a.id === projet.accountableId);
+                    
+                    data.push([
+                        projet.id || '',
+                        responsable ? responsable.name : 'Inconnu',
+                        accountable ? accountable.name : 'Inconnu',
+                        projet.title || '',
+                        projet.description || '',
+                        formaterDatePourExport(projet.startDate),
+                        formaterDatePourExport(projet.endDate)
+                    ]);
+                });
+                
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Projets");
+                XLSX.writeFile(wb, "projets_export.xlsx");
+                alert(`${allProjets.length} projets exportés avec succès !`);
+            } catch (error) {
+                console.error('Erreur export projets:', error);
+                alert('Erreur lors de l\'export des projets: ' + error.message);
+            }
+        }
+
+        function exporterHTML() {
+    console.log('Export des données...');
+    
+    // Préparer les données
+    const exportData = {
+        responsables: responsablesData,
+        accountables: accountablesData,
+        tasks: tasksData,
+        projets: projetsData,
+        deadlines: deadlinesData,
+        exportDate: new Date().toISOString()
+    };
+    
+    // Créer un contenu avec SEULEMENT les données JSON
+    const content = JSON.stringify(exportData, null, 2);
+
+    // Télécharger comme fichier .json
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dashboard_export_${new Date().getTime()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert('✅ Export réussi ! Fichier JSON téléchargé.');
+}
+
+
+function importerHTML() {
+    // Créer un input file pour sélectionner le fichier JSON
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json,.txt';
+    
+    fileInput.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const jsonData = e.target.result;
+                const importedData = JSON.parse(jsonData);
+                
+                // Valider la structure
+                if (!importedData.responsables || !importedData.accountables || !importedData.tasks || !importedData.projets) {
+                    throw new Error('Structure de données invalide');
+                }
+                
+                // Afficher un résumé
+                const summary = `
+📊 DONNÉES À IMPORTER :
+
+👥 Chefs d\'opérations: ${importedData.responsables.length}
+👤 Accountables: ${importedData.accountables.length}  
+✅ Tâches: ${Object.values(importedData.tasks).flat().length}
+📋 Projets: ${Object.values(importedData.projets).flat().length}
+
+⚠️  CELA REMPLACERA TOUTES VOS DONNÉES ACTUELLES !
+
+Confirmer l'import ?`;
+                
+                if (confirm(summary)) {
+                    // Remplacer les données
+                    responsablesData = importedData.responsables;
+                    accountablesData = importedData.accountables; 
+                    tasksData = importedData.tasks;
+                    projetsData = importedData.projets;
+                    deadlinesData = importedData.deadlines || {};
+                    
+                    // Mettre à jour l'application
+                    mettreAJourCompteurs();
+                    sauvegarderDonnees();
+                    afficherResponsables();
+                    afficherAccountables(); 
+                    afficherToutesTaches();
+                    afficherProjets();
+                    showSection('accueil');
+                    
+                    alert('✅ Import réussi ! Toutes les données ont été restaurées.');
+                }
+                
+            } catch (error) {
+                alert('❌ ERREUR : Fichier JSON invalide.\n\nVérifiez que vous avez sélectionné le bon fichier d\'export.');
+                console.error('Erreur import:', error);
+            }
+        };
+        
+        reader.readAsText(file);
+    };
+    
+    fileInput.click();
+}
+
+
+        function reinitialiserDonnees() {
+            console.log('Réinitialisation des données...');
+            if (confirm('Êtes-vous ABSOLUMENT sûr de vouloir réinitialiser TOUTES les données ?\n\nCette action supprimera définitivement tous les chefs d\'opérations, accountables, tâches et projets.\n\nCette action est IRREVERSIBLE !')) {
+                try {
+                    // Vérifier que localStorage est accessible
+                    if (typeof(Storage) === "undefined") {
+                        alert("Erreur: Le stockage local n'est pas supporté par ce navigateur.");
+                        return;
+                    }
+
+                    // Supprimer les données du localStorage
+                    localStorage.removeItem('dashboardData');
+                    console.log('Données supprimées du localStorage');
+
+                    // Réinitialiser toutes les variables
+                    responsablesData = [];
+                    accountablesData = [];
+                    tasksData = {};
+                    projetsData = {};
+                    deadlinesData = {};
+                    currentResponsableId = null;
+                    currentAccountableId = null;
+                    currentTaskId = null;
+
+                    // Sauvegarder l'état vide
+                    sauvegarderDonnees();
+                    console.log('Données sauvegardées après réinitialisation');
+
+                    // Réafficher toutes les sections
+                    afficherResponsables();
+                    afficherAccountables();
+                    afficherToutesTaches();
+                    afficherProjets();
+                    
+                    // Retourner à l'accueil
+                    showSection('accueil');
+                    
+                    alert('✅ Toutes les données ont été réinitialisées avec succès !');
+                    
+                } catch (error) {
+                    console.error('Erreur lors de la réinitialisation:', error);
+                    alert('❌ Erreur lors de la réinitialisation: ' + error.message);
+                }
+            }
+        }
+
+        // FONCTIONS D'AFFICHAGE
+        function afficherResponsables() {
+            const container = document.getElementById('responsablesContainer');
+            container.innerHTML = '';
+            
+            if (responsablesData.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucun responsable trouvé.</p>';
+                return;
+            }
+            
+            responsablesData.forEach(responsable => {
+                const card = document.createElement('div');
+                card.className = 'responsable-card';
+                card.innerHTML = `
+                    <div class="responsable-name">${responsable.name}</div>
+                    <div class="responsable-role">${responsable.role}</div>
+                    <div>
+                        <span class="task-count" data-id="${responsable.id}" data-type="taches">${responsable.tasksCount} tâche(s)</span>
+                        <span class="project-count" data-id="${responsable.id}" data-type="projets">${responsable.projectsCount} projet(s)</span>
+                    </div>
+                `;
+                
+                // Clic sur la carte -> afficher les tâches (comportement par défaut)
+                card.addEventListener('click', function() {
+                    afficherTachesResponsable(responsable.id, responsable.name);
+                });
+                
+                // Clic sur le compteur de tâches -> afficher les tâches
+                const taskCount = card.querySelector('.task-count');
+                taskCount.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    afficherTachesResponsable(responsable.id, responsable.name);
+                });
+                
+                // Clic sur le compteur de projets -> afficher les projets
+                const projectCount = card.querySelector('.project-count');
+                projectCount.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    afficherProjetsResponsable(responsable.id, responsable.name);
+                });
+                
+                container.appendChild(card);
+            });
+        }
+
+        function afficherAccountables() {
+            const container = document.getElementById('accountablesContainer');
+            container.innerHTML = '';
+            
+            if (accountablesData.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucun accountable trouvé.</p>';
+                return;
+            }
+            
+            accountablesData.forEach(accountable => {
+                const card = document.createElement('div');
+                card.className = 'accountable-card';
+                card.innerHTML = `
+                    <div class="accountable-name">${accountable.name}</div>
+                    <div class="accountable-role">${accountable.role}</div>
+                    <div>
+                        <span class="task-count accountable-task-count" data-id="${accountable.id}" data-type="taches">${accountable.tasksCount} tâche(s)</span>
+                        <span class="project-count" data-id="${accountable.id}" data-type="projets">${accountable.projectsCount} projet(s)</span>
+                    </div>
+                `;
+                
+                // Clic sur la carte -> afficher les tâches (comportement par défaut)
+                card.addEventListener('click', function() {
+                    afficherTachesAccountable(accountable.id, accountable.name);
+                });
+                
+                // Clic sur le compteur de tâches -> afficher les tâches
+                const taskCount = card.querySelector('.task-count');
+                taskCount.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    afficherTachesAccountable(accountable.id, accountable.name);
+                });
+                
+                // Clic sur le compteur de projets -> afficher les projets
+                const projectCount = card.querySelector('.project-count');
+                projectCount.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    afficherProjetsAccountable(accountable.id, accountable.name);
+                });
+                
+                container.appendChild(card);
+            });
+        }
+
+        function afficherToutesTaches() {
+            const container = document.getElementById('allTasksContainer');
+            const titre = document.getElementById('tachesTitle');
+            titre.textContent = 'Toutes les tâches';
+            container.innerHTML = '';
+            
+            const toutesTaches = Object.values(tasksData).flat();
+            
+            // TRIER LES TÂCHES PAR ORDRE ALPHABÉTIQUE
+            toutesTaches.sort((a, b) => {
+                const titreA = (a.title || '').toLowerCase();
+                const titreB = (b.title || '').toLowerCase();
+                return titreA.localeCompare(titreB);
+            });
+            
+            afficherListeTaches(toutesTaches, container);
+        }
+
+        function afficherTachesResponsable(responsableId, responsableName) {
+            const container = document.getElementById('allTasksContainer');
+            const titre = document.getElementById('tachesTitle');
+            titre.textContent = `Tâches du responsable: ${responsableName}`;
+            container.innerHTML = '';
+            
+            const taches = tasksData[responsableId] || [];
+            
+            // TRIER LES TÂCHES PAR ORDRE ALPHABÉTIQUE
+            taches.sort((a, b) => {
+                const titreA = (a.title || '').toLowerCase();
+                const titreB = (b.title || '').toLowerCase();
+                return titreA.localeCompare(titreB);
+            });
+            
+            afficherListeTaches(taches, container);
+            
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('.menu-item[data-target="toutes-taches"]').classList.add('active');
+            document.querySelectorAll('.content-section').forEach(section => section.style.display = 'none');
+            document.getElementById('toutes-taches').style.display = 'block';
+        }
+
+        function afficherTachesAccountable(accountableId, accountableName) {
+            const container = document.getElementById('allTasksContainer');
+            const titre = document.getElementById('tachesTitle');
+            titre.textContent = `Tâches de l'accountable: ${accountableName}`;
+            container.innerHTML = '';
+            
+            let tachesAccountable = [];
+            Object.values(tasksData).forEach(taches => {
+                taches.forEach(tache => {
+                    if (tache.accountableId === accountableId) {
+                        tachesAccountable.push(tache);
+                    }
+                });
+            });
+            
+            // TRIER LES TÂCHES PAR ORDRE ALPHABÉTIQUE
+            tachesAccountable.sort((a, b) => {
+                const titreA = (a.title || '').toLowerCase();
+                const titreB = (b.title || '').toLowerCase();
+                return titreA.localeCompare(titreB);
+            });
+            
+            afficherListeTaches(tachesAccountable, container);
+            
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('.menu-item[data-target="toutes-taches"]').classList.add('active');
+            document.querySelectorAll('.content-section').forEach(section => section.style.display = 'none');
+            document.getElementById('toutes-taches').style.display = 'block';
+        }
+
+        function afficherProjets() {
+            const container = document.getElementById('projetsContainer');
+            const titre = document.getElementById('projetsTitle');
+            titre.textContent = 'Tous les projets';
+            container.innerHTML = '';
+            
+            const tousProjets = Object.values(projetsData).flat();
+            
+            // TRIER LES PROJETS PAR ORDRE ALPHABÉTIQUE
+            tousProjets.sort((a, b) => {
+                const titreA = (a.title || '').toLowerCase();
+                const titreB = (b.title || '').toLowerCase();
+                return titreA.localeCompare(titreB);
+            });
+            
+            if (tousProjets.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucun projet trouvé.</p>';
+                return;
+            }
+            
+            afficherListeProjets(tousProjets, container);
+        }
+
+        function afficherProjetsResponsable(responsableId, responsableName) {
+            const container = document.getElementById('projetsContainer');
+            const titre = document.getElementById('projetsTitle');
+            titre.textContent = `Projets du responsable: ${responsableName}`;
+            container.innerHTML = '';
+            
+            const projets = projetsData[responsableId] || [];
+            
+            // TRIER LES PROJETS PAR ORDRE ALPHABÉTIQUE
+            projets.sort((a, b) => {
+                const titreA = (a.title || '').toLowerCase();
+                const titreB = (b.title || '').toLowerCase();
+                return titreA.localeCompare(titreB);
+            });
+            
+            afficherListeProjets(projets, container);
+            
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('.menu-item[data-target="projets"]').classList.add('active');
+            document.querySelectorAll('.content-section').forEach(section => section.style.display = 'none');
+            document.getElementById('projets').style.display = 'block';
+        }
+
+        function afficherProjetsAccountable(accountableId, accountableName) {
+            const container = document.getElementById('projetsContainer');
+            const titre = document.getElementById('projetsTitle');
+            titre.textContent = `Projets de l'accountable: ${accountableName}`;
+            container.innerHTML = '';
+            
+            let projetsAccountable = [];
+            Object.values(projetsData).forEach(projets => {
+                projets.forEach(projet => {
+                    if (projet.accountableId === accountableId) {
+                        projetsAccountable.push(projet);
+                    }
+                });
+            });
+            
+            // TRIER LES PROJETS PAR ORDRE ALPHABÉTIQUE
+            projetsAccountable.sort((a, b) => {
+                const titreA = (a.title || '').toLowerCase();
+                const titreB = (b.title || '').toLowerCase();
+                return titreA.localeCompare(titreB);
+            });
+            
+            afficherListeProjets(projetsAccountable, container);
+            
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('.menu-item[data-target="projets"]').classList.add('active');
+            document.querySelectorAll('.content-section').forEach(section => section.style.display = 'none');
+            document.getElementById('projets').style.display = 'block';
+        }
+
+        // FONCTIONS MANQUANTES POUR LES LIENS
+        function afficherListeTaches(taches, container) {
+            if (taches.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucune tâche trouvée.</p>';
+                return;
+            }
+            
+            taches.forEach(tache => {
+                const responsable = responsablesData.find(r => r.id === tache.responsableId);
+                const accountable = accountablesData.find(a => a.id === tache.accountableId);
+                
+                const taskItem = document.createElement('div');
+                taskItem.className = 'all-task-item';
+                taskItem.innerHTML = `
+                    <div>
+                        <span class="task-name" data-responsable-id="${tache.responsableId}" data-task-id="${tache.id}">
+                            ${tache.title || 'Tâche sans titre'}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="responsable-link" data-id="${tache.responsableId}">
+                            ${responsable ? responsable.name : 'Inconnu'}
+                            <span class="role-badge badge-responsable">R</span>
+                        </span>
+                        <span class="accountable-link" data-id="${tache.accountableId}">
+                            ${accountable ? accountable.name : 'Inconnu'}
+                            <span class="role-badge badge-accountable">A</span>
+                        </span>
+                    </div>
+                `;
+                
+                // Clic sur le nom de la tâche -> afficher les détails
+                const taskName = taskItem.querySelector('.task-name');
+                taskName.addEventListener('click', function() {
+                    const responsableId = this.getAttribute('data-responsable-id');
+                    const taskId = this.getAttribute('data-task-id');
+                    currentResponsableId = responsableId;
+                    currentTaskId = taskId;
+                    loadTaskDetails(responsableId, taskId);
+                    document.getElementById('taskDetailsTitle').textContent = `Détails: ${tache.title}`;
+                    showSection('taskDetails');
+                });
+                
+                // Clic sur le responsable -> afficher ses tâches
+                const responsableLink = taskItem.querySelector('.responsable-link');
+                responsableLink.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const responsableId = this.getAttribute('data-id');
+                    const responsable = responsablesData.find(r => r.id === responsableId);
+                    if (responsable) {
+                        afficherTachesResponsable(responsableId, responsable.name);
+                    }
+                });
+                
+                // Clic sur l'accountable -> afficher ses tâches
+                const accountableLink = taskItem.querySelector('.accountable-link');
+                accountableLink.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const accountableId = this.getAttribute('data-id');
+                    const accountable = accountablesData.find(a => a.id === accountableId);
+                    if (accountable) {
+                        afficherTachesAccountable(accountableId, accountable.name);
+                    }
+                });
+                
+                container.appendChild(taskItem);
+            });
+        }
+
+        function afficherListeProjets(projets, container) {
+            if (projets.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucun projet trouvé.</p>';
+                return;
+            }
+            
+            projets.forEach(projet => {
+                const responsable = responsablesData.find(r => r.id === projet.responsableId);
+                const accountable = accountablesData.find(a => a.id === projet.accountableId);
+                
+                const projetItem = document.createElement('div');
+                projetItem.className = 'all-task-item';
+                projetItem.innerHTML = `
+                    <div>
+                        <span class="task-name" data-projet-id="${projet.id}">
+                            ${projet.title || 'Projet sans titre'}
+                        </span>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+                            ${formaterDate(projet.startDate)} - ${formaterDate(projet.endDate)}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="responsable-link" data-id="${projet.responsableId}">
+                            ${responsable ? responsable.name : 'Inconnu'}
+                            <span class="role-badge badge-responsable">R</span>
+                        </span>
+                        <span class="accountable-link" data-id="${projet.accountableId}">
+                            ${accountable ? accountable.name : 'Inconnu'}
+                            <span class="role-badge badge-accountable">A</span>
+                        </span>
+                    </div>
+                `;
+                
+                // Clic sur le nom du projet -> afficher les détails
+                const projetName = projetItem.querySelector('.task-name');
+                projetName.addEventListener('click', function() {
+                    const projetId = this.getAttribute('data-projet-id');
+                    afficherDetailsProjet(projet);
+                });
+                
+                // Clic sur le responsable -> afficher ses projets
+                const responsableLink = projetItem.querySelector('.responsable-link');
+                responsableLink.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const responsableId = this.getAttribute('data-id');
+                    const responsable = responsablesData.find(r => r.id === responsableId);
+                    if (responsable) {
+                        afficherProjetsResponsable(responsableId, responsable.name);
+                    }
+                });
+                
+                // Clic sur l'accountable -> afficher ses projets
+                const accountableLink = projetItem.querySelector('.accountable-link');
+                accountableLink.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const accountableId = this.getAttribute('data-id');
+                    const accountable = accountablesData.find(a => a.id === accountableId);
+                    if (accountable) {
+                        afficherProjetsAccountable(accountableId, accountable.name);
+                    }
+                });
+                
+                container.appendChild(projetItem);
+            });
+        }
+
+        // FONCTIONS UTILITAIRES
+        function mettreAJourCompteurs() {
+            responsablesData.forEach(resp => {
+                resp.tasksCount = 0;
+                resp.projectsCount = 0;
+            });
+            accountablesData.forEach(acc => {
+                acc.tasksCount = 0;
+                acc.projectsCount = 0;
+            });
+            
+            Object.entries(tasksData).forEach(([responsableId, taches]) => {
+                const responsable = responsablesData.find(r => r.id == responsableId);
+                if (responsable) {
+                    responsable.tasksCount = taches.length;
+                }
+                
+                taches.forEach(tache => {
+                    const accountable = accountablesData.find(a => a.id == tache.accountableId);
+                    if (accountable) {
+                        accountable.tasksCount++;
+                    }
+                });
+            });
+            
+            Object.entries(projetsData).forEach(([responsableId, projets]) => {
+                const responsable = responsablesData.find(r => r.id == responsableId);
+                if (responsable) {
+                    responsable.projectsCount = projets.length;
+                }
+                
+                projets.forEach(projet => {
+                    const accountable = accountablesData.find(a => a.id == projet.accountableId);
+                    if (accountable) {
+                        accountable.projectsCount++;
+                    }
+                });
+            });
+        }
+
+        function repairExistingData() {
+            console.log('Réparation des données...');
+            responsablesData = responsablesData.filter(responsable => 
+                responsable && 
+                responsable.id && 
+                responsable.name && 
+                typeof responsable.name === 'string'
+            );
+            
+            accountablesData = accountablesData.filter(accountable => 
+                accountable && 
+                accountable.id && 
+                accountable.name && 
+                typeof accountable.name === 'string'
+            );
+            
+            responsablesData.forEach(responsable => {
+                const tasks = Object.values(tasksData).flat().filter(task => 
+                    task.responsableId === responsable.id
+                );
+                responsable.tasksCount = tasks.length;
+                
+                if (!responsable.role) responsable.role = "Rôle non défini";
+            });
+            
+            accountablesData.forEach(accountable => {
+                const tasks = Object.values(tasksData).flat().filter(task => 
+                    task.accountableId === accountable.id
+                );
+                accountable.tasksCount = tasks.length;
+                
+                if (!accountable.role) accountable.role = "Rôle non défini";
+            });
+            
+            mettreAJourCompteurs();
+            sauvegarderDonnees();
+        }
+
+        function chargerDonnees() {
+            console.log('Chargement des données...');
+            const savedData = localStorage.getItem('dashboardData');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    responsablesData = data.responsables || [];
+                    accountablesData = data.accountables || [];
+                    tasksData = data.tasks || {};
+                    projetsData = data.projets || {};
+                    deadlinesData = data.deadlines || {};
+                    mettreAJourCompteurs();
+                    console.log('Données chargées avec succès');
+                } catch (error) {
+                    console.error('Erreur chargement données:', error);
+                }
+            }
+        }
+
+        function sauvegarderDonnees() {
+            const data = {
+                responsables: responsablesData,
+                accountables: accountablesData,
+                tasks: tasksData,
+                projets: projetsData,
+                deadlines: deadlinesData
+            };
+            localStorage.setItem('dashboardData', JSON.stringify(data));
+        }
+
+        function formaterDate(dateString) {
+            if (!dateString) return 'Non définie';
+            
+            // Si c'est déjà une chaîne formatée correctement
+            if (typeof dateString === 'string') {
+                // Vérifier si c'est déjà au format français
+                if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                    return dateString;
+                }
+                
+                // Gérer les dates avec heure
+                if (dateString.includes(' ')) {
+                    return dateString.split(' ')[0];
+                }
+                
+                // Gérer le format ISO (YYYY-MM-DD)
+                if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    const [year, month, day] = dateString.split('-');
+                    return `${day}/${month}/${year}`;
+                }
+                
+                // Gérer le format ISO avec heure
+                if (dateString.includes('T')) {
+                    try {
+                        const date = new Date(dateString);
+                        return date.toLocaleDateString('fr-FR');
+                    } catch (e) {
+                        return dateString;
+                    }
+                }
+                
+                return dateString;
+            }
+            
+            // Gérer les numéros de série Excel (nombre de jours depuis 1900-01-01)
+            if (typeof dateString === 'number') {
+                try {
+                    // Les dates Excel sont des nombres où 1 = 1900-01-01
+                    const date = new Date((dateString - 25569) * 86400 * 1000);
+                    return date.toLocaleDateString('fr-FR');
+                } catch (e) {
+                    return dateString.toString();
+                }
+            }
+            
+            // Si c'est un objet Date
+            if (dateString instanceof Date) {
+                return dateString.toLocaleDateString('fr-FR');
+            }
+            
+            return 'Format inconnu';
+        }
+
+        function formaterDatePourExport(dateString) {
+            if (!dateString) return '';
+            
+            // Si c'est déjà au format YYYY-MM-DD
+            if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                return dateString;
+            }
+            
+            // Si c'est au format français DD/MM/YYYY
+            if (typeof dateString === 'string' && dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                const [day, month, year] = dateString.split('/');
+                return `${year}-${month}-${day}`;
+            }
+            
+            // Si c'est un numéro de série Excel
+            if (typeof dateString === 'number') {
+                try {
+                    const date = new Date((dateString - 25569) * 86400 * 1000);
+                    return date.toISOString().split('T')[0];
+                } catch (e) {
+                    return '';
+                }
+            }
+            
+            // Pour les autres formats, essayer de créer une Date
+            try {
+                const date = new Date(dateString);
+                if (!isNaN(date.getTime())) {
+                    return date.toISOString().split('T')[0];
+                }
+            } catch (e) {
+                // Ignorer les erreurs
+            }
+            
+            return dateString;
+        }
+
+        function normaliserDate(dateValue) {
+            if (!dateValue) return '';
+            
+            // Si c'est déjà une chaîne vide ou null
+            if (dateValue === '' || dateValue === null || dateValue === undefined) {
+                return '';
+            }
+            
+            // Si c'est un nombre (date Excel)
+            if (typeof dateValue === 'number') {
+                try {
+                    const date = new Date((dateValue - 25569) * 86400 * 1000);
+                    return date.toISOString().split('T')[0]; // Format YYYY-MM-DD
+                } catch (e) {
+                    return '';
+                }
+            }
+            
+            // Si c'est une chaîne
+            if (typeof dateValue === 'string') {
+                // Nettoyer la chaîne
+                const cleanDate = dateValue.toString().trim();
+                
+                // Si c'est déjà au format YYYY-MM-DD
+                if (cleanDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    return cleanDate;
+                }
+                
+                // Si c'est au format DD/MM/YYYY
+                if (cleanDate.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                    const [day, month, year] = cleanDate.split('/');
+                    return `${year}-${month}-${day}`;
+                }
+                
+                // Si c'est au format DD-MM-YYYY
+                if (cleanDate.match(/^\d{2}-\d{2}-\d{4}$/)) {
+                    const [day, month, year] = cleanDate.split('-');
+                    return `${year}-${month}-${day}`;
+                }
+                
+                // Essayer de parser avec Date
+                try {
+                    const date = new Date(cleanDate);
+                    if (!isNaN(date.getTime())) {
+                        return date.toISOString().split('T')[0];
+                    }
+                } catch (e) {
+                    // Ignorer les erreurs
+                }
+            }
+            
+            return '';
+        }
+
+        // Les autres fonctions d'import/export et de gestion des données restent identiques
+        // [Elles sont conservées mais non affichées pour garder le code concis]
+
+        // FONCTIONS D'IMPORT
+        function importerResponsables() {
+            const fileInput = document.getElementById('responsablesExcelFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Veuillez sélectionner un fichier Excel');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    
+                    if (jsonData.length < 2) {
+                        alert('Le fichier ne contient pas de données');
+                        return;
+                    }
+                    
+                    const headers = jsonData[0];
+                    const expectedHeaders = ['ID', 'Nom', 'Rôle'];
+                    
+                    if (!expectedHeaders.every(h => headers.includes(h))) {
+                        alert('Format de fichier incorrect. Colonnes attendues: ID, Nom, Rôle');
+                        return;
+                    }
+                    
+                    const newResponsables = [];
+                    
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (row.length >= 3 && row[0] && row[1]) {
+                            newResponsables.push({
+                                id: row[0].toString(),
+                                name: row[1].toString(),
+                                role: row[2] ? row[2].toString() : 'Rôle non défini',
+                                tasksCount: 0,
+                                projectsCount: 0
+                            });
+                        }
+                    }
+                    
+                    if (newResponsables.length === 0) {
+                        alert("Aucun chef d'opération valide trouvé dans le fichier");
+                        return;
+                    }
+                    
+                    // Fusionner avec les données existantes
+                    responsablesData = [...responsablesData, ...newResponsables];
+                    
+                    // Supprimer les doublons
+                    responsablesData = responsablesData.filter((resp, index, self) => 
+                        index === self.findIndex(r => r.id === resp.id)
+                    );
+                    
+                    mettreAJourCompteurs();
+                    sauvegarderDonnees();
+                    afficherResponsables();
+                    cacherImports();
+                    
+                    alert(`${newResponsables.length} responsables importés avec succès !`);
+                    
+                } catch (error) {
+                    console.error('Erreur import responsables:', error);
+                    alert('Erreur lors de l\'import: ' + error.message);
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        function importerAccountables() {
+            const fileInput = document.getElementById('accountablesExcelFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Veuillez sélectionner un fichier Excel');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    
+                    if (jsonData.length < 2) {
+                        alert('Le fichier ne contient pas de données');
+                        return;
+                    }
+                    
+                    const headers = jsonData[0];
+                    const expectedHeaders = ['ID', 'Nom', 'Rôle'];
+                    
+                    if (!expectedHeaders.every(h => headers.includes(h))) {
+                        alert('Format de fichier incorrect. Colonnes attendues: ID, Nom, Rôle');
+                        return;
+                    }
+                    
+                    const newAccountables = [];
+                    
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (row.length >= 3 && row[0] && row[1]) {
+                            newAccountables.push({
+                                id: row[0].toString(),
+                                name: row[1].toString(),
+                                role: row[2] ? row[2].toString() : 'Rôle non défini',
+                                tasksCount: 0,
+                                projectsCount: 0
+                            });
+                        }
+                    }
+                    
+                    if (newAccountables.length === 0) {
+                        alert('Aucun accountable valide trouvé dans le fichier');
+                        return;
+                    }
+                    
+                    // Fusionner avec les données existantes
+                    accountablesData = [...accountablesData, ...newAccountables];
+                    
+                    // Supprimer les doublons
+                    accountablesData = accountablesData.filter((acc, index, self) => 
+                        index === self.findIndex(a => a.id === acc.id)
+                    );
+                    
+                    mettreAJourCompteurs();
+                    sauvegarderDonnees();
+                    afficherAccountables();
+                    cacherImports();
+                    
+                    alert(`${newAccountables.length} accountables importés avec succès !`);
+                    
+                } catch (error) {
+                    console.error('Erreur import accountables:', error);
+                    alert('Erreur lors de l\'import: ' + error.message);
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+
+function importerTaches() {
+    const fileInput = document.getElementById('tachesExcelFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Veuillez sélectionner un fichier Excel');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+            
+            if (jsonData.length < 2) {
+                alert('Le fichier ne contient pas de données');
+                return;
+            }
+            
+            const headers = jsonData[0];
+            const expectedHeaders = ['ID', 'Responsable', 'Accountable', 'Titre', 'Description'];
+            
+            if (!expectedHeaders.every(h => headers.includes(h))) {
+                alert('Format de fichier incorrect. Colonnes attendues: ID, Responsable, Accountable, Titre, Description');
+                return;
+            }
+            
+            let importedCount = 0;
+            let updatedCount = 0;
+            
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (row.length >= 5 && row[0] && row[1] && row[2] && row[3]) {
+                    const taskId = row[0].toString();
+                    const responsableName = row[1].toString();
+                    const accountableName = row[2].toString();
+                    const title = row[3].toString();
+                    const description = row[4] ? row[4].toString() : '';
+                    
+                    // Trouver les IDs correspondants
+                    const responsable = responsablesData.find(r => r.name === responsableName);
+                    const accountable = accountablesData.find(a => a.name === accountableName);
+                    
+                    if (!responsable) {
+                        console.warn(`Responsable "${responsableName}" non trouvé pour la tâche ${taskId}`);
+                        continue;
+                    }
+                    
+                    if (!accountable) {
+                        console.warn(`Accountable "${accountableName}" non trouvé pour la tâche ${taskId}`);
+                        continue;
+                    }
+                    
+                    // Chercher la tâche existante
+                    const { task: existingTask, responsableId: existingResponsableId } = trouverTacheParId(taskId);
+                    
+                    if (existingTask) {
+                        // MISE À JOUR : Fusionner sans écraser les données détaillées
+                        const updatedTask = fusionnerTache(existingTask, {
+                            responsableId: responsable.id,
+                            accountableId: accountable.id,
+                            title: title,
+                            description: description
+                        });
+                        
+                        // Remplacer la tâche dans le tableau
+                        const taskIndex = tasksData[existingResponsableId].findIndex(t => t.id === taskId);
+                        if (taskIndex !== -1) {
+                            tasksData[existingResponsableId][taskIndex] = updatedTask;
+                        }
+                        
+                        // Si le responsable a changé, déplacer la tâche
+                        if (responsable.id !== existingResponsableId) {
+                            tasksData[existingResponsableId] = tasksData[existingResponsableId].filter(t => t.id !== taskId);
+                            if (!tasksData[responsable.id]) {
+                                tasksData[responsable.id] = [];
+                            }
+                            tasksData[responsable.id].push(updatedTask);
+                        }
+                        
+                        updatedCount++;
+                    } else {
+                        // NOUVELLE TÂCHE
+                        const newTask = {
+                            id: taskId,
+                            responsableId: responsable.id,
+                            accountableId: accountable.id,
+                            title: title,
+                            description: description
+                            // Les champs détaillés seront undefined et pourront être ajoutés plus tard
+                        };
+                        
+                        if (!tasksData[responsable.id]) {
+                            tasksData[responsable.id] = [];
+                        }
+                        
+                        tasksData[responsable.id].push(newTask);
+                        importedCount++;
+                    }
+                }
+            }
+            
+            if (importedCount === 0 && updatedCount === 0) {
+                alert('Aucune tâche valide importée. Vérifiez que les chefs d\'opérations et accountables existent.');
+                return;
+            }
+            
+            mettreAJourCompteurs();
+            sauvegarderDonnees();
+            afficherToutesTaches();
+            cacherImports();
+            
+            let message = 'Import terminé : ';
+            if (importedCount > 0) {
+                message += `${importedCount} nouvelle(s) tâche(s) importée(s). `;
+            }
+            if (updatedCount > 0) {
+                message += `${updatedCount} tâche(s) existante(s) mise(s) à jour (informations de base uniquement).`;
+            }
+            alert(message);
+            
+        } catch (error) {
+            console.error('Erreur import tâches:', error);
+            alert('Erreur lors de l\'import: ' + error.message);
+        }
+    };
+    
+    reader.readAsArrayBuffer(file);
+}
+
+
+
+// Fonction utilitaire pour fusionner les données de tâche sans écraser les champs détaillés
+function fusionnerTache(existingTask, newData) {
+    return {
+        // Conserver l'ID existant
+        id: existingTask.id,
+        
+        // Mettre à jour les champs de base
+        responsableId: newData.responsableId,
+        accountableId: newData.accountableId,
+        title: newData.title,
+        description: newData.description,
+        
+        // Conserver les champs détaillés s'ils existent
+        backup: existingTask.backup,
+        objectifs: existingTask.objectifs,
+        commentaires: existingTask.commentaires,
+        risquesEtPlans: existingTask.risquesEtPlans,
+        planAction: existingTask.planAction
+    };
+}
+
+// Fonction pour trouver une tâche dans toutes les données
+function trouverTacheParId(taskId) {
+    for (const [responsableId, taches] of Object.entries(tasksData)) {
+        const task = taches.find(t => t.id === taskId);
+        if (task) {
+            return { task, responsableId };
+        }
+    }
+    return { task: null, responsableId: null };
+}
+
+
+        function importerProjets() {
+            const fileInput = document.getElementById('projetsExcelFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Veuillez sélectionner un fichier Excel');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    
+                    if (jsonData.length < 2) {
+                        alert('Le fichier ne contient pas de données');
+                        return;
+                    }
+                    
+                    const headers = jsonData[0];
+                    const expectedHeaders = ['ID', 'Responsable', 'Accountable', 'Titre', 'Description', 'Date Début', 'Date Fin'];
+                    
+                    if (!expectedHeaders.every(h => headers.includes(h))) {
+                        alert('Format de fichier incorrect. Colonnes attendues: ID, Responsable, Accountable, Titre, Description, Date Début, Date Fin');
+                        return;
+                    }
+                    
+                    let importedCount = 0;
+                    
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (row.length >= 7 && row[0] && row[1] && row[2] && row[3]) {
+                            const projetId = row[0].toString();
+                            const responsableName = row[1].toString();
+                            const accountableName = row[2].toString();
+                            const title = row[3].toString();
+                            const description = row[4] ? row[4].toString() : '';
+                           const startDate = normaliserDate(row[5]);
+        const endDate = normaliserDate(row[6]);
+                            
+                            // Trouver les IDs correspondants
+                            const responsable = responsablesData.find(r => r.name === responsableName);
+                            const accountable = accountablesData.find(a => a.name === accountableName);
+                            
+                            if (!responsable) {
+                                console.warn(`Responsable "${responsableName}" non trouvé pour le projet ${projetId}`);
+                                continue;
+                            }
+                            
+                            if (!accountable) {
+                                console.warn(`Accountable "${accountableName}" non trouvé pour le projet ${projetId}`);
+                                continue;
+                            }
+                            
+                            const newProjet = {
+                                id: projetId,
+                                responsableId: responsable.id,
+                                accountableId: accountable.id,
+                                title: title,
+                                description: description,
+                                startDate: startDate,
+                                endDate: endDate
+                            };
+                            
+                            // Ajouter le projet
+                            if (!projetsData[responsable.id]) {
+                                projetsData[responsable.id] = [];
+                            }
+                            
+                            // Supprimer le projet existant s'il existe
+                            projetsData[responsable.id] = projetsData[responsable.id].filter(p => p.id !== projetId);
+                            projetsData[responsable.id].push(newProjet);
+                            
+                            importedCount++;
+                        }
+                    }
+                    
+                    if (importedCount === 0) {
+                        alert('Aucun projet valide importé. Vérifiez que les chefs d\'opérations et accountables existent.');
+                        return;
+                    }
+                    
+                    mettreAJourCompteurs();
+                    sauvegarderDonnees();
+                    afficherProjets();
+                    cacherImports();
+                    
+                    alert(`${importedCount} projets importés avec succès !`);
+                    
+                } catch (error) {
+                    console.error('Erreur import projets:', error);
+                    alert('Erreur lors de l\'import: ' + error.message);
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        function importTaskFromExcel() {
+    const fileInput = document.getElementById('taskExcelFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Veuillez sélectionner un fichier Excel');
+        return;
+    }
+    
+    if (!currentTaskId || !currentResponsableId) {
+        alert('Aucune tâche sélectionnée');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+            
+            if (jsonData.length < 2) {
+                alert('Le fichier ne contient pas de données');
+                return;
+            }
+            
+            const headers = jsonData[0];
+            const expectedHeaders = ['ID', 'Responsable', 'Accountable', 'Titre', 'Description', 'Backup', 'Objectifs', 'Commentaires', 'Liste des risques', 'Plan d\'action'];
+            
+            // Vérification plus flexible des en-têtes
+            const hasRequiredHeaders = headers && headers.length >= 4;
+            if (!hasRequiredHeaders) {
+                alert('Format de fichier incorrect. Colonnes attendues: ID, Responsable, Accountable, Titre, Description, Backup, Objectifs, Commentaires, Liste des risques, Plan d\'action');
+                return;
+            }
+            
+            // Chercher la tâche avec l'ID correspondant
+            let taskFound = false;
+            let allRisquesEtPlans = [];
+            
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (row.length >= 4 && row[0] && row[0].toString() === currentTaskId) {
+                    const responsableName = row[1] ? row[1].toString() : '';
+                    const accountableName = row[2] ? row[2].toString() : '';
+                    const title = row[3] ? row[3].toString() : '';
+                    const description = row[4] ? row[4].toString() : '';
+                    const backup = row[5] ? row[5].toString() : '';
+                    const objectifs = row[6] ? row[6].toString() : '';
+                    const commentaires = row[7] ? row[7].toString() : '';
+                    
+                    // Premier risque et plan (ligne principale)
+                    if (row[8] || row[9]) {
+                        allRisquesEtPlans.push({
+                            risque: row[8] ? row[8].toString().trim() : '',
+                            plan: row[9] ? row[9].toString().trim() : ''
+                        });
+                    }
+                    
+                    taskFound = true;
+                } else if (taskFound && row.length > 0) {
+                    // Lignes supplémentaires avec seulement des risques/plans
+                    // Vérifier si c'est une ligne de risque (colonne 8 et/ou 9 remplies)
+                    const hasRisque = row[8] && row[8].toString().trim() !== '';
+                    const hasPlan = row[9] && row[9].toString().trim() !== '';
+                    
+                    if (hasRisque || hasPlan) {
+                        allRisquesEtPlans.push({
+                            risque: row[8] ? row[8].toString().trim() : '',
+                            plan: row[9] ? row[9].toString().trim() : ''
+                        });
+                    } else {
+                        // Si la ligne n'a ni risque ni plan, on arrête de chercher
+                        break;
+                    }
+                }
+            }
+            
+            if (!taskFound) {
+                alert('Tâche non trouvée dans le fichier. Vérifiez que l\'ID correspond.');
+                return;
+            }
+            
+            // Maintenant, traiter les données de la tâche principale
+            const mainRow = jsonData.find(row => row[0] && row[0].toString() === currentTaskId);
+            if (!mainRow) return;
+            
+            const responsableName = mainRow[1] ? mainRow[1].toString() : '';
+            const accountableName = mainRow[2] ? mainRow[2].toString() : '';
+            const title = mainRow[3] ? mainRow[3].toString() : '';
+            const description = mainRow[4] ? mainRow[4].toString() : '';
+            const backup = mainRow[5] ? mainRow[5].toString() : '';
+            const objectifs = mainRow[6] ? mainRow[6].toString() : '';
+            const commentaires = mainRow[7] ? mainRow[7].toString() : '';
+            
+            // Trouver les IDs correspondants
+            const responsable = responsablesData.find(r => r.name === responsableName);
+            const accountable = accountablesData.find(a => a.name === accountableName);
+            
+            if (!responsable) {
+                alert(`Responsable "${responsableName}" non trouvé`);
+                return;
+            }
+            
+            if (!accountable) {
+                alert(`Accountable "${accountableName}" non trouvé`);
+                return;
+            }
+            
+            // Mettre à jour la tâche avec les nouveaux champs
+            const taskIndex = tasksData[currentResponsableId].findIndex(t => t.id === currentTaskId);
+            if (taskIndex !== -1) {
+                tasksData[currentResponsableId][taskIndex] = {
+                    id: currentTaskId,
+                    responsableId: responsable.id,
+                    accountableId: accountable.id,
+                    title: title,
+                    description: description,
+                    backup: backup,
+                    objectifs: objectifs,
+                    commentaires: commentaires,
+                    risquesEtPlans: allRisquesEtPlans
+                };
+                
+                // Si le responsable a changé, déplacer la tâche
+                if (responsable.id !== currentResponsableId) {
+                    tasksData[currentResponsableId].splice(taskIndex, 1);
+                    if (!tasksData[responsable.id]) {
+                        tasksData[responsable.id] = [];
+                    }
+                    tasksData[responsable.id].push(tasksData[currentResponsableId][taskIndex]);
+                    currentResponsableId = responsable.id;
+                }
+                
+                mettreAJourCompteurs();
+                sauvegarderDonnees();
+                loadTaskDetails(currentResponsableId, currentTaskId);
+                alert(`Tâche mise à jour avec succès ! ${allRisquesEtPlans.length} risque(s) importé(s).`);
+            }
+            
+        } catch (error) {
+            console.error('Erreur import tâche détaillée:', error);
+            alert('Erreur lors de l\'import: ' + error.message);
+        }
+    };
+    
+    reader.readAsArrayBuffer(file);
+}
+
+
+
+        function exportCurrentTaskToExcel() {
+    if (!currentTaskId || !currentResponsableId) {
+        alert('Aucune tâche sélectionnée');
+        return;
+    }
+    
+    const task = tasksData[currentResponsableId].find(t => t.id === currentTaskId);
+    if (!task) {
+        alert('Tâche non trouvée');
+        return;
+    }
+    
+    const responsable = responsablesData.find(r => r.id === task.responsableId);
+    const accountable = accountablesData.find(a => a.id === task.accountableId);
+    
+    // Préparer les données selon le modèle
+    const data = [
+        ['ID', 'Responsable', 'Accountable', 'Titre', 'Description', 'Backup', 'Objectifs', 'Commentaires', 'Liste des risques', 'Plan d\'action'],
+        [
+            task.id,
+            responsable ? responsable.name : 'Inconnu',
+            accountable ? accountable.name : 'Inconnu',
+            task.title || '',
+            task.description || '',
+            task.backup || '',
+            task.objectifs || '',
+            task.commentaires || '',
+            // Premier risque
+            task.risquesEtPlans && task.risquesEtPlans.length > 0 ? task.risquesEtPlans[0].risque : '',
+            // Premier plan correspondant
+            task.risquesEtPlans && task.risquesEtPlans.length > 0 ? task.risquesEtPlans[0].plan : ''
+        ]
+    ];
+    
+    // Ajouter les risques et plans supplémentaires sur les lignes suivantes
+    if (task.risquesEtPlans && task.risquesEtPlans.length > 1) {
+        for (let i = 1; i < task.risquesEtPlans.length; i++) {
+            const emptyRow = Array(8).fill(''); // Colonnes vides avant les risques
+            data.push([
+                ...emptyRow, 
+                task.risquesEtPlans[i].risque || '',
+                task.risquesEtPlans[i].plan || ''
+            ]);
+        }
+    }
+    
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Tâche détaillée");
+    XLSX.writeFile(wb, `tache_detaille_${task.id}_export.xlsx`);
+}
+
+
+
+        // Fonctions pour la gestion des détails de tâche
+function loadTaskDetails(responsableId, taskId) {
+    const container = document.getElementById('taskDetailsContent');
+    const task = tasksData[responsableId].find(t => t.id === taskId);
+    
+    if (!task) {
+        container.innerHTML = '<p>Tâche non trouvée</p>';
+        return;
+    }
+    
+    // Initialiser risquesEtPlans si non existant
+    if (!task.risquesEtPlans) {
+        task.risquesEtPlans = [];
+    }
+    
+    const responsable = responsablesData.find(r => r.id === task.responsableId);
+    const accountable = accountablesData.find(a => a.id === task.accountableId);
+    
+ // Dans loadTaskDetails, remplacer les références directes par des vérifications
+container.innerHTML = `
+    <div class="detail-section">
+        <h3>Informations de base</h3>
+        <div class="detail-item">
+            <div class="detail-label">ID</div>
+            <div class="detail-value">${task.id}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Titre</div>
+            <div class="detail-value editable" data-field="title">${task.title || ''}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Description</div>
+            <div class="detail-value editable" data-field="description">${task.description || ''}</div>
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h3>Assignation</h3>
+        <div class="detail-item">
+            <div class="detail-label">Responsable</div>
+            <div class="detail-value">${responsable ? responsable.name : 'Non assigné'}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Accountable</div>
+            <div class="detail-value">${accountable ? accountable.name : 'Non assigné'}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Backup</div>
+            <div class="detail-value editable" data-field="backup">${task.backup || ''}</div>
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h3>Détails de la tâche</h3>
+        <div class="detail-item">
+            <div class="detail-label">Objectifs</div>
+            <div class="detail-value editable" data-field="objectifs">${task.objectifs || ''}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Commentaires</div>
+            <div class="detail-value editable" data-field="commentaires">${task.commentaires || ''}</div>
+        </div>
+    </div>
+    
+    <div class="detail-section">
+        <h3>Gestion des risques et plans d'action</h3>
+        <div id="risquesList">
+            ${task.risquesEtPlans && task.risquesEtPlans.length > 0 ? 
+                task.risquesEtPlans.map((item, index) => `
+                    <div class="risk-item">
+                        <div class="risk-header">
+                            <div class="risk-title">Risque ${index + 1}</div>
+                            <button class="remove-risk" data-index="${index}">×</button>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Risque</div>
+                            <div class="detail-value editable" data-field="risque" data-index="${index}">${item.risque || ''}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Plan d'action</div>
+                            <div class="detail-value editable" data-field="plan" data-index="${index}">${item.plan || ''}</div>
+                        </div>
+                    </div>
+                `).join('') : 
+                '<p>Aucun risque identifié</p>'
+            }
+        </div>
+        <button class="add-risk-btn" id="addRiskBtn">+ Ajouter un risque avec plan d'action</button>
+    </div>
+`;
+
+    
+    // Rendre les champs éditable
+    container.querySelectorAll('.editable').forEach(element => {
+        element.addEventListener('click', function() {
+            makeEditable(this);
+        });
+    });
+    
+    // Gestion des risques
+    container.querySelector('#addRiskBtn').addEventListener('click', function() {
+        addRiskWithPlan(task);
+    });
+    
+    container.querySelectorAll('.remove-risk').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            removeRiskWithPlan(task, index);
+        });
+    });
+}
+
+// Fonction pour ajouter un risque avec son plan
+function addRiskWithPlan(task) {
+    if (!task.risquesEtPlans) {
+        task.risquesEtPlans = [];
+    }
+    task.risquesEtPlans.push({
+        risque: 'Nouveau risque',
+        plan: 'Plan d\'action correspondant'
+    });
+    sauvegarderDonnees();
+    loadTaskDetails(currentResponsableId, currentTaskId);
+}
+
+// Fonction pour supprimer un risque avec son plan
+function removeRiskWithPlan(task, index) {
+    if (task.risquesEtPlans && task.risquesEtPlans.length > index) {
+        task.risquesEtPlans.splice(index, 1);
+        sauvegarderDonnees();
+        loadTaskDetails(currentResponsableId, currentTaskId);
+    }
+}
+
+function makeEditable(element) {
+    const currentValue = element.textContent;
+    const field = element.getAttribute('data-field');
+    const riskIndex = element.getAttribute('data-index');
+    
+    const task = tasksData[currentResponsableId].find(t => t.id === currentTaskId);
+    if (!task) return;
+    
+    if (field === 'risque' || field === 'plan') {
+        // Édition d'un risque ou plan spécifique
+        const isTextArea = field === 'plan'; // Les plans peuvent être longs
+        
+        if (isTextArea) {
+            element.innerHTML = `<textarea>${currentValue}</textarea>`;
+            const textarea = element.querySelector('textarea');
+            textarea.focus();
+            
+            textarea.addEventListener('blur', function() {
+                if (task.risquesEtPlans && task.risquesEtPlans[riskIndex]) {
+                    task.risquesEtPlans[riskIndex][field] = textarea.value;
+                    sauvegarderDonnees();
+                    loadTaskDetails(currentResponsableId, currentTaskId);
+                }
+            });
+            
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    if (task.risquesEtPlans && task.risquesEtPlans[riskIndex]) {
+                        task.risquesEtPlans[riskIndex][field] = textarea.value;
+                        sauvegarderDonnees();
+                        loadTaskDetails(currentResponsableId, currentTaskId);
+                    }
+                }
+            });
+        } else {
+            element.innerHTML = `<input type="text" value="${currentValue}">`;
+            const input = element.querySelector('input');
+            input.focus();
+            
+            input.addEventListener('blur', function() {
+                if (task.risquesEtPlans && task.risquesEtPlans[riskIndex]) {
+                    task.risquesEtPlans[riskIndex][field] = input.value;
+                    sauvegarderDonnees();
+                    loadTaskDetails(currentResponsableId, currentTaskId);
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    if (task.risquesEtPlans && task.risquesEtPlans[riskIndex]) {
+                        task.risquesEtPlans[riskIndex][field] = input.value;
+                        sauvegarderDonnees();
+                        loadTaskDetails(currentResponsableId, currentTaskId);
+                    }
+                }
+            });
+        }
+    } else if (field === 'description' || field === 'objectifs' || field === 'commentaires') {
+        // Champs texte longs
+        element.innerHTML = `<textarea>${currentValue}</textarea>`;
+        const textarea = element.querySelector('textarea');
+        textarea.focus();
+        
+        textarea.addEventListener('blur', function() {
+            task[field] = textarea.value;
+            sauvegarderDonnees();
+            loadTaskDetails(currentResponsableId, currentTaskId);
+        });
+        
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                task[field] = textarea.value;
+                sauvegarderDonnees();
+                loadTaskDetails(currentResponsableId, currentTaskId);
+            }
+        });
+    } else {
+        // Champs texte courts
+        element.innerHTML = `<input type="text" value="${currentValue}">`;
+        const input = element.querySelector('input');
+        input.focus();
+        
+        input.addEventListener('blur', function() {
+            task[field] = input.value;
+            sauvegarderDonnees();
+            loadTaskDetails(currentResponsableId, currentTaskId);
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                task[field] = input.value;
+                sauvegarderDonnees();
+                loadTaskDetails(currentResponsableId, currentTaskId);
+            }
+        });
+    }
+}
+
+        function saveEditableValue(element, field, value) {
+            const task = tasksData[currentResponsableId].find(t => t.id === currentTaskId);
+            if (task) {
+                task[field] = value;
+                sauvegarderDonnees();
+                loadTaskDetails(currentResponsableId, currentTaskId); // Recharger pour afficher la valeur sauvegardée
+            }
+        }
+
+        function saveTaskDetails() {
+            // Les modifications sont déjà sauvegardées via makeEditable
+            alert('Modifications sauvegardées !');
+            showSection(previousSection);
+        }
+
+        function deleteCurrentTask() {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
+                const taskIndex = tasksData[currentResponsableId].findIndex(t => t.id === currentTaskId);
+                if (taskIndex !== -1) {
+                    tasksData[currentResponsableId].splice(taskIndex, 1);
+                    mettreAJourCompteurs();
+                    sauvegarderDonnees();
+                    alert('Tâche supprimée avec succès !');
+                    showSection(previousSection);
+                }
+            }
+        }
+
+        function afficherDetailsProjet(projet) {
+            const container = document.getElementById('projetDetailsContainer');
+            
+            const responsable = responsablesData.find(r => r.id == projet.responsableId);
+            const accountable = accountablesData.find(a => a.id == projet.accountableId);
+            
+            const startDate = formaterDate(projet.startDate);
+            const endDate = formaterDate(projet.endDate);
+            
+            // Récupérer les échéances du projet
+            const deadlines = deadlinesData[projet.id] || [];
+            
+            container.innerHTML = `
+                <div class="project-details">
+                    <h3>Détails du projet: ${projet.title}</h3>
+                    
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">ID du projet</div>
+                            <div class="detail-value">${projet.id}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Titre</div>
+                            <div class="detail-value editable" data-field="title" data-projet-id="${projet.id}">${projet.title || ''}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Description</div>
+                            <div class="detail-value editable" data-field="description" data-projet-id="${projet.id}">${projet.description || ''}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Responsable</div>
+                            <div class="detail-value">${responsable ? responsable.name : 'Non assigné'}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Accountable</div>
+                            <div class="detail-value">${accountable ? accountable.name : 'Non assigné'}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Date de début</div>
+                            <div class="detail-value editable" data-field="startDate" data-projet-id="${projet.id}">${startDate}</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Date de fin</div>
+                            <div class="detail-value editable" data-field="endDate" data-projet-id="${projet.id}">${endDate}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="deadlines-section">
+                        <h4>Phases du projet</h4>
+                        <div id="deadlinesList-${projet.id}">
+                            ${deadlines.map((deadline, index) => `
+                                <div class="deadline-item">
+                                    <div class="deadline-info">
+                                        <strong>${deadline.title || 'Échéance sans titre'}</strong>
+                                        <div>${formaterDate(deadline.date)}</div>
+                                        ${deadline.description ? `<div>${deadline.description}</div>` : ''}
+                                    </div>
+                                    <button class="delete-deadline-btn" data-projet-id="${projet.id}" data-deadline-index="${index}">Supprimer</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button class="add-deadline-btn" data-projet-id="${projet.id}">+ Ajouter une phase</button>
+                    </div>
+                    
+                    <div class="buttons" style="margin-top: 20px;">
+                        <button class="btn btn-danger" id="deleteProjet" data-projet-id="${projet.id}">Supprimer le projet</button>
+                        <button class="btn btn-secondary" id="closeProjetDetails">Fermer</button>
+                    </div>
+                </div>
+            `;
+            
+            // Rendre les champs éditable
+            container.querySelectorAll('.editable').forEach(element => {
+                element.addEventListener('click', function() {
+                    makeProjetEditable(this);
+                });
+            });
+            
+            // Gestion des échéances
+            container.querySelector('.add-deadline-btn').addEventListener('click', function() {
+                const projetId = this.getAttribute('data-projet-id');
+                ajouterEcheance(projetId);
+            });
+            
+            // Gestion de la suppression des échéances
+            container.querySelectorAll('.delete-deadline-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const projetId = this.getAttribute('data-projet-id');
+                    const deadlineIndex = this.getAttribute('data-deadline-index');
+                    supprimerEcheance(projetId, deadlineIndex);
+                });
+            });
+            
+            // Gestion de la suppression du projet
+            container.querySelector('#deleteProjet').addEventListener('click', function() {
+                const projetId = this.getAttribute('data-projet-id');
+                supprimerProjet(projetId);
+            });
+            
+            // Gestion de la fermeture
+            container.querySelector('#closeProjetDetails').addEventListener('click', function() {
+                container.innerHTML = '';
+            });
+            
+            // Faire défiler jusqu'aux détails
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function makeProjetEditable(element) {
+            const currentValue = element.textContent;
+            const field = element.getAttribute('data-field');
+            const projetId = element.getAttribute('data-projet-id');
+            
+            // Trouver le projet
+            let projet = null;
+            let responsableId = null;
+            
+            for (const [respId, projets] of Object.entries(projetsData)) {
+                projet = projets.find(p => p.id === projetId);
+                if (projet) {
+                    responsableId = respId;
+                    break;
+                }
+            }
+            
+            if (!projet) return;
+            
+            if (field === 'description') {
+                element.innerHTML = `<textarea>${currentValue}</textarea>`;
+                const textarea = element.querySelector('textarea');
+                textarea.focus();
+                
+                textarea.addEventListener('blur', function() {
+                    saveProjetEditableValue(element, field, textarea.value, projetId, responsableId);
+                });
+                
+                textarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        saveProjetEditableValue(element, field, textarea.value, projetId, responsableId);
+                    }
+                });
+            } else if (field === 'startDate' || field === 'endDate') {
+                element.innerHTML = `<input type="date" value="${currentValue}">`;
+                const input = element.querySelector('input');
+                input.focus();
+                
+                input.addEventListener('blur', function() {
+                    saveProjetEditableValue(element, field, input.value, projetId, responsableId);
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        saveProjetEditableValue(element, field, input.value, projetId, responsableId);
+                    }
+                });
+            } else {
+                element.innerHTML = `<input type="text" value="${currentValue}">`;
+                const input = element.querySelector('input');
+                input.focus();
+                
+                input.addEventListener('blur', function() {
+                    saveProjetEditableValue(element, field, input.value, projetId, responsableId);
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        saveProjetEditableValue(element, field, input.value, projetId, responsableId);
+                    }
+                });
+            }
+        }
+
+        function saveProjetEditableValue(element, field, value, projetId, responsableId) {
+            const projets = projetsData[responsableId];
+            const projetIndex = projets.findIndex(p => p.id === projetId);
+            
+            if (projetIndex !== -1) {
+                // Normaliser les dates avant sauvegarde
+                if (field === 'startDate' || field === 'endDate') {
+                    projets[projetIndex][field] = normaliserDate(value);
+                } else {
+                    projets[projetIndex][field] = value;
+                }
+                
+                sauvegarderDonnees();
+                
+                // Recharger les détails du projet
+                afficherDetailsProjet(projets[projetIndex]);
+            }
+        }
+
+        function ajouterEcheance(projetId) {
+            const titre = prompt('Titre de l\'échéance:');
+            if (!titre) return;
+            
+            const date = prompt('Date de l\'échéance (YYYY-MM-DD):');
+            if (!date) return;
+            
+            const description = prompt('Description (optionnelle):', '');
+            
+            if (!deadlinesData[projetId]) {
+                deadlinesData[projetId] = [];
+            }
+            
+            deadlinesData[projetId].push({
+                title: titre,
+                date: date,
+                description: description || ''
+            });
+            
+            sauvegarderDonnees();
+            
+            // Recharger les détails du projet
+            let projet = null;
+            for (const projets of Object.values(projetsData)) {
+                projet = projets.find(p => p.id === projetId);
+                if (projet) break;
+            }
+            
+            if (projet) {
+                afficherDetailsProjet(projet);
+            }
+        }
+
+        function supprimerEcheance(projetId, deadlineIndex) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette échéance ?')) {
+                if (deadlinesData[projetId] && deadlinesData[projetId][deadlineIndex]) {
+                    deadlinesData[projetId].splice(deadlineIndex, 1);
+                    sauvegarderDonnees();
+                    
+                    // Recharger les détails du projet
+                    let projet = null;
+                    for (const projets of Object.values(projetsData)) {
+                        projet = projets.find(p => p.id === projetId);
+                        if (projet) break;
+                    }
+                    
+                    if (projet) {
+                        afficherDetailsProjet(projet);
+                    }
+                }
+            }
+        }
+
+        function supprimerProjet(projetId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.')) {
+                let responsableId = null;
+                
+                // Trouver et supprimer le projet
+                for (const [respId, projets] of Object.entries(projetsData)) {
+                    const projetIndex = projets.findIndex(p => p.id === projetId);
+                    if (projetIndex !== -1) {
+                        responsableId = respId;
+                        projets.splice(projetIndex, 1);
+                        break;
+                    }
+                }
+                
+                // Supprimer les échéances associées
+                if (deadlinesData[projetId]) {
+                    delete deadlinesData[projetId];
+                }
+                
+                mettreAJourCompteurs();
+                sauvegarderDonnees();
+                
+                // Recharger l'affichage des projets
+                afficherProjets();
+                
+                // Vider les détails
+                document.getElementById('projetDetailsContainer').innerHTML = '';
+                
+                alert('Projet supprimé avec succès !');
+            }
+        }
+
+// FONCTION D'EXPORT HTML STATIQUE SIMPLIFIÉE
+function exporterHTMLStatique() {
+    console.log('Export HTML statique...');
+    
+    try {
+        // Préparer les données pour l'affichage
+        const toutesTaches = Object.values(tasksData).flat();
+        const tousProjets = Object.values(projetsData).flat();
+        
+        // Trier les données
+        toutesTaches.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+        tousProjets.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+        
+        // Créer le contenu HTML statique
+        const htmlContent = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - Consultation</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f5f7fa;
+        }
+        .header { 
+            background: #2c3e50; 
+            color: white; 
+            padding: 20px; 
+            text-align: center; 
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .summary { 
+            background: white; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section { 
+            background: white; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card { 
+            background: #ecf0f1; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        .task-item, .projet-item { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 6px;
+            border-left: 4px solid #e74c3c;
+        }
+        .badge { 
+            background: #3498db; 
+            color: white; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            font-size: 0.8em; 
+            margin-left: 5px;
+        }
+        .badge-accountable { background: #9b59b6; }
+        .badge-project { background: #e67e22; }
+        .date { color: #7f8c8d; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Tableau de Bord - Version Consultation</h1>
+        <p>Données exportées le ${new Date().toLocaleDateString('fr-FR')}</p>
+    </div>
+
+    <div class="summary">
+        <h2>📈 Résumé des données</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">re
+            <div class="card">
+                <h3>👥 Chefs d'opérations</h3>
+                <p style="font-size: 2em; margin: 10px 0; color: #2c3e50;">${responsablesData.length}</p>
+            </div>
+            <div class="card">
+                <h3>👤 Accountables</h3>
+                <p style="font-size: 2em; margin: 10px 0; color: #9b59b6;">${accountablesData.length}</p>
+            </div>
+            <div class="card">
+                <h3>✅ Tâches</h3>
+                <p style="font-size: 2em; margin: 10px 0; color: #e74c3c;">${toutesTaches.length}</p>
+            </div>
+            <div class="card">
+                <h3>📋 Projets</h3>
+                <p style="font-size: 2em; margin: 10px 0; color: #e67e22;">${tousProjets.length}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Responsables -->
+    <div class="section">
+        <h2>👥 Liste des Chefs d'opérations</h2>
+        ${responsablesData.length === 0 ? 
+            '<p style="text-align: center; color: #7f8c8d; padding: 20px;">Aucun responsable</p>' :
+            responsablesData.map(resp => `
+                <div class="card">
+                    <strong>${resp.name}</strong>
+                    <div style="color: #7f8c8d; margin: 5px 0;">${resp.role}</div>
+                    <div>
+                        <span class="badge">${resp.tasksCount || 0} tâches</span>
+                        <span class="badge badge-project">${resp.projectsCount || 0} projets</span>
+                    </div>
+                </div>
+            `).join('')
+        }
+    </div>
+
+    <!-- Section Accountables -->
+    <div class="section">
+        <h2>👤 Liste des Accountables</h2>
+        ${accountablesData.length === 0 ? 
+            '<p style="text-align: center; color: #7f8c8d; padding: 20px;">Aucun accountable</p>' :
+            accountablesData.map(acc => `
+                <div class="card">
+                    <strong style="color: #9b59b6;">${acc.name}</strong>
+                    <div style="color: #7f8c8d; margin: 5px 0;">${acc.role}</div>
+                    <div>
+                        <span class="badge badge-accountable">${acc.tasksCount || 0} tâches</span>
+                        <span class="badge badge-project">${acc.projectsCount || 0} projets</span>
+                    </div>
+                </div>
+            `).join('')
+        }
+    </div>
+
+    <!-- Section Tâches -->
+    <div class="section">
+        <h2>✅ Toutes les Tâches</h2>
+        ${toutesTaches.length === 0 ? 
+            '<p style="text-align: center; color: #7f8c8d; padding: 20px;">Aucune tâche</p>' :
+            toutesTaches.map(tache => {
+                const responsable = responsablesData.find(r => r.id === tache.responsableId);
+                const accountable = accountablesData.find(a => a.id === tache.accountableId);
+                return `
+                    <div class="task-item">
+                        <strong>${tache.title || 'Tâche sans titre'}</strong>
+                        <div style="margin: 8px 0;">${tache.description || ''}</div>
+                        <div>
+                            <span class="badge">R: ${responsable ? responsable.name : 'Inconnu'}</span>
+                            <span class="badge badge-accountable">A: ${accountable ? accountable.name : 'Inconnu'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('')
+        }
+    </div>
+
+    <!-- Section Projets -->
+    <div class="section">
+        <h2>📋 Tous les Projets</h2>
+        ${tousProjets.length === 0 ? 
+            '<p style="text-align: center; color: #7f8c8d; padding: 20px;">Aucun projet</p>' :
+            tousProjets.map(projet => {
+                const responsable = responsablesData.find(r => r.id === projet.responsableId);
+                const accountable = accountablesData.find(a => a.id === projet.accountableId);
+                const startDate = formaterDate(projet.startDate);
+                const endDate = formaterDate(projet.endDate);
+                return `
+                    <div class="projet-item">
+                        <strong>${projet.title || 'Projet sans titre'}</strong>
+                        <div style="margin: 8px 0;">${projet.description || ''}</div>
+                        <div class="date">${startDate} - ${endDate}</div>
+                        <div>
+                            <span class="badge">R: ${responsable ? responsable.name : 'Inconnu'}</span>
+                            <span class="badge badge-accountable">A: ${accountable ? accountable.name : 'Inconnu'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('')
+        }
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; padding: 20px; color: #7f8c8d; border-top: 1px solid #ecf0f1;">
+        <p>Document généré automatiquement - Tableau de Bord DG</p>
+    </div>
+</body>
+</html>`;
+        
+        // Télécharger le fichier HTML
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `tableau_bord_consultation_${new Date().toISOString().split('T')[0]}.html`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        alert('✅ Export HTML statique réussi ! Fichier téléchargé.');
+        
+    } catch (error) {
+        console.error('Erreur export HTML statique:', error);
+        alert('❌ Erreur lors de l\'export: ' + error.message);
+    }
+	
+}
+
+
+    </script>
+
+<!-- ======= GIST SYNC — Boutons + Détection de changement au démarrage ======= -->
+<div id="gistButtons" style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;">
+  <button onclick="loadFromGist()">Charger (Gist)</button>
+  <button onclick="saveToGist()">Sauvegarder (Gist)</button>
+</div>
+
+<script>
+/******** CONFIG ********/
+const GIST_ID = "a9e4682d96bed0eacb1f73b6e15174ee"; // ton Gist ID
+
+/******** HELPERS ********/
+
+function dumpLocalStorage() {
+  const o = {}; for (let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); o[k]=localStorage.getItem(k); }
+  return o;
+}
+function restoreLocalStorage(d) {
+  if (!d || typeof d!=="object") return;
+  localStorage.clear(); for (const [k,v] of Object.entries(d)) { localStorage.setItem(k,v); }
+}
+function setKnownVersion(v){ if(v) localStorage.setItem('gist_last_version', v); }
+function getKnownVersion(){ return localStorage.getItem('gist_last_version') || ""; }
+
+/******** API ********/
+async function saveToGist() {
+  
+if (!askTokenIfNeeded()) return false;
+
+  try {
+    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      method: "PATCH",
+      headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ files: { "dashboard.json": { content: JSON.stringify({ localStorageDump: dumpLocalStorage(), exportedAt: new Date().toISOString() }, null, 2) } } })
+    });
+    if (!res.ok) throw new Error("HTTP "+res.status);
+    const j = await res.json();
+    setKnownVersion(j?.history?.[0]?.version || "");
+    alert("✅ Sauvegarde dans Gist réussie");
+    return true;
+} catch (e) {
+  alert("❌ Erreur de sauvegarde : " + (e && e.message ? e.message : e));
+  return false;
+}
+}
+
+async function loadFromGist() {
+  try {
+    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
+    const gist = await res.json();
+    const content = gist.files?.["dashboard.json"]?.content;
+    if (!content) throw new Error("missing");
+
+    const remoteVersion = gist?.history?.[0]?.version || "";
+    setKnownVersion(remoteVersion);
+
+    const data = JSON.parse(content);
+    restoreLocalStorage(data.localStorageDump || {});
+    alert("✅ Chargé depuis Gist — la page va se recharger");
+    sessionStorage.setItem("gs_just_loaded_from_gist", "1");
+    location.reload();
+    return true;
+
+  } catch (e) {
+    alert("❌ Erreur de lecture du Gist : " + (e && e.message ? e.message : e));
+    return false;
+  }
+}
+
+/******** LOGIQUE DEMARRAGE — UN SEUL CHECK, JAMAIS AU REFRESH ********/
+/*
+ Règles :
+ - Afficher un confirm de chargement UNIQUEMENT au tout 1er affichage de l’onglet
+   ET seulement si la version distante ≠ version locale connue.
+ - Ne rien faire au refresh / back-forward / après un loadFromGist.
+*/
+window.addEventListener("load", async () => {
+  // 1) Si on vient d’un loadFromGist, ne rien faire
+  if (sessionStorage.getItem("gs_just_loaded_from_gist") === "1") {
+    sessionStorage.removeItem("gs_just_loaded_from_gist");
+    return;
+  }
+
+  // 2) Détecter refresh/back-forward → ne rien faire
+  const nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+  const isReload = nav && (nav.type === "reload" || nav.type === "back_forward");
+  if (isReload) return;
+
+  // 3) Ne checker qu’une seule fois par onglet
+  if (sessionStorage.getItem("gs_startup_checked") === "1") return;
+  sessionStorage.setItem("gs_startup_checked", "1");
+
+  // 4) Si pas de token mémorisé → silence
+  if (!GITHUB_TOKEN) return;
+
+  // 5) Comparer versions : si différente, proposer de charger
+  try {
+    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+    });
+    if (!res.ok) return;
+
+    const gist = await res.json();
+    const remoteVersion = gist?.history?.[0]?.version || "";
+    const localVersion  = getKnownVersion();
+
+    if (localVersion && remoteVersion && remoteVersion !== localVersion) {
+      const go = confirm("🆕 Des données ont changé sur Gist. Voulez-vous charger la nouvelle version maintenant ?");
+      if (go) await loadFromGist(); // le load mémorise remoteVersion et met un flag pour ne pas re-checker au reload
+    }
+  } catch(e) {
+    // silencieux en cas d'erreur réseau
+  }
+});
+</script>
+<!-- ======= /GIST SYNC ======= -->
+
+	
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
