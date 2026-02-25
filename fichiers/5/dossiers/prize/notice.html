@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mode d’emploi — Répartition du prizepool</title>
+  <style>
+    :root{--bg:#0f172a;--panel:#111827;--muted:#94a3b8;--text:#e5e7eb;--accent:#22c55e;--accent2:#38bdf8}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
+    .wrap{max-width:980px;margin:28px auto;padding:0 16px}
+    h1{font-size:22px;margin:0 0 16px}
+    h2{font-size:16px;margin:18px 0 10px}
+    .card{background:var(--panel);border:1px solid rgba(148,163,184,15);border-radius:14px;padding:16px}
+    .muted{color:var(--muted)}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0}
+    a.btn{display:inline-block;text-decoration:none}
+    .btn{cursor:pointer;padding:10px 12px;border-radius:12px;border:1px solid rgba(148,163,184,25);background:#0b1221;color:var(--text)}
+    ul{margin:8px 0 0 18px}
+    li{margin:6px 0}
+    .note{border-left:3px solid rgba(56,189,248,.8);padding-left:10px;margin:10px 0}
+    code{background:#0b1221;border:1px solid rgba(148,163,184,25);padding:1px 6px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mode d’emploi — Répartition du prizepool</h1>
+
+    <section class="card">
+      <p class="muted" style="margin-top:0">
+        Cette page explique comment utiliser l’outil de répartition du prizepool (montants, paliers, export).
+      </p>
+
+      <div class="btnRow">
+        <a class="btn" href="prize.html">← Retour au calcul</a>
+      </div>
+
+      <h2>1) Remplir les champs</h2>
+      <ul>
+        <li><b>Joueurs</b> : nombre total d’inscrits au tournoi.</li>
+        <li><b>Prizepool (€)</b> : montant total à répartir.</li>
+        <li><b>Premier prix (€) (optionnel)</b> : mets un montant si tu veux imposer un 1er prix exact. Sinon, laisse vide.</li>
+        <li><b>Minimum dernière place (€) (optionnel)</b> : mets un plancher si tu veux garantir un minimum à la plus petite place payée. Sinon, laisse vide.</li>
+      </ul>
+
+      <h2>2) Régler l’écart minimal entre paliers</h2>
+      <p style="margin:0">
+        Choisis <b>2%, 4%, 6%, 8% ou 10%</b> pour imposer un écart minimal entre deux paliers consécutifs.
+      </p>
+      <p class="muted" style="margin:6px 0 0">
+        Plus l’écart est élevé, plus le programme peut refuser certains paramètres (par exemple si le 1er prix est trop bas pour tenir le minimum du bas).
+      </p>
+
+      <h2>3) Lancer le calcul</h2>
+      <ul>
+        <li>Clique sur <b>Calculer</b>.</li>
+        <li>Le tableau affiche pour chaque place : le pourcentage et le montant en euros.</li>
+        <li>Une ligne <b>Total</b> permet de vérifier que l’ensemble retombe bien sur 100% et sur le prizepool.</li>
+      </ul>
+
+      <h2>4) Exporter / copier</h2>
+      <ul>
+        <li><b>Exporter Excel (CSV)</b> : télécharge un fichier que tu peux ouvrir dans Excel.</li>
+        <li><b>Copier (TSV)</b> : copie les données pour les coller directement dans un tableur.</li>
+      </ul>
+
+      <div class="note">
+        <b>Astuce</b> : si tu vois “Rien à exporter” / “Rien à copier”, c’est qu’aucun calcul n’a été lancé (clique d’abord sur <b>Calculer</b>).
+      </div>
+
+      <h2>5) Messages d’erreur possibles</h2>
+      <ul>
+        <li><b>Minimum trop élevé</b> : le plancher demandé ne peut pas être tenu avec le nombre de places payées et le prizepool.</li>
+        <li><b>Premier prix dépasse le prizepool</b> : le 1er prix imposé est supérieur au total.</li>
+        <li><b>Contraintes trop fortes</b> : l’écart minimal (et/ou le couple “1er prix + minimum bas”) empêche d’atteindre exactement le prizepool.</li>
+      </ul>
+
+      <h2>6) Licence (si un écran s’affiche au démarrage)</h2>
+      <ul>
+        <li><b>Avertissement</b> : la licence arrive bientôt à échéance. Tu peux continuer ou entrer un code pour prolonger.</li>
+        <li><b>Licence expirée</b> : il faut entrer un code de renouvellement pour continuer.</li>
+      </ul>
+      <p class="muted" style="margin-bottom:0">
+        Si un code est demandé, saisis-le puis clique sur <b>Valider le code</b>.
+      </p>
+
+      <div class="btnRow">
+        <a class="btn" href="prize.html">← Retour au calcul</a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
