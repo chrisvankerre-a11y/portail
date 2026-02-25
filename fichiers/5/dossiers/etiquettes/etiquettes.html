@@ -6,7 +6,30 @@
   <title>Générateur d'étiquettes</title>
 
   <!-- SheetJS local (mets xlsx.full.min.js à côté de ce fichier) -->
-  <script src="./xlsx.full.min.js"></script>
+  <script src="./xlsx.full.min.js">
+
+  // --- Mode d'emploi (popup) ---
+  const helpBtn = document.getElementById('helpBtn');
+  const helpModal = document.getElementById('helpModal');
+  const closeHelp = document.getElementById('closeHelp');
+
+  if (helpBtn && helpModal && closeHelp){
+    helpBtn.addEventListener('click', () => {
+      helpModal.style.display = "flex";
+    });
+
+    closeHelp.addEventListener('click', () => {
+      helpModal.style.display = "none";
+    });
+
+    helpModal.addEventListener('click', (e) => {
+      if (e.target === helpModal) {
+        helpModal.style.display = "none";
+      }
+    });
+  }
+
+</script>
 
   <style>
     :root{
@@ -115,6 +138,8 @@
 
     <input id="groupName" class="groupInput" type="text" placeholder="Nom du groupe" />
 
+    <button id="helpBtn" type="button">Mode d’emploi</button>
+
     <button id="printBtn" disabled>Imprimer</button>
   </div>
 
@@ -126,7 +151,48 @@
     </details><br>
   </div>
 
-  <div id="sheet" class="sheet"></div>
+  <div id="helpModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:#fff; width:min(900px, 95%); max-height:90vh; overflow:auto; padding:24px; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.3); position:relative;">
+
+    <button id="closeHelp" style="position:absolute; top:12px; right:12px; padding:6px 10px; cursor:pointer;">Fermer</button>
+
+    <h2>Mode d’emploi</h2>
+
+    <h3>1. Générer les étiquettes</h3>
+    <ol>
+      <li>Cliquez sur “Choisir un fichier Excel”.</li>
+      <li>Sélectionnez votre fichier (.xlsx ou .xls).</li>
+      <li>Les étiquettes apparaissent automatiquement.</li>
+    </ol>
+
+    <h3>2. Vérifier le contenu</h3>
+    <ul>
+      <li>Noms</li>
+      <li>Menus (entrée, plat, dessert)</li>
+      <li>Allergies ou remarques</li>
+      <li>Accompagnants éventuels</li>
+    </ul>
+
+    <h3>3. Ajouter des éléments optionnels</h3>
+    <ul>
+      <li>Logo au-dessus : s’affiche en haut à droite.</li>
+      <li>Logo en-dessous : s’affiche en bas à droite.</li>
+      <li>Nom du groupe : s’affiche sous le nom.</li>
+    </ul>
+
+    <h3>4. Impression</h3>
+    <ol>
+      <li>Cliquez sur “Imprimer”.</li>
+      <li>Vérifiez que l’échelle est à 100 %.</li>
+      <li>Désactivez “Ajuster à la page” si nécessaire.</li>
+    </ol>
+
+    <p><strong>Conseil :</strong> Faites toujours un test d’impression avant un tirage complet.</p>
+
+  </div>
+</div>
+
+<div id="sheet" class="sheet"></div>
 
 <script>
   if (typeof XLSX === "undefined") {
@@ -527,7 +593,30 @@ log("Format détecté =", isGoogleForms ? "Google Forms" : (isKiwanis ? "Kiwanis
     if (rows.length) generateNow();
   });
 
-  printBtn.addEventListener('click', () => window.print());</script>
+  printBtn.addEventListener('click', () => window.print());
+
+  // --- Mode d'emploi (popup) ---
+  const helpBtn = document.getElementById('helpBtn');
+  const helpModal = document.getElementById('helpModal');
+  const closeHelp = document.getElementById('closeHelp');
+
+  if (helpBtn && helpModal && closeHelp){
+    helpBtn.addEventListener('click', () => {
+      helpModal.style.display = "flex";
+    });
+
+    closeHelp.addEventListener('click', () => {
+      helpModal.style.display = "none";
+    });
+
+    helpModal.addEventListener('click', (e) => {
+      if (e.target === helpModal) {
+        helpModal.style.display = "none";
+      }
+    });
+  }
+
+</script>
 
 </body>
 </html>
