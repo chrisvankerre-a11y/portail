@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coffre magique – diaporama (6 étapes)</title>
+  <style>
+    :root{
+      --bg:#0a0e16;
+      --fg:#eaf2ff;
+      --accent:#ffd166;
+      --brandRed:#e41d2e;
+    }
+    html,body{ height:100%; margin:0; background:radial-gradient(1000px 700px at 50% 5%, #141e2f 0%, var(--bg) 60%, #04070c 100%); color:var(--fg); font-family:Inter,system-ui,Segoe UI,Roboto,Arial; }
+    .stage{ width:100vw; height:100vh; display:grid; place-items:center; padding:12px; box-sizing:border-box; }
+    .screen{ aspect-ratio:16/9; width:min(96vw,1920px); position:relative; border-radius:24px; overflow:hidden; box-shadow:0 30px 90px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.04); background:linear-gradient(180deg,#0a0f19,#05070c); }
+    /* Top bar: lower z-index so images can slide above it */
+    .brand-top{ position:absolute; top:0; left:0; right:0; height:64px; background:linear-gradient(90deg, #000 0%, #111 50%, #000 100%); z-index:1; display:flex; align-items:center; padding:0 18px; gap:18px; }
+    .brand-badge{ display:flex; align-items:baseline; gap:6px; font-weight:800; letter-spacing:.02em; }
+    .brand-badge .circus{ color:var(--brandRed); font-size:22px; }
+    .brand-badge .poker{ color:#fff; font-size:18px; }
+    .brand-pattern{ display:flex; gap:6px; margin-left:auto; opacity:.85; }
+    .zig,.dot,.blk{ width:24px; height:24px; }
+    .blk{ background:#111; border:1px solid #222; }
+    .zig{ background:repeating-linear-gradient(135deg,#fff 0 4px,#fff0 4px 8px); mask: conic-gradient(from 45deg, #000 0 25%, #0000 0 100%); }
+    .dot{ background:radial-gradient(circle at 50% 50%, #fff 0 20%, #fff0 21%); }
+    /* Raise z-index of visual container so images appear above the top bar */
+    #visual{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; overflow:hidden; z-index:2; }
+    #stageImg{ width:80%; max-width:1000px; height:auto; }
+    #confetti-container{ position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; overflow:hidden; z-index:3; }
+    .confetti{ position:absolute; width:8px; height:8px; background-color:#ffd166; opacity:0.9; border-radius:2px; animation: fall 3s linear forwards; }
+    @keyframes fall{ 0%{ transform:translateY(-10vh) rotate(0deg); opacity:1; } 100%{ transform:translateY(110vh) rotate(540deg); opacity:0; } }
+    /* The HUD (mode/tirage) has been removed in this version, replaced with a logo at top right */
+    .logo-top-right{
+      position:absolute;
+      top:76px;
+      right:12px;
+      z-index:7;
+      display:flex;
+      gap:6px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .tag{ background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.08); padding:6px 10px; border-radius:10px; font-size:14px; }
+    /* Positionner les contrôles à gauche et transformer le bouton de tirage en roulette circulaire */
+    .controls{
+      position:absolute;
+      bottom:14px;
+      left:20px;
+      transform:none;
+      display:flex;
+      gap:12px;
+      z-index:6;
+      flex-wrap:wrap;
+    }
+    button.primary{
+      background:linear-gradient(180deg,#ffb13b,#ff8b1f);
+      border:1px solid #c4731a;
+      color:#2a1600;
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      padding:0;
+      font-size:14px;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 18px rgba(255,140,31,.25);
+      cursor:pointer;
+    }
+    /* Classe appliquée pendant le tirage pour faire tourner la roulette */
+    button.primary.rotating{
+      animation: spin 1.2s linear infinite;
+    }
+    @keyframes spin{
+      from{ transform: rotate(0deg); }
+      to{ transform: rotate(360deg); }
+    }
+    .mini{ background:rgba(255,255,255,.12); color:#ecf2ff; border:1px solid rgba(255,255,255,.18); padding:6px 10px; border-radius:8px; cursor:pointer; }
+    .mini:hover{ background:rgba(255,255,255,.18); }
+    .amount{ position:absolute; inset:0; display:grid; place-items:center; z-index:5; pointer-events:none; font-weight:900; letter-spacing:.02em; font-size:clamp(44px,6.6vw,110px); color:transparent; background: conic-gradient(from 0deg, #fff7cc, #ffe085, #ffc04d, #ffd766, #fff3b0, #fff7cc); -webkit-background-clip:text; background-clip:text; text-shadow:0 0 50px rgba(255,220,120,.25), 0 12px 28px rgba(0,0,0,.35); opacity:0; transform:translateY(10px) scale(.98); transition: all .7s cubic-bezier(.16,.9,.2,1); }
+    .amount.visible{ opacity:1; transform:translateY(0) scale(1); }
+    .amount span{ padding:.15em .35em; }
+    .brand-footer{ position:absolute; right:14px; bottom:12px; z-index:6; color:#fff; background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.12); padding:8px 12px; border-radius:10px; font-weight:800; letter-spacing:.02em; }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="screen">
+      <div class="brand-top">
+        <div class="brand-badge"><span class="circus">Circus</span><span class="poker">POKER</span></div>
+        <div class="brand-pattern">
+          <div class="blk"></div><div class="zig"></div><div class="dot"></div><div class="blk" style="background:var(--brandRed)"></div>
+        </div>
+      </div>
+      <div id="visual">
+        <!-- l'image affichée change selon les étapes -->
+        <img id="stageImg" src="01.png" alt="Coffre animation"/>
+        <div id="confetti-container"></div>
+      </div>
+      <!-- Logo affiché en haut à droite à la place des textes mode/tirage -->
+      <div class="logo-top-right brand-badge"><span class="circus">Circus</span><span class="poker">POKER</span></div>
+      <div class="amount" id="amount"><span>€1&nbsp;000</span></div>
+      <div class="brand-footer">MYSTERY BOUNTY&nbsp;?</div>
+      <div class="controls">
+        <button class="primary" id="drawBtn">Tirer au sort (1..10)</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Liste des images dans l'ordre correct
+    const stepImages = ['01.png', '02.png', '04.png', '05.png', '08.png', '09.png'];
+    
+    // Différents montants disponibles au tirage
+    const variants = [ 
+      { id:1, amount:"€10" }, 
+      { id:2, amount:"€25" }, 
+      { id:3, amount:"€50" }, 
+      { id:4, amount:"€75" }, 
+      { id:5, amount:"€100" }, 
+      { id:6, amount:"€150" }, 
+      { id:7, amount:"€250" }, 
+      { id:8, amount:"€500" }, 
+      { id:9, amount:"€1\u202F000" }, 
+      { id:10, amount:"€5\u202F000" } 
+    ];
+    
+    const drawBtn = document.getElementById('drawBtn');
+    const amountEl = document.getElementById('amount');
+    const confettiContainer = document.getElementById('confetti-container');
+    const stageImg = document.getElementById('stageImg');
+    
+    // Préchargement des images pour une animation plus fluide
+    function preloadImages() {
+      stepImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
+    preloadImages();
+    
+    // Générer des confettis colorés
+    function generateConfetti(count=150){
+      confettiContainer.innerHTML = '';
+      const colors = ['#ffd166','#f28c28','#e41d2e','#6c9bd2','#8ac926','#ffde3f','#e06c9f'];
+      for(let i=0; i<count; i++){
+        const c = document.createElement('div');
+        c.classList.add('confetti');
+        const size = 6 + Math.random()*6;
+        c.style.width = c.style.height = size + 'px';
+        c.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+        c.style.left = Math.random()*100 + '%';
+        const dur = 2 + Math.random()*1.5;
+        const delay = Math.random()*0.5;
+        c.style.animationDuration = dur + 's';
+        c.style.animationDelay = delay + 's';
+        confettiContainer.appendChild(c);
+      }
+    }
+    
+    // Son chime pour accompagner l'animation
+    let audioCtx;
+    function playChime(){
+      try{
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = audioCtx.currentTime;
+        function tone(f,s,d,v=0.06){
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + s);
+          g.gain.setValueAtTime(0, now + s);
+          g.gain.linearRampToValueAtTime(v, now + s + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + s + d);
+          osc.connect(g).connect(audioCtx.destination);
+          osc.start(now + s);
+          osc.stop(now + s + d + 0.05);
+        }
+        tone(880, 0, 0.25);
+        tone(1320, 0.08, 0.25);
+        tone(1760, 0.16, 0.3, 0.04);
+      } catch(e){}
+    }
+
+    // Musique de suspense
+    function playSuspenseMusic(totalDurationMs){
+      try{
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+        const durSec = totalDurationMs / 1000;
+        // fréquence de départ et d'arrivée
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.linearRampToValueAtTime(660, now + durSec * 0.8);
+        // enveloppe d'amplitude : montée progressive, maintien, puis décroissance
+        gain.gain.setValueAtTime(0.0, now);
+        gain.gain.linearRampToValueAtTime(0.25, now + durSec * 0.2);
+        gain.gain.setValueAtTime(0.25, now + durSec * 0.8);
+        gain.gain.linearRampToValueAtTime(0.0, now + durSec);
+        osc.start(now);
+        // arrêter l'oscillateur à la fin
+        osc.stop(now + durSec);
+        // déclencher le son de jackpot (chime) juste après la fin
+        setTimeout(() => { playChime(); }, totalDurationMs + 50);
+      } catch(e){}
+    }
+    
+    // Animation corrigée avec la somme apparaissant en même temps que l'image 09
+    function animateSteps(callback){
+      // Séquence correcte: 01 -> 02 -> 04 -> 05 -> 08 -> 09
+      // On commence à l'index 1 (02) car l'image 01 est déjà affichée
+      
+      let currentIndex = 1; // Commencer à l'image 02
+      const totalSteps = stepImages.length - 1; // Nombre de transitions
+      
+      function nextStep() {
+        if (currentIndex <= totalSteps) {
+          // Changer d'image sans transition d'opacité
+          stageImg.src = stepImages[currentIndex];
+          
+          // Si c'est la dernière image (09), afficher la somme immédiatement
+          if (currentIndex === 5) { // Index 5 = image 09
+            amountEl.classList.add('visible');
+            if (callback) callback();
+            return; // Arrêter la séquence
+          }
+          
+          // Délais variables selon l'étape
+          let delay;
+          switch(currentIndex) {
+            case 1: // Image 02 -> attendre 300ms avant de passer à 04
+              delay = 300;
+              break;
+            case 2: // Image 04 -> attendre 400ms avant de passer à 05
+              delay = 400;
+              break;
+            case 3: // Image 05 -> attendre 500ms avant de passer à 08
+              delay = 500;
+              break;
+            case 4: // Image 08 -> attendre 600ms avant de passer à 09
+              delay = 600;
+              break;
+            default:
+              delay = 400;
+          }
+          
+          currentIndex++;
+          setTimeout(nextStep, delay);
+        }
+      }
+      
+      // Démarrer l'animation
+      setTimeout(nextStep, 200); // Petit délai initial
+    }
+
+    // Lancer un tirage
+    function startDraw(selectedVariant=null){
+      if(drawBtn.disabled) return;
+      
+      drawBtn.disabled = true;
+      drawBtn.classList.add('rotating');
+      const variant = selectedVariant || variants[Math.floor(Math.random()*variants.length)];
+      
+      // Masquer le montant et définir le nouveau
+      amountEl.classList.remove('visible');
+      setTimeout(() => {
+        amountEl.querySelector('span').textContent = variant.amount;
+      }, 10);
+      
+      // Durée totale de l'animation : 200 + 300 + 400 + 500 + 600 = 2000ms
+      const suspenseDuration = 2000 + 600; // Délais cumulés + marge
+      playSuspenseMusic(suspenseDuration);
+      
+      // Lancer la séquence d'images
+      animateSteps(() => {
+        generateConfetti();
+        
+        // Après un délai, réinitialiser
+        setTimeout(() => {
+          // Revenir à l'image de départ
+          stageImg.src = stepImages[0];
+          // Cacher le montant
+          amountEl.classList.remove('visible');
+          // Réactiver le bouton
+          drawBtn.disabled = false;
+          drawBtn.classList.remove('rotating');
+        }, 6000);
+      });
+    }
+    
+    drawBtn.addEventListener('click', () => startDraw());
+
+    // Permettre de passer en plein écran en appuyant sur la flèche vers le haut
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowUp'){
+        const elem = document.documentElement;
+        if(!document.fullscreenElement){
+          if(elem.requestFullscreen){
+            elem.requestFullscreen().catch(() => {});
+          }
+        } else {
+          if(document.exitFullscreen){
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      }
+    });
+  </script>
+
+<script>
+(function () {
+  const STORAGE_KEY = "myapp1_license_valid_until";
+  const PRODUCT_ID = "MY-APP1-001";
+  const WARNING_DAYS = 21; // 3 semaines
+
+  // >>> POUR LES TESTS, tu peux TEMPORAIREMENT remplacer cette ligne :
+  const now = new Date();
+  // Par exemple :
+  // const now = new Date("2025-12-15T12:00:00"); // pour simuler un warning
+  // const now = new Date("2026-01-05T12:00:00"); // pour simuler une licence expirée
+
+  const currentYear = now.getFullYear();
+
+  function getLicenseYear() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        // Première utilisation : on considère une licence courante
+        return currentYear;
+      }
+      const y = parseInt(raw, 10);
+      if (isNaN(y) || y < currentYear - 10 || y > currentYear + 50) {
+        // Valeur incohérente -> on repart sur l'année courante
+        return currentYear;
+      }
+      return y;
+    } catch (e) {
+      // Si localStorage HS, on considère juste l'année courante
+      return currentYear;
+    }
+  }
+
+  // Formule du code de renouvellement (toi seul la connais en pratique)
+  function expectedCode(year) {
+    const base = year * 7919 + 137 + 1;
+    return ("LIC-" + base.toString(16).toUpperCase());
+  }
+
+  function saveLicenseYear(y) {
+    try {
+      localStorage.setItem(STORAGE_KEY, String(y));
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  function daysBetween(d1, d2) {
+    const MS = 24 * 60 * 60 * 1000;
+    return Math.ceil((d2.getTime() - d1.getTime()) / MS);
+  }
+
+  function createOverlay(options) {
+    const {
+      mode,              // "warning" ou "block"
+      productId,
+      now,
+      licenseYear,
+      expiryDate,
+      onRenewSuccess,
+    } = options;
+
+    const daysLeft = daysBetween(now, expiryDate);
+
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.inset = "0";
+    overlay.style.background = "rgba(0,0,0,0.75)";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.style.zIndex = "999999";
+
+    const box = document.createElement("div");
+    box.style.background = "#111";
+    box.style.color = "#eee";
+    box.style.padding = "24px";
+    box.style.borderRadius = "8px";
+    box.style.minWidth = "320px";
+    box.style.maxWidth = "480px";
+    box.style.fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+    box.style.boxShadow = "0 8px 24px rgba(0,0,0,0.5)";
+    box.style.textAlign = "left";
+
+    const title = document.createElement("h2");
+    title.style.marginTop = "0";
+    title.style.marginBottom = "8px";
+    title.style.fontSize = "18px";
+
+    const product = document.createElement("div");
+    product.textContent = "Produit : " + productId + "  •  Licence " + licenseYear;
+    product.style.fontSize = "12px";
+    product.style.opacity = "0.8";
+    product.style.marginBottom = "12px";
+
+    const msg = document.createElement("div");
+    msg.style.fontSize = "13px";
+    msg.style.marginBottom = "12px";
+
+    const info = document.createElement("div");
+    info.style.fontSize = "12px";
+    info.style.opacity = "0.9";
+    info.style.marginBottom = "16px";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Code de renouvellement";
+    input.style.width = "100%";
+    input.style.boxSizing = "border-box";
+    input.style.padding = "6px 8px";
+    input.style.marginBottom = "8px";
+    input.style.borderRadius = "4px";
+    input.style.border = "1px solid #555";
+    input.style.background = "#222";
+    input.style.color = "#eee";
+
+    const error = document.createElement("div");
+    error.style.color = "#ff6b6b";
+    error.style.fontSize = "12px";
+    error.style.minHeight = "16px";
+    error.style.marginBottom = "8px";
+
+    const buttonsRow = document.createElement("div");
+    buttonsRow.style.display = "flex";
+    buttonsRow.style.gap = "8px";
+    buttonsRow.style.marginTop = "8px";
+
+    const btnValidate = document.createElement("button");
+    btnValidate.textContent = "Valider le code";
+    btnValidate.style.padding = "6px 12px";
+    btnValidate.style.borderRadius = "4px";
+    btnValidate.style.border = "none";
+    btnValidate.style.cursor = "pointer";
+    btnValidate.style.background = "#2f86ff";
+    btnValidate.style.color = "#fff";
+    btnValidate.style.fontSize = "13px";
+
+    let btnContinue = null;
+    if (mode === "warning") {
+      btnContinue = document.createElement("button");
+      btnContinue.textContent = "Continuer sans renouveler";
+      btnContinue.style.padding = "6px 12px";
+      btnContinue.style.borderRadius = "4px";
+      btnContinue.style.border = "none";
+      btnContinue.style.cursor = "pointer";
+      btnContinue.style.background = "#444";
+      btnContinue.style.color = "#eee";
+      btnContinue.style.fontSize = "13px";
+
+      btnContinue.addEventListener("click", function () {
+        document.body.removeChild(overlay);
+      });
+    }
+
+    btnValidate.addEventListener("click", function () {
+      const value = (input.value || "").trim().toUpperCase();
+      const nextYear = licenseYear + 1; // chaque code prolonge d'un an
+      const expected = expectedCode(nextYear);
+      if (value === expected) {
+        saveLicenseYear(nextYear);
+        document.body.removeChild(overlay);
+        if (typeof onRenewSuccess === "function") onRenewSuccess(nextYear);
+      } else {
+        error.textContent = "Code invalide (ERR-403-LIC).";
+      }
+    });
+
+    if (mode === "warning") {
+      title.textContent = "Avertissement de licence";
+      msg.textContent = "Votre licence va expirer prochainement.";
+      info.textContent = "La licence actuelle expire dans " + daysLeft +
+        " jour" + (daysLeft > 1 ? "s" : "") +
+        ". Demandez le code d’activation pour prolonger l’utilisation.";
+    } else {
+      title.textContent = "Licence expirée";
+      msg.textContent = "La licence locale est arrivée à expiration.";
+      info.textContent = "Un code de renouvellement est requis pour continuer à utiliser ce programme.";
+    }
+
+    buttonsRow.appendChild(btnValidate);
+    if (btnContinue) {
+      buttonsRow.appendChild(btnContinue);
+    }
+
+    box.appendChild(title);
+    box.appendChild(product);
+    box.appendChild(msg);
+    box.appendChild(info);
+    box.appendChild(input);
+    box.appendChild(error);
+    box.appendChild(buttonsRow);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+  }
+
+  function checkLicense() {
+    const licenseYear = getLicenseYear();
+    const expiryDate = new Date(licenseYear, 11, 31, 23, 59, 59); // 31/12 licenceYear
+    const warningStart = new Date(expiryDate.getTime() - WARNING_DAYS * 24 * 60 * 60 * 1000);
+
+    if (now > expiryDate) {
+      // Licence expirée -> blocage dur
+      createOverlay({
+        mode: "block",
+        productId: PRODUCT_ID,
+        now,
+        licenseYear,
+        expiryDate,
+        onRenewSuccess: function () {
+          // rien de spécial à faire après, la page est déjà chargée
+        }
+      });
+      return;
+    }
+
+    if (now >= warningStart) {
+      // Fenêtre de warning -> message à chaque ouverture tant qu'il n'a pas renouvelé
+      createOverlay({
+        mode: "warning",
+        productId: PRODUCT_ID,
+        now,
+        licenseYear,
+        expiryDate,
+        onRenewSuccess: function () {
+          // après renouvellement, plus de warning (licenceYear+1, warning l'année suivante)
+        }
+      });
+    }
+    // Si on est avant warningStart : rien, fonctionnement normal
+  }
+
+  window.addEventListener("load", checkLicense);
+})();
+</script>
+
+
+</body>
+</html>
