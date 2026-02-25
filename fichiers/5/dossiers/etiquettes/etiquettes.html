@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Générateur d'étiquettes</title>
+
+  <!-- SheetJS local (mets xlsx.full.min.js à côté de ce fichier) -->
+  <script src="./xlsx.full.min.js"></script>
+
+  <style>
+    :root{
+      /* === PARAMÈTRES À AJUSTER === */
+      --label-w: 70mm;
+      --label-h: 37mm;
+      --gap: 3mm;
+      --pad: 3.5mm;
+      --logo-h: 8mm;
+      --font: 10pt;
+    }
+
+    body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 16px; }
+    .toolbar{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom: 12px; }
+    .toolbar button{ padding: 8px 10px; cursor:pointer; }
+    
+    .hiddenFile{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+    .fileBtn{ display:inline-flex; align-items:center; padding:8px 10px; border:1px solid #ccc; border-radius:10px; background:#fff; cursor:pointer; user-select:none; }
+    .fileBtn:hover{ background:#f6f6f6; }
+    .groupInput{ padding:8px 10px; border:1px solid #ccc; border-radius:10px; min-width: 220px; }
+
+.panel{ border: 1.5pt solid #000; border-radius:12px; padding:12px; margin:12px 0; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .small{ color:#555; font-size: 0.95em; }
+    pre{ white-space: pre-wrap; background:#fafafa; border:1px solid #eee; padding:10px; border-radius:10px; }
+    .sheet{ display:grid; grid-template-columns: repeat(auto-fill, var(--label-w)); gap: var(--gap); align-content:start; }
+    .labelWrap{
+      width: var(--label-w);
+      break-inside: avoid;
+      page-break-inside: avoid;
+      display:inline-block;
+    }
+    .label{
+      width: var(--label-w);
+      min-height: var(--label-h);
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 2mm;
+      padding: var(--pad);
+      box-sizing: border-box;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position: relative;
+      overflow: visible;
+    }
+    .top{ display:flex; justify-content:space-between; align-items:flex-start; gap:6px; }
+    .name{ font-weight:700; font-size: calc(var(--font) + 1pt); line-height:1.05; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
+    .logo{ height: var(--logo-h); width:auto; object-fit:contain; flex:0 0 auto; }
+
+    .nameBlock{ display:flex; flex-direction:column; min-width:0; }
+    .role{ font-size: calc(var(--font) - 1pt); font-weight:700; text-transform:uppercase; letter-spacing:0.3px; margin-top:1mm; }
+    .group{ font-size: calc(var(--font) - 1pt); font-weight:600; margin-top:1mm; }
+    .topRight{ display:flex; align-items:flex-start; gap:2mm; flex:0 0 auto; }
+    .logoBottom{ height: var(--logo-h); width:auto; object-fit:contain; flex:0 0 auto; position:absolute; bottom:2mm; right:2mm; }
+
+    .menu{ font-size: var(--font); line-height:1.1; margin-top:2mm; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
+    .ico{ font-size: 16pt; line-height: 1; vertical-align: -1pt; }
+    .allergies{ font-size: calc(var(--font) - 1pt); line-height:1.1; color:#111; overflow-wrap: anywhere; word-break: break-word; hyphens: auto;  margin-top: 6px; }
+
+    .allergies strong{ font-weight:700; }
+
+    @media print{
+      body{ margin:0; }
+      .toolbar, .panel{ display:none !important; }
+
+      /* En impression, on passe en flex-wrap: pagination plus fiable + pas d'étiquette coupée */
+      .sheet{ display:flex; flex-wrap:wrap; gap: var(--gap); align-content:flex-start; }
+
+      .labelWrap{
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .label{
+        border:none;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  
+    @media print{
+      *{
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .label{
+        border: 1.5pt solid #000;
+      }
+    }
+
+</style>
+</head>
+<body>
+
+  
+  <div class="toolbar">
+    <label class="fileBtn" for="file">Choisir un fichier Excel</label>
+    <input id="file" class="hiddenFile" type="file" accept=".xlsx,.xls" />
+
+    <label class="fileBtn" for="logoLcdr">Logo au-dessus</label>
+    <input id="logoLcdr" class="hiddenFile" type="file" accept="image/*" />
+
+    <label class="fileBtn" for="logoGroup">Logo en-dessous</label>
+    <input id="logoGroup" class="hiddenFile" type="file" accept="image/*" />
+
+    <input id="groupName" class="groupInput" type="text" placeholder="Nom du groupe" />
+
+    <button id="printBtn" disabled>Imprimer</button>
+  </div>
+
+
+  <div class="panel">
+     <details style="margin-top:10px;">
+      <summary>Debug</summary>
+      <pre id="debug"></pre>
+    </details><br>
+  </div>
+
+  <div id="sheet" class="sheet"></div>
+
+<script>
+  if (typeof XLSX === "undefined") {
+    alert("XLSX non chargé. Vérifie que xlsx.full.min.js est dans le même dossier que index.html.");
+  }
+
+  const fileInput = document.getElementById('file');
+  const logoLcdrInput = document.getElementById('logoLcdr');
+  const logoGroupInput = document.getElementById('logoGroup');
+  const groupNameInput = document.getElementById('groupName');
+  let groupName = "";
+  const printBtn = document.getElementById('printBtn');
+  const sheetEl = document.getElementById('sheet');
+  const debugEl = document.getElementById('debug');
+
+  let rows = [];
+  let logoLcdrDataUrl = null;
+  let logoGroupDataUrl = null;
+
+  function log(...args){
+    debugEl.textContent += args.map(a => typeof a === "string" ? a : JSON.stringify(a, null, 2)).join(" ") + "\n";
+  }
+
+  function esc(s){
+    return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  
+  function normText(v){
+    return (v ?? "").toString()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase().trim();
+  }
+
+  // --- Détection d'icônes (best-effort) ---
+  // Priorité : vegan > végétarien > mer/crustacés > volaille > viande > inconnu
+  const VEGAN_KEYS = ["vegan","vegane","vegans","vegane","vegetalien","vegetalienne","vegetaliens","vegetaliennes"];
+  const VEGETARIAN_KEYS = ["vegetarien","vegetarienne","vegetariens","vegetariennes","vege","végé","vegetar"]; // "vegetar" couvre "végétar..." après normalisation
+
+  const FISH_KEYS = ["poisson","saumon","truite","thon","cabillaud","morue","lieu","sole","bar","dorade","haddock","colin","merlu","lotte","espadon","st jacques","saint jacques","crevette","gambas","homard","langoustine","crabe","moule","moules","calamar","seiche","poulpe","coquillage","huitre","huitres","noix de saint jacques","noix de st jacques"];
+  const POULTRY_KEYS = ["poulet","volaille","dinde","pintade"];  
+  const MEAT_KEYS = ["viande","boeuf","bœuf","veau","porc","agneau","canard","lapin","biche","cerf","gibier","jambon","lard","bacon","saucisse","steak","filet","magret"];
+
+  function iconEntreePlat(text){
+    const t = normText(text);
+    if(!t) return "";
+    if(VEGAN_KEYS.some(k => t.includes(k))) return "🌱";
+    if(VEGETARIAN_KEYS.some(k => t.includes(k))) return "🥬";
+    if(FISH_KEYS.some(k => t.includes(k))) return "🐟";
+    if(POULTRY_KEYS.some(k => t.includes(k))) return "🍗";
+    if(MEAT_KEYS.some(k => t.includes(k))) return "🥩";
+    return "🥗";
+  }
+
+  function iconDessert(text){
+    const t = normText(text);
+    if(!t) return "";
+    if(t.includes("banane")) return "🍌";
+    if(t.includes("chocolat") || t.includes("chocolate")) return "🍫";
+    return "🍮";
+  }
+
+  function buildMenu(entree, plat, dessert){
+    const lines = [];
+    const e = iconEntreePlat(entree);
+    const p = iconEntreePlat(plat);
+    const d = iconDessert(dessert);
+
+    // Afficher l'intitulé du choix + symbole
+    if (String(entree ?? "").trim()){
+      lines.push(`Entrée : <span class="ico">${e || "🥗"}</span> ${esc(entree)}`);
+    }
+    if (String(plat ?? "").trim()){
+      lines.push(`Plat : <span class="ico">${p || "🥗"}</span> ${esc(plat)}`);
+    }
+    if (String(dessert ?? "").trim()){
+      lines.push(`Dessert : <span class="ico">${d || "🍮"}</span> ${esc(dessert)}`);
+    }
+    return lines.join("<br/>");
+  }
+
+  function photoIconHtml(photoAuth){
+    if (photoAuth === true){
+      // caméra verte
+      return `
+        <svg class="photoIcon" viewBox="0 0 24 24" aria-label="Photos autorisées" role="img">
+          <path fill="#0a7a2f" d="M9 4l1.5 2H14l1.5-2H19a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4zm3 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6a3 3 0 0 1 0-6z"/>
+        </svg>
+      `;
+    }
+    if (photoAuth === false){
+      // caméra rouge barrée
+      return `
+        <svg class="photoIcon" viewBox="0 0 24 24" aria-label="Photos interdites" role="img">
+          <path fill="#b00020" d="M9 4l1.5 2H14l1.5-2H19a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4zm3 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6a3 3 0 0 1 0-6z"/>
+          <path fill="#b00020" d="M4 20.5L20.5 4l1.5 1.5L5.5 22z"/>
+        </svg>
+      `;
+    }
+    return "";
+  }
+
+  function renderLabel(r){
+    const name = r.name || "";
+    const menu = buildMenu(r.entree, r.plat, r.dessert);
+    const allergies = r.allergies || "";
+    const notes = r.notes || "";
+    const notesKind = r.notesKind || (String(notes).trim() ? "Remarques" : "");
+    const role = r.role || "";
+
+    if (!String(name).trim()) return "";
+
+    return `
+      <div class="labelWrap"><div class="label">
+        <div>
+          <div class="top">
+            <div class="nameBlock">
+              <div class="name">${esc(name)}</div>
+              ${role ? `<div class="role">${esc(role)}</div>` : ""}
+            
+              ${groupName ? `<div class="group">${esc(groupName)}</div>` : ""}
+</div>
+            <div class="topRight">
+              ${logoLcdrDataUrl ? `<img class="logo" src="${logoLcdrDataUrl}" alt="Logo LCDR" />` : ""}
+</div>
+          </div>
+          <div class="menu">${menu ? menu : ""}</div>
+        </div>
+        ${String(allergies).trim()
+          ? `<div class="allergies"><strong>Allergies :</strong> ${esc(allergies)}</div>`
+          : (String(notes).trim()
+              ? `<div class="allergies"><strong>${esc(notesKind)} :</strong> ${esc(notes)}</div>`
+              : `<div class="allergies"></div>`)}
+      
+        ${logoGroupDataUrl ? `<img class="logoBottom" src="${logoGroupDataUrl}" alt="Logo en-dessous" />` : ""}</div></div>
+    `;
+  }
+
+
+  function normalizeLabelHeights(){
+    const labels = Array.from(document.querySelectorAll('.label'));
+    if(!labels.length) return;
+
+    // reset to measure natural height
+    labels.forEach(l => { l.style.height = 'auto'; });
+
+    const maxH = Math.max(...labels.map(l => l.getBoundingClientRect().height));
+    const h = Math.ceil(maxH);
+
+    labels.forEach(l => { l.style.height = h + 'px'; });
+  }
+
+  function generateNow(){
+    sheetEl.innerHTML = rows.map(renderLabel).filter(Boolean).join("");
+    // Uniformiser la hauteur : toutes les étiquettes prennent la hauteur de la plus grande
+    requestAnimationFrame(() => {
+      requestAnimationFrame(normalizeLabelHeights);
+    });
+    log("OK: étiquettes générées =", sheetEl.children.length);
+    printBtn.disabled = sheetEl.children.length === 0;
+  }
+
+  fileInput.addEventListener('change', async (e) => {
+    debugEl.textContent = "";
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if(typeof XLSX === "undefined"){
+      log("ERREUR: librairie XLSX non chargée (fichier local manquant ?).");
+      return;
+    }
+
+    try{
+      const data = await file.arrayBuffer();
+      const wb = XLSX.read(data, { type: "array" });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+
+      // Lecture en tableau 2D pour pouvoir cibler B/C/D/E/G par index fixe.
+      // A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7...
+      const table = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "", blankrows: false });
+
+      if(!table.length){
+        log("Aucune ligne trouvée (feuille vide ou lecture échouée).");
+        rows = [];
+        generateNow();
+        return;
+      }
+
+      const headerRow = table[0] || [];
+      log("Colonnes (ligne 1) =", headerRow);
+
+      const h = (table[0] || []).map(v => String(v ?? "").trim());
+      const hLower = h.map(v => v.toLowerCase());
+
+      // Détection format :
+      // - "Google Forms" : A=Nom, B=Prénom, C="Je serai accompagné(e)", D/E/F=menu accompagnant, G/H/I=menu membre, J=autorisation images
+      // - "Autre format" : B=Nom+Prénom, C/D/E=Entrée/Plat/Dessert, G=Allergies
+      const isGoogleForms = (hLower[2] || "").includes("accompagn") || hLower.some(x => x.includes("je serai accompagné"));
+
+// Format "Casino Namur / menus" (colonnes C->L, titres en ligne 4, données à partir de la ligne 5, fin avant la ligne contenant TOTAL)
+const casinoHeaderIdx = table.findIndex(r => normText(r?.[2]) === "participants");
+const isCasinoMenu = casinoHeaderIdx >= 0 && (table[casinoHeaderIdx - 1] || []).some(v => {
+  const t = normText(v);
+  return t.includes("entree") || t.includes("entrees") || t.includes("plats") || t.includes("dessert") || t.includes("desserts");
+});
+
+const isKiwanis = (hLower[hLower.length - 1] || "") === "jeux" || hLower.some((x, idx) => idx === hLower.length - 1 && x.includes("jeux"));
+
+log("Format détecté =", isGoogleForms ? "Google Forms" : (isKiwanis ? "Kiwanis" : (isCasinoMenu ? "Casino/Menu" : "Autre format")));
+
+      rows = [];
+      const dataRows = table.slice(1); // ignore ligne 1 (titres)
+
+      if (isGoogleForms){
+        for (const r of dataRows){
+          const nom = r[0] ?? "";
+          const prenom = r[1] ?? "";
+          const name = `${String(nom).trim()} ${String(prenom).trim()}`.trim();
+          if (!name) continue;
+
+          const hasGuest = String(r[2] ?? "").trim().toUpperCase() === "OUI";
+          const photoAuth = String(r[9] ?? "").trim().toUpperCase() === "OUI";
+
+          // Étiquette membre (A,B + G,H,I)
+          rows.push({
+            name,
+            entree: r[6] ?? "",
+            plat: r[7] ?? "",
+            dessert: r[8] ?? "",
+            allergies: "",
+            role: "",
+            photoAuth
+          });
+
+          // Étiquette accompagnant si C == OUI (A,B + D,E,F + mention "accompagnant")
+          if (hasGuest){
+            rows.push({
+              name,
+              entree: r[3] ?? "",
+              plat: r[4] ?? "",
+              dessert: r[5] ?? "",
+              allergies: "",
+              role: "accompagnant",
+              photoAuth
+            });
+          }
+        }
+      
+      }else if (isKiwanis){
+        // Format "Kiwanis" : A=Nom, B/C=Entrées, D/E=Plats, F/G=Desserts, dernière colonne "JEUX" (commentaire)
+        const header = table[0] || [];
+        const entreeLabels = [header[1] ?? "", header[2] ?? ""];
+        const platLabels   = [header[3] ?? "", header[4] ?? ""];
+        const dessertLabels= [header[5] ?? "", header[6] ?? ""];
+        const jeuxIdx = header.length - 1;
+
+        const isOne = (cell) => {
+          if (cell === null || cell === undefined) return false;
+          if (typeof cell === "number") return cell === 1;
+          const s = String(cell).trim().toUpperCase();
+          return s === "1";
+        };
+
+        const pick = (labels, r, idxs) => {
+          const chosen = [];
+          for (let j = 0; j < idxs.length; j++){
+            if (isOne(r[idxs[j]])) chosen.push(labels[j]);
+          }
+          return chosen.filter(x => String(x).trim()).join(" / ");
+        };
+
+        for (const r of dataRows){
+          const name = String(r[0] ?? "").trim();
+          if (!name) continue;
+
+          const entree = pick(entreeLabels, r, [1,2]);   // B,C
+          const plat   = pick(platLabels, r, [3,4]);     // D,E
+          const dessert= pick(dessertLabels, r, [5,6]);  // F,G
+
+          const jeuxCell = r[jeuxIdx];
+          const notes = isOne(jeuxCell) ? "jeux ok" : "";
+
+          rows.push({
+            name,
+            entree,
+            plat,
+            dessert,
+            allergies: "",
+            notes,
+            notesKind: notes ? "Remarques" : "",
+            role: "",
+            photoAuth: null,
+          });
+        }
+}else if (isCasinoMenu){
+        const header = table[casinoHeaderIdx] || [];
+
+        const entreeLabels = [header[3] ?? "", header[4] ?? "", header[5] ?? ""];
+        const platLabels = [header[6] ?? "", header[7] ?? "", header[8] ?? ""];
+        const dessertLabels = [header[9] ?? "", header[10] ?? ""];
+
+        // Bornes : de la ligne après "Participants" (incluse) jusqu'avant la ligne contenant "TOTAL" (colonne C)
+        const totalIdx = table.findIndex((r, i) => i > casinoHeaderIdx && String(r?.[2] ?? "").toUpperCase().includes("TOTAL"));
+        const startIdx = casinoHeaderIdx + 1;
+        const endIdx = totalIdx >= 0 ? totalIdx : table.length;
+
+        const isMarked = (cell) => {
+          if (cell === null || cell === undefined) return false;
+          if (typeof cell === "number") return cell !== 0;
+          if (typeof cell === "boolean") return cell;
+          const s = String(cell).trim();
+          return s !== "" && s !== "0";
+        };
+
+        const pickOneOrMore = (labels, r, idxs) => {
+          const chosen = [];
+          for (let j = 0; j < idxs.length; j++){
+            if (isMarked(r[idxs[j]])) chosen.push(labels[j]);
+          }
+          return chosen.filter(x => String(x).trim()).join(" / ");
+        };
+
+        for (let i = startIdx; i < endIdx; i++){
+          const r = table[i] || [];
+          const name = String(r[2] ?? "").trim(); // colonne C
+          if (!name) continue;
+
+          const entree = pickOneOrMore(entreeLabels, r, [3,4,5]);   // D,E,F
+          const plat = pickOneOrMore(platLabels, r, [6,7,8]);       // G,H,I
+          const dessert = pickOneOrMore(dessertLabels, r, [9,10]);  // J,K
+          const notes = r[11] ?? "";                                // L
+
+          rows.push({
+            name,
+            entree,
+            plat,
+            dessert,
+            allergies: "",
+            notes,
+            notesKind: "Remarques",
+            role: "",
+            photoAuth: null,
+          });
+        }
+      }else{
+        // A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7...
+        rows = dataRows
+          .map((r) => ({
+            name: r[1] ?? "",
+            entree: r[2] ?? "",
+            plat: r[3] ?? "",
+            dessert: r[4] ?? "",
+            allergies: r[6] ?? "",
+            role: "",
+            photoAuth: null,
+          }))
+          .filter(obj => String(obj.name).trim() !== ""); // 1 étiquette par client (nom requis)
+      }
+
+      log("OK: étiquettes générées =", rows.length);
+      log("OK: lignes clients =", rows.length);
+      generateNow();
+    }catch(err){
+      log("ERREUR lecture Excel:", String(err?.message || err));
+      rows = [];
+      generateNow();
+    }
+  });
+
+  function loadLogoFile(file, which){
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (which === "lcdr") logoLcdrDataUrl = reader.result;
+      if (which === "group") logoGroupDataUrl = reader.result;
+      log(`OK: ${which === "lcdr" ? "Logo LCDR" : "Logo en-dessous"} chargé`);
+      if (rows.length) generateNow();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  logoLcdrInput.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    loadLogoFile(file, "lcdr");
+  });
+
+  logoGroupInput.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    loadLogoFile(file, "group");
+  });
+
+
+
+  groupNameInput.addEventListener('input', (e) => {
+    groupName = String(e.target.value || "").trim();
+    if (rows.length) generateNow();
+  });
+
+  printBtn.addEventListener('click', () => window.print());</script>
+
+</body>
+</html>
