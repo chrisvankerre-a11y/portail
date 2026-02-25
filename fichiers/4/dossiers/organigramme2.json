@@ -1,0 +1,1709 @@
+{
+  "collaborateurs": [
+    {
+      "id": "c1",
+      "nom": "Karim Tekaya",
+      "fonction": "Directeur Général",
+      "dept": "direction générale",
+      "manager": null,
+      "email": "alice@exemple.com",
+      "tel": "+33 1 23 45 67 00",
+      "avatar": "KT"
+    },
+    {
+      "id": "c2",
+      "nom": "X X",
+      "fonction": "Directeur Général Adjoint",
+      "dept": "direction générale",
+      "manager": null,
+      "email": "benoit@exemple.com",
+      "tel": "",
+      "avatar": "XX"
+    },
+    {
+      "id": "c3",
+      "nom": "Christophe Van Kerrebroeck",
+      "fonction": "Attaché de Direction",
+      "dept": "direction générale",
+      "manager": null,
+      "email": "camille@exemple.com",
+      "tel": "",
+      "avatar": "CV"
+    },
+    {
+      "id": "c4",
+      "nom": "Adrien Cauchie",
+      "fonction": "Directeur des Jeux",
+      "dept": "jeux de table",
+      "manager": "c1",
+      "codir":true,	
+      "email": "damien@exemple.com",
+      "tel": "",
+      "avatar": "AC"
+    },
+    {
+      "id": "c5",
+      "nom": "Jean-Marc Laperrousaz",
+      "fonction": "Directeur Slots",
+      "dept": "slots",
+      "manager": "c1",
+      "codir":true,	
+      "email": "emma@exemple.com",
+      "tel": "",
+      "avatar": "JML"
+    },
+    {
+      "id": "c6",
+      "nom": "David Echterbille",
+      "fonction": "Directeur de l'Hôtel",
+      "dept": "hôtel",
+      "manager": "c1",
+      "codir":true,	
+      "email": "farah@exemple.com",
+      "tel": "",
+      "avatar": "DE"
+    },
+    {
+      "id": "c7",
+      "nom": "Sonia Arezki",
+      "fonction": "HR Manager",
+      "dept": "RH",
+      "manager": "c1",
+      "codir":true,	
+      "email": "hugo@exemple.com",
+      "tel": "",
+      "avatar": "SA"
+    },
+    {
+      "id": "c8",
+      "nom": "Hugues Thiry",
+      "fonction": "Facility Manager",
+      "dept": "maintenance",
+      "manager": "c1",
+      "codir":true,	
+      "email": "ines@exemple.com",
+      "tel": "",
+      "avatar": "HT"
+    },
+    {
+      "id": "c9",
+      "nom": "Pierre Deville",
+      "fonction": "Chef comptable",
+      "dept": "Comptabilité",
+      "manager": "c1",
+      "email": "",
+      "tel": "",
+      "avatar": "PD"
+    },
+    {
+      "id": "c10",
+      "nom": "Arthur Libert",
+      "fonction": "Comptable",
+      "dept": "Comptabilité",
+      "manager": "c9",
+      "email": "",
+      "tel": "",
+      "avatar": "AL"
+    },
+    {
+      "id": "c11",
+      "nom": "Laurent Regnier",
+      "fonction": "Comptable",
+      "dept": "Comptabilité",
+      "manager": "c9",
+      "email": "",
+      "tel": "",
+      "avatar": "LR"
+    },
+    {
+      "id": "c12",
+      "nom": "Céline Ainseur",
+      "fonction": "Responsable Marketing",
+      "dept": "Marketing",
+      "manager": "c1",
+      "codir":true,	
+      "email": "",
+      "tel": "",
+      "avatar": "CA"
+    },
+    {
+      "id": "c13",
+      "nom": "Léa Lempereur",
+      "fonction": "Coordinatrice marketing",
+      "dept": "Marketing",
+      "manager": "c12",
+      "email": "",
+      "tel": "",
+      "avatar": "LL"
+    },
+    {
+      "id": "c14",
+      "nom": "Eline Sana",
+      "fonction": "Responsable Event",
+      "dept": "Event",
+      "manager": "c6",
+      "email": "",
+      "tel": "",
+      "avatar": "ES"
+    },
+    {
+      "id": "c15",
+      "nom": "Léontine Gobelet",
+      "fonction": "Coordinatrice marketing & event",
+      "dept": "Marketing & Event",
+      "manager": "c14",
+      "managers": [
+        "c14",
+        "c12"
+      ],
+      "email": "",
+      "tel": "",
+      "avatar": "LG"
+    },
+{
+  "id": "c16",
+  "nom": "Andrea Iovine",
+  "fonction": "Gaming Duty Manager",
+  "dept": "jeux de table",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "AI"
+},
+{
+  "id": "c17",
+  "nom": "Vanirak Kang",
+  "fonction": "VIP Manager",
+  "dept": "slots",
+  "manager": "c5",
+  "email": "",
+  "tel": "",
+  "avatar": "VK"
+},
+{
+  "id": "c18",
+  "nom": "Maxime Pirson",
+  "fonction": "Assistant MAS",
+  "dept": "slots",
+  "manager": "c5",
+  "email": "",
+  "tel": "",
+  "avatar": "MP"
+},
+{
+  "id": "c20",
+  "nom": "Aurélie Deffense",
+  "fonction": "Wellness Manager",
+  "dept": "hôtel",
+  "manager": "c6",
+  "email": "",
+  "tel": "",
+  "avatar": "AD"
+},
+{
+  "id": "c21",
+  "nom": "Camille Bastaits",
+  "fonction": "HR Officer",
+  "dept": "RH",
+  "manager": "c7",
+  "email": "",
+  "tel": "",
+  "avatar": "CB"
+},
+{
+  "id": "c22",
+  "nom": "Linh Mai",
+  "fonction": "HR Assistant",
+  "dept": "RH",
+  "manager": "c7",
+  "email": "",
+  "tel": "",
+  "avatar": "LM"
+},
+{
+  "id": "c23",
+  "nom": "Jean-Louis Anton",
+  "fonction": "Ouvrier",
+  "dept": "maintenance",
+  "manager": "c8",
+  "email": "",
+  "tel": "",
+  "avatar": "JLA"
+},
+{
+  "id": "c24",
+  "nom": "Manu Moreno",
+  "fonction": "Ouvrier",
+  "dept": "maintenance",
+  "manager": "c8",
+  "email": "",
+  "tel": "",
+  "avatar": "MM"
+},
+{
+  "id": "c25",
+  "nom": "Gabriel Lecomte",
+  "fonction": "Ouvrier",
+  "dept": "maintenance",
+  "manager": "c8",
+  "email": "",
+  "tel": "",
+  "avatar": "GL"
+},
+{
+  "id": "c26",
+  "nom": "Romélio Cruciani",
+  "fonction": "Ouvrier",
+  "dept": "maintenance",
+  "manager": "c8",
+  "email": "",
+  "tel": "",
+  "avatar": "RC"
+},
+{
+  "id": "c27",
+  "nom": "Stéphane Stuaert",
+  "fonction": "VIP Manager",
+  "dept": "jeux de table",
+  "manager": "c1",
+  "email": "",
+  "tel": "",
+  "avatar": "SS"
+},
+{
+  "id": "c28",
+  "nom": "Frank Remy",
+  "fonction": "Supervisor Manager",
+  "dept": "",
+  "manager": "c5",
+  "email": "",
+  "tel": "",
+  "avatar": "FR"
+},
+{
+  "id": "c29",
+  "nom": "Damien Gorjanec",
+  "fonction": "Restaurant Manager",
+  "dept": "Restaurant",
+  "manager": "c1",
+  "email": "",
+  "tel": "",
+  "avatar": "DG"
+},
+{
+  "id": "c30",
+  "nom": "Katia Guarracino",
+  "fonction": "Bar Manager",
+  "dept": "Bar",
+  "manager": "c1",
+  "email": "",
+  "tel": "",
+  "avatar": "KG"
+},
+{
+  "id": "c31",
+  "nom": "Sarah Fosset",
+  "fonction": "Chef de Rang",
+  "dept": "Restaurant",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "SF"
+},
+{
+  "id": "c32",
+  "nom": "Fabiola Vancopenolle",
+  "fonction": "Bar Assistant",
+  "dept": "Bar",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "FV"
+},
+{
+  "id": "c33",
+  "nom": "Céline Vanesse",
+  "fonction": "Bar Assistant",
+  "dept": "Bar",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "CV"
+},
+  {
+    "id": "c34",
+    "nom": "Raphaël Voermantrouw",
+    "fonction": "Caisse Manager",
+    "dept": "jeux de table",
+    "manager": "c4",
+    "email": "",
+    "tel": "",
+    "avatar": "RV"
+  },
+  {
+    "id": "c35",
+    "nom": "Pascal Platzbecker",
+    "fonction": "Duty Manager",
+    "dept": "jeux de table",
+    "manager": "c4",
+    "email": "",
+    "tel": "",
+    "avatar": "PP"
+  },
+  {
+    "id": "c36",
+    "nom": "Gladys Goderniaux",
+    "fonction": "Wellness Manager",
+    "dept": "hôtel",
+    "manager": "c20",
+    "email": "",
+    "tel": "",
+    "avatar": "GG"
+  },
+{
+  "id": "c37",
+  "nom": "René Bar",
+  "fonction": "Chef Sécurité",
+  "dept": "",
+  "manager": "c1",
+  "email": "",
+  "tel": "",
+  "avatar": "RB"
+},
+{
+  "id": "c38",
+  "nom": "Sokol Blloku",
+  "fonction": "Accueil",
+  "dept": "",
+  "manager": "c37",
+  "email": "",
+  "tel": "",
+  "avatar": "SB"
+},
+{
+  "id": "c39",
+  "nom": "David Ilouridze",
+  "fonction": "Accueil",
+  "dept": "",
+  "manager": "c37",
+  "email": "",
+  "tel": "",
+  "avatar": "DI"
+},
+{
+  "id": "c40",
+  "nom": "Fabrice Amay",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "FA"
+},
+{
+  "id": "c41",
+  "nom": "Adélia Di Stefano",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "ADS"
+},
+{
+  "id": "c42",
+  "nom": "Florian Dupont",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "FD"
+},
+{
+  "id": "c43",
+  "nom": "Miljazim Isljami",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "MI"
+},
+{
+  "id": "c44",
+  "nom": "Céline Marneffe",
+  "fonction": "Assistant Manager",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "CM"
+},
+{
+  "id": "c45",
+  "nom": "Florian Salmon",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "FS"
+},
+{
+  "id": "c46",
+  "nom": "Nathan Schmit",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "NS"
+},
+{
+  "id": "c47",
+  "nom": "Marine Tournay",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "MT"
+},
+{
+  "id": "c48",
+  "nom": "Faton Zekiri",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "FZ"
+},
+{
+  "id": "c49",
+  "nom": "Jetan Zekiri",
+  "fonction": "Serveur",
+  "dept": "",
+  "manager": "c30",
+  "email": "",
+  "tel": "",
+  "avatar": "JZ"
+},
+{
+  "id": "c50",
+  "nom": "Cassie Fréquelin",
+  "fonction": "Gouvernante",
+  "dept": "",
+  "manager": "c6",
+  "email": "",
+  "tel": "",
+  "avatar": "CF"
+},
+{
+  "id": "c51",
+  "nom": "Lise Cartuyvels",
+  "fonction": "Front Office Team Leader",
+  "dept": "",
+  "manager": "c6",
+  "email": "",
+  "tel": "",
+  "avatar": "LC"
+},
+{
+  "id": "c52",
+  "nom": "Dolly Argot",
+  "fonction": "Receptionniste",
+  "dept": "",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "DA"
+},
+{
+  "id": "c53",
+  "nom": "Margaux Brackman",
+  "fonction": "Femme de chambre",
+  "dept": "",
+  "manager": "c50",
+  "email": "",
+  "tel": "",
+  "avatar": "MB"
+},
+{
+  "id": "c54",
+  "nom": "Kolocheleman Manu Callebaut",
+  "fonction": "Homme de métier",
+  "dept": "",
+  "manager": "c50",
+  "email": "",
+  "tel": "",
+  "avatar": "KMC"
+},
+{
+  "id": "c55",
+  "nom": "Brian Chapelain",
+  "fonction": "Serveur banquet",
+  "dept": "",
+  "manager": "c14",
+  "email": "",
+  "tel": "",
+  "avatar": "BC"
+},
+{
+  "id": "c56",
+  "nom": "Marcia Daems",
+  "fonction": "Receptionniste",
+  "dept": "",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "MD"
+},
+{
+  "id": "c57",
+  "nom": "Cyrielle Doko Kaltouma",
+  "fonction": "Femme de chambre",
+  "dept": "",
+  "manager": "c50",
+  "email": "",
+  "tel": "",
+  "avatar": "CDK"
+},
+{
+  "id": "c58",
+  "nom": "Rudi Gani",
+  "fonction": "Receptionniste",
+  "dept": "",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "RG"
+},
+{
+  "id": "c59",
+  "nom": "Gaëlle Jacobs",
+  "fonction": "Collab Wellness",
+  "dept": "",
+  "manager": "c20",
+  "email": "",
+  "tel": "",
+  "avatar": "GJ"
+},
+{
+  "id": "c60",
+  "nom": "Sarah Kermouni",
+  "fonction": "Receptionniste",
+  "dept": "",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "SK"
+},
+{
+  "id": "c61",
+  "nom": "Eva Kirsch",
+  "fonction": "Assistante opérationnels",
+  "dept": "",
+  "manager": "c14",
+  "email": "",
+  "tel": "",
+  "avatar": "EK"
+},
+{
+  "id": "c62",
+  "nom": "Adjara Massah",
+  "fonction": "Femme de chambre",
+  "dept": "",
+  "manager": "c50",
+  "email": "",
+  "tel": "",
+  "avatar": "AM"
+},
+{
+  "id": "c63",
+  "nom": "Tshimwene Marielou Mutshiaudi",
+  "fonction": "Technicienne de surface",
+  "dept": "",
+  "manager": "c50",
+  "email": "",
+  "tel": "",
+  "avatar": "TMM"
+},
+{
+  "id": "c64",
+  "nom": "Frank Ndjouli Jong",
+  "fonction": "Receptionniste",
+  "dept": "",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "FNJ"
+},
+{
+  "id": "c65",
+  "nom": "Tiffany Pirson",
+  "fonction": "Praticienne soins spa",
+  "dept": "",
+  "manager": "c20",
+  "email": "",
+  "tel": "",
+  "avatar": "TP"
+},
+{
+  "id": "c66",
+  "nom": "Océane Smets",
+  "fonction": "Femme de chambre",
+  "dept": "",
+  "manager": "c50",
+  "email": "",
+  "tel": "",
+  "avatar": "OS"
+},
+{
+  "id": "c67",
+  "nom": "Irini Thana",
+  "fonction": "Receptionniste",
+  "dept": "",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "IT"
+},
+{
+  "id": "c68",
+  "nom": "Marie-Claire Umuhoza",
+  "fonction": "Femme de chambre",
+  "dept": "",
+  "manager": "c50",
+  "email": "",
+  "tel": "",
+  "avatar": "MCU"
+},
+{
+  "id": "c69",
+  "nom": "Laura Zarrella",
+  "fonction": "Receptionniste",
+  "dept": "",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "LZ"
+},
+{
+  "id": "c70",
+  "nom": "Grégory Puissant",
+  "fonction": "Directeur Poker",
+  "dept": "",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "GP"
+},
+{
+  "id": "c71",
+  "nom": "Adrien Clip",
+  "fonction": "Room Manager Jeux Traditionnels",
+  "dept": "",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "AC"
+},
+{
+  "id": "c72",
+  "nom": "David Fieullien",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "DF"
+},
+{
+  "id": "c73",
+  "nom": "Sandrine Fochon",
+  "fonction": "Room Manager",
+  "dept": "",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "SF"
+},
+{
+  "id": "c74",
+  "nom": "Jerry Jaupart",
+  "fonction": "Room Manager",
+  "dept": "",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "JJ"
+},
+{
+  "id": "c75",
+  "nom": "Samuel Jensens",
+  "fonction": "Chef de salle",
+  "dept": "",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "SJ"
+},
+{
+  "id": "c76",
+  "nom": "Hervé Moreaux",
+  "fonction": "Room Manager",
+  "dept": "",
+  "manager": "c4",
+  "email": "",
+  "tel": "",
+  "avatar": "HM"
+},
+{
+  "id": "c77",
+  "nom": "Véronique Baetens",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c71",
+  "email": "",
+  "tel": "",
+  "avatar": "VB"
+},
+{
+  "id": "c78",
+  "nom": "Sandra Bartholomeeusen",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c71",
+  "email": "",
+  "tel": "",
+  "avatar": "SB"
+},
+{
+  "id": "c79",
+  "nom": "Quentin Bequet",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c71",
+  "email": "",
+  "tel": "",
+  "avatar": "QB"
+},
+{
+  "id": "c80",
+  "nom": "Severine Bernardi",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c75",
+  "email": "",
+  "tel": "",
+  "avatar": "SB"
+},
+{
+  "id": "c81",
+  "nom": "Arnaud Bolle",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c71",
+  "email": "",
+  "tel": "",
+  "avatar": "AB"
+},
+{
+  "id": "c82",
+  "nom": "Morgan Bourtembourg",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c75",
+  "email": "",
+  "tel": "",
+  "avatar": "MB"
+},
+{
+  "id": "c83",
+  "nom": "Jordan Burny",
+  "fonction": "Chef de salle",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "JB"
+},
+{
+  "id": "c84",
+  "nom": "Thomas Busine",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c71",
+  "email": "",
+  "tel": "",
+  "avatar": "TB"
+},
+{
+  "id": "c85",
+  "nom": "Clément Carvalho",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c72",
+  "email": "",
+  "tel": "",
+  "avatar": "CC"
+},
+{
+  "id": "c86",
+  "nom": "Corentin Chandelon",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c76",
+  "email": "",
+  "tel": "",
+  "avatar": "CC"
+},
+{
+  "id": "c87",
+  "nom": "Bernard Collet",
+  "fonction": "Chef caissier",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "BC"
+},
+{
+  "id": "c88",
+  "nom": "William Collignon",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c72",
+  "email": "",
+  "tel": "",
+  "avatar": "WC"
+},
+{
+  "id": "c89",
+  "nom": "Bernard De Breyne",
+  "fonction": "VIP Manager",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "BDB"
+},
+{
+  "id": "c90",
+  "nom": "Noah Depoorter",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c73",
+  "email": "",
+  "tel": "",
+  "avatar": "ND"
+},
+{
+  "id": "c91",
+  "nom": "Benjamin Desneux",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c73",
+  "email": "",
+  "tel": "",
+  "avatar": "BD"
+},
+{
+  "id": "c92",
+  "nom": "Adrien Detaille",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "AD"
+},
+{
+  "id": "c93",
+  "nom": "Christopher Dore",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c73",
+  "email": "",
+  "tel": "",
+  "avatar": "CD"
+},
+{
+  "id": "c94",
+  "nom": "Corentin Doucet",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c71",
+  "email": "",
+  "tel": "",
+  "avatar": "CD"
+},
+{
+  "id": "c95",
+  "nom": "Kevin Gautier",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "KG"
+},
+{
+  "id": "c96",
+  "nom": "Marcos Gonzalez",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c73",
+  "email": "",
+  "tel": "",
+  "avatar": "MGV"
+},
+{
+  "id": "c97",
+  "nom": "Rudi Gorjon",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c73",
+  "email": "",
+  "tel": "",
+  "avatar": "RG"
+},
+{
+  "id": "c98",
+  "nom": "Murisa Hadzic",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c74",
+  "email": "",
+  "tel": "",
+  "avatar": "MH"
+},
+{
+  "id": "c99",
+  "nom": "Xavier Hazard",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c73",
+  "email": "",
+  "tel": "",
+  "avatar": "XH"
+},
+{
+  "id": "c100",
+  "nom": "Bruno Kaiser",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "BK"
+},
+{
+  "id": "c101",
+  "nom": "Benjamin Kiesecoms",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c74",
+  "email": "",
+  "tel": "",
+  "avatar": "BK"
+},
+{
+  "id": "c102",
+  "nom": "Thibauld Laloux",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c74",
+  "email": "",
+  "tel": "",
+  "avatar": "TL"
+},
+{
+  "id": "c103",
+  "nom": "Paula Laredo",
+  "fonction": "Chef de salle",
+  "dept": "",
+  "manager": "c74",
+  "email": "",
+  "tel": "",
+  "avatar": "APLS"
+},
+{
+  "id": "c104",
+  "nom": "Esteban Leroy",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c74",
+  "email": "",
+  "tel": "",
+  "avatar": "EL"
+},
+{
+  "id": "c105",
+  "nom": "Vanessa Locci",
+  "fonction": "Réceptionniste",
+  "dept": "Accueil",
+  "manager": "c51",
+  "email": "",
+  "tel": "",
+  "avatar": "VL"
+},
+{
+  "id": "c106",
+  "nom": "Ludovic Migeot",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c74",
+  "email": "",
+  "tel": "",
+  "avatar": "LM"
+},
+{
+  "id": "c107",
+  "nom": "Lucas Montesi",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c75",
+  "email": "",
+  "tel": "",
+  "avatar": "LM"
+},
+{
+  "id": "c108",
+  "nom": "Dominique Nadási",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c35",
+  "email": "",
+  "tel": "",
+  "avatar": "DNB"
+},
+{
+  "id": "c109",
+  "nom": "Vincenzo Natoli",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c75",
+  "email": "",
+  "tel": "",
+  "avatar": "VN"
+},
+{
+  "id": "c110",
+  "nom": "Joachim Nisol",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c75",
+  "email": "",
+  "tel": "",
+  "avatar": "JN"
+},
+{
+  "id": "c111",
+  "nom": "Christophe Pecklers",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c35",
+  "email": "",
+  "tel": "",
+  "avatar": "CP"
+},
+{
+  "id": "c112",
+  "nom": "Aurelie Penetra",
+  "fonction": "Caissier",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "AP"
+},
+{
+  "id": "c113",
+  "nom": "Micael Penetra",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "MP"
+},
+{
+  "id": "c114",
+  "nom": "Severino Pieroni",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c76",
+  "email": "",
+  "tel": "",
+  "avatar": "SP"
+},
+{
+  "id": "c115",
+  "nom": "Maureen Poffe",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "MP"
+},
+{
+  "id": "c116",
+  "nom": "Camille Prijot",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c76",
+  "email": "",
+  "tel": "",
+  "avatar": "CCP"
+},
+{
+  "id": "c117",
+  "nom": "Sebastien Radelet",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "SR"
+},
+{
+  "id": "c118",
+  "nom": "Daisy Roch",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c76",
+  "email": "",
+  "tel": "",
+  "avatar": "DR"
+},
+{
+  "id": "c119",
+  "nom": "Axel Roelandt",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c76",
+  "email": "",
+  "tel": "",
+  "avatar": "AR"
+},
+{
+  "id": "c120",
+  "nom": "Andres Sanchez",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c76",
+  "email": "",
+  "tel": "",
+  "avatar": "JASM"
+},
+{
+  "id": "c121",
+  "nom": "Sandra Savels",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c35",
+  "email": "",
+  "tel": "",
+  "avatar": "SS"
+},
+{
+  "id": "c122",
+  "nom": "Luc-Alexandre Siman",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c72",
+  "email": "",
+  "tel": "",
+  "avatar": "LAS"
+},
+{
+  "id": "c123",
+  "nom": "Patrick Staelen",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "PS"
+},
+{
+  "id": "c124",
+  "nom": "Jerome Theys",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "JT"
+},
+{
+  "id": "c125",
+  "nom": "Alain Thirifays",
+  "fonction": "Caissier jeux traditionnels",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "AT"
+},
+{
+  "id": "c126",
+  "nom": "Thomas Thuries",
+  "fonction": "Employé des jeux",
+  "dept": "",
+  "manager": "c35",
+  "email": "",
+  "tel": "",
+  "avatar": "TT"
+},
+{
+  "id": "c127",
+  "nom": "Olivier Toussaint",
+  "fonction": "Caissier",
+  "dept": "",
+  "manager": "c34",
+  "email": "",
+  "tel": "",
+  "avatar": "OT"
+},
+{
+  "id": "c128",
+  "nom": "Michel Van Steenkiste",
+  "fonction": "Chef de salle",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "MVS"
+},
+{
+  "id": "c129",
+  "nom": "Christine Vannieuwenhuyse",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c76",
+  "email": "",
+  "tel": "",
+  "avatar": "CV"
+},
+{
+  "id": "c130",
+  "nom": "Baptiste Vansnick",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c35",
+  "email": "",
+  "tel": "",
+  "avatar": "BV"
+},
+{
+  "id": "c131",
+  "nom": "Gregory Vassart",
+  "fonction": "Chef de table",
+  "dept": "",
+  "manager": "c70",
+  "email": "",
+  "tel": "",
+  "avatar": "GV"
+},
+{
+  "id": "c132",
+  "nom": "Colleen Allard",
+  "fonction": "Caissier MAS",
+  "dept": "",
+  "manager": "c18",
+  "email": "",
+  "tel": "",
+  "avatar": "CA"
+},
+{
+  "id": "c133",
+  "nom": "Marceau Altruy",
+  "fonction": "Caissier MAS",
+  "dept": "",
+  "manager": "c18",
+  "email": "",
+  "tel": "",
+  "avatar": "MA"
+},
+{
+  "id": "c134",
+  "nom": "Amandine Buchet",
+  "fonction": "Caissier MAS",
+  "dept": "",
+  "manager": "c18",
+  "email": "",
+  "tel": "",
+  "avatar": "AB"
+},
+{
+  "id": "c135",
+  "nom": "Sebastien Cappello",
+  "fonction": "Caissier MAS",
+  "dept": "",
+  "manager": "c18",
+  "email": "",
+  "tel": "",
+  "avatar": "SC"
+},
+{
+  "id": "c136",
+  "nom": "Andre Gilson",
+  "fonction": "Directeur adjoint",
+  "dept": "",
+  "manager": "c5",
+  "email": "",
+  "tel": "",
+  "avatar": "AG"
+},
+{
+  "id": "c137",
+  "nom": "Maxime Lippens De Cerf",
+  "fonction": "Caissier MAS",
+  "dept": "",
+  "manager": "c18",
+  "email": "",
+  "tel": "",
+  "avatar": "ML"
+},
+{
+  "id": "c138",
+  "nom": "Chan Na Sean",
+  "fonction": "Caissier MAS",
+  "dept": "",
+  "manager": "c18",
+  "email": "",
+  "tel": "",
+  "avatar": "SCN"
+},
+{
+  "id": "c139",
+  "nom": "Maxime Thoreau",
+  "fonction": "Caissier MAS",
+  "dept": "",
+  "manager": "c18",
+  "email": "",
+  "tel": "",
+  "avatar": "MT"
+},
+{
+  "id": "c140",
+  "nom": "Windy Becquart",
+  "fonction": "Collab petit déjeuner",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "WB"
+},
+{
+  "id": "c141",
+  "nom": "Joel Crasset",
+  "fonction": "Cuisinier",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "JC"
+},
+{
+  "id": "c142",
+  "nom": "Delphine Dewilde",
+  "fonction": "Collab petit déjeuner",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "DD"
+},
+{
+  "id": "c143",
+  "nom": "Fekede Addisu Getachew",
+  "fonction": "Chef de partie",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "FAG"
+},
+{
+  "id": "c144",
+  "nom": "Alessandra Imberti",
+  "fonction": "Collaboratrice petit déjeuner",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "AI"
+},
+{
+  "id": "c145",
+  "nom": "Milla Lancel",
+  "fonction": "Collab petit déjeuner",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "ML"
+},
+{
+  "id": "c146",
+  "nom": "Marco Mella",
+  "fonction": "Aide cuisinier",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "MM"
+},
+{
+  "id": "c147",
+  "nom": "Dylan Motte",
+  "fonction": "Commis restaurant",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "DM"
+},
+{
+  "id": "c148",
+  "nom": "Jim Nelissen",
+  "fonction": "Commis de cuisine",
+  "dept": "",
+  "manager": "c29",
+  "email": "",
+  "tel": "",
+  "avatar": "JN"
+},
+{
+  "id": "c149",
+  "nom": "Yves Thelen",
+  "fonction": "Chef de salle",
+  "dept": "",
+  "manager": "c35",
+  "email": "",
+  "tel": "",
+  "avatar": "YT"
+},
+{
+  "id": "c150",
+  "nom": "Nataliia Oliinyk",
+  "fonction": "Employé de jeux",
+  "dept": "",
+  "manager": "c75",
+  "email": "",
+  "tel": "",
+  "avatar": "NO"
+},
+{
+  "id": "c151",
+  "nom": "Laurent Robben",
+  "fonction": "Graphiste",
+  "dept": "marketing",
+  "manager": "c12",
+  "email": "",
+  "tel": "",
+  "avatar": "LR"
+}
+
+
+
+  ],
+  "fonctions": [
+    {
+      "id": "f1",
+      "nom": "Directeur Général",
+      "niveau": 1,
+      "description": "Pilotage global, stratégie."
+    },
+    {
+      "id": "f2",
+      "nom": "Directeur Général Adjoint",
+      "niveau": 2,
+      "description": "Direction opérationnelle"
+    },
+    {
+      "id": "f3",
+      "nom": "Attaché de Direction",
+      "niveau": 3,
+      "description": "Coordination"
+    },
+    {
+      "id": "f4",
+      "nom": "Directeur des Jeux",
+      "niveau": 3,
+      "description": "Jeux de table"
+    },
+    {
+      "id": "f5",
+      "nom": "Directeur Slots",
+      "niveau": 3,
+      "description": "Slots"
+    },
+    {
+      "id": "f6",
+      "nom": "Directeur de l'Hôtel",
+      "niveau": 3,
+      "description": "Hôtel Mercure"
+    },
+    {
+      "id": "f7",
+      "nom": "HR Manager",
+      "niveau": 3,
+      "description": "Ressources Humaines"
+    },
+    {
+      "id": "f8",
+      "nom": "Facility Manager",
+      "niveau": 3,
+      "description": "Maintenance"
+    },
+    {
+      "id": "f9",
+      "nom": "Chef comptable",
+      "niveau": 3,
+      "description": "Responsable du service comptabilité."
+    },
+    {
+      "id": "f10",
+      "nom": "Comptable",
+      "niveau": 4,
+      "description": "Traitement et suivi comptable."
+    },
+    {
+      "id": "f11",
+      "nom": "Responsable Marketing",
+      "niveau": 3,
+      "description": "Pilotage des activités marketing."
+    },
+    {
+      "id": "f12",
+      "nom": "Coordinatrice marketing",
+      "niveau": 4,
+      "description": "Coordination des actions marketing."
+    },
+    {
+      "id": "f13",
+      "nom": "Responsable Event",
+      "niveau": 3,
+      "description": "Organisation et pilotage des événements."
+    },
+    {
+      "id": "f14",
+      "nom": "Coordinatrice marketing & event",
+      "niveau": 4,
+      "description": "Coordination marketing et événements."
+    }
+  ],
+  "departements": [
+    {
+      "id": "d1",
+      "nom": "Direction Générale",
+      "responsable": "c1"
+    },
+    {
+      "id": "d2",
+      "nom": "Jeux de table",
+      "responsable": "c4"
+    },
+    {
+      "id": "d3",
+      "nom": "Slots",
+      "responsable": "c5"
+    },
+    {
+      "id": "d4",
+      "nom": "Hôtel",
+      "responsable": "c6"
+    },
+    {
+      "id": "d5",
+      "nom": "Comptabilité",
+      "responsable": "c9"
+    },
+    {
+      "id": "d6",
+      "nom": "Marketing",
+      "responsable": "c12"
+    },
+    {
+      "id": "d7",
+      "nom": "Event",
+      "responsable": "c14"
+    }
+  ],
+  "projets": [
+    {
+      "id": "p1",
+      "nom": "Dashboard",
+      "chef": "c4",
+      "dept": "d3",
+      "participants": [
+        "c3",
+        "c4",
+        "c6",
+        "c7"
+      ],
+      "statut": "En cours"
+    },
+    {
+      "id": "p2",
+      "nom": "Organigramme",
+      "chef": "c4",
+      "dept": "d3",
+      "participants": [
+        "c1",
+        "c3",
+        "c4",
+        "c8"
+      ],
+      "statut": "En cours"
+    },
+    {
+      "id": "p3",
+      "nom": "Refonte Site",
+      "chef": "c8",
+      "dept": "d4",
+      "participants": [
+        "c7",
+        "c6",
+        "c8"
+      ],
+      "statut": "Planifié"
+    }
+  ],
+  "taches": [
+    {
+      "id": "t1",
+      "nom": "Supervision reporting",
+      "responsable": "c2",
+      "collaborateurs": [
+        "c5"
+      ],
+      "projet": null
+    },
+    {
+      "id": "t2",
+      "nom": "Brand book 2025",
+      "responsable": "c3",
+      "collaborateurs": [
+        "c6"
+      ],
+      "projet": "p1"
+    },
+    {
+      "id": "t3",
+      "nom": "Dev composants UI",
+      "responsable": "c7",
+      "collaborateurs": [
+        "c6"
+      ],
+      "projet": "p3"
+    }
+  ]
+}
