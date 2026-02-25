@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outils</title>
+  <style>
+    :root { --bg:#0b0d12; --card:#121622; --text:#e8ecf1; --muted:#a8b0bd; --accent:#6aa9ff; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 56px; }
+    h1 { margin: 8px 0 6px; font-size: 22px; font-weight: 700; }
+    p { margin: 0 0 18px; color: var(--muted); }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .card { background: var(--card); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px; }
+    .card h2 { font-size: 16px; margin: 0 0 6px; }
+    .card .desc { font-size: 13px; color: var(--muted); margin: 0 0 12px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap: 8px; width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.10);
+           background: rgba(255,255,255,0.04); color: var(--text); text-decoration:none; cursor:pointer; }
+    .btn:hover { border-color: rgba(106,169,255,0.55); box-shadow: 0 0 0 2px rgba(106,169,255,0.15) inset; }
+    .tag { display:inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.10); color: var(--muted); margin-bottom: 8px; }
+    .hidden { display:none !important; }
+    .note { margin-top: 14px; padding: 12px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.18); color: var(--muted); }
+    code { color: var(--accent); }
+  </style>
+
+  <!-- Conserve ton système d'accès existant (mêmes scripts que les autres pages) -->
+  <script src="../admin/access.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Outils</h1>
+    <p>Sélectionne un outil.</p>
+
+    <div id="toolsGrid" class="grid">
+      <!-- Perm "2" (code a et e) -->
+      <div class="card tool tool-a" data-tool="coffre">
+        <h2>Coffre</h2>
+        <p class="desc">Accès rapide au coffre.</p>
+        <a class="btn" href="dossiers/coffre/coffre.html">Ouvrir</a>
+      </div>
+
+      <div class="card tool tool-a" data-tool="jeux">
+        <h2>Jeux</h2>
+        <p class="desc">Jeux et activités.</p>
+        <a class="btn" href="dossiers/jeux/index.html">Ouvrir</a>
+      </div>
+
+      <!-- Réservé à e (perms hors 1/2/3) -->
+      <div class="card tool tool-e" data-tool="etiquettes">
+        <h2>Étiquettes</h2>
+        <p class="desc">Gestion des étiquettes.</p>
+        <a class="btn" href="dossiers/etiquettes/etiquettes.html">Ouvrir</a>
+      </div>
+
+      <div class="card tool tool-e" data-tool="feedback">
+        <h2>Feedback</h2>
+        <p class="desc">Collecte et traitement du feedback.</p>
+        <a class="btn" href="dossiers/feedback/index.html">Ouvrir</a>
+      </div>
+
+      <div class="card tool tool-e" data-tool="prize">
+        <h2>Prize</h2>
+        <p class="desc">Outil “Prize”.</p>
+        <a class="btn" href="dossiers/prize/prize.html">Ouvrir</a>
+      </div>
+
+      <div class="card tool tool-e" data-tool="salles">
+        <h2>Dispositions des Salles</h2>
+        <p class="desc">Plans des salles</p>
+        <a class="btn" href="dossiers/salles/salles.html">Ouvrir en local</a>
+        <a class="btn" href="https://chrisvankerre-a11y.github.io/salles/">Ouvrir en ligne</a>
+      </div>
+
+      <div class="card tool tool-e" data-tool="sondage">
+        <h2>Sondage</h2>
+        <p class="desc">Création et suivi de sondages.</p>
+        <a class="btn" href="dossiers/sondage/index.html">Ouvrir</a>
+      </div>
+    </div>
+
+    <div id="noAccess" class="note hidden">
+      Accès insuffisant. (Pour rappel: <code>a</code> → Coffre + Jeux, <code>e</code> → tous les outils.)
+    </div>
+  </div>
+
+  <script>
+    // --- Alignement sur la logique de cat1 : on se base sur les permissions exposées par access.js ---
+
+    function getHasPermFn() {
+      const candidates = [
+        window.hasPerm,
+        window.hasPermission,
+        window.checkPerm,
+        window.userHasPerm,
+        window.hasAccess,
+      ].filter((fn) => typeof fn === 'function');
+      return candidates[0] || null;
+    }
+
+    function hasAnyPerm(perms) {
+      const fn = getHasPermFn();
+      if (!fn) return false;
+      return perms.some((p) => {
+        try { return !!fn(String(p)); } catch { return false; }
+      });
+    }
+
+    function applyToolVisibility() {
+      // Hypothèse cohérente avec ton mapping précédent :
+      // - code a => perms 1,2,3
+      // - code e => toutes les perms
+      // Donc :
+      // - outils (coffre, jeux) visibles si perm "2" (a et e)
+      // - les autres visibles si perm "4" OR "5" OR "6" (typiquement e)
+
+      const canA = hasAnyPerm(['2']);
+      const canEOnly = hasAnyPerm(['4','5','6']);
+
+      document.querySelectorAll('.tool-a').forEach(el => el.classList.toggle('hidden', !canA));
+      document.querySelectorAll('.tool-e').forEach(el => el.classList.toggle('hidden', !canEOnly));
+
+      const anyVisible = [...document.querySelectorAll('.tool')].some(el => !el.classList.contains('hidden'));
+      document.getElementById('noAccess').classList.toggle('hidden', anyVisible);
+    }
+
+    // La plupart des access.js appliquent les perms synchronement; on garde un petit filet.
+    applyToolVisibility();
+    setTimeout(applyToolVisibility, 0);
+    setTimeout(applyToolVisibility, 50);
+  </script>
+</body>
+</html>
