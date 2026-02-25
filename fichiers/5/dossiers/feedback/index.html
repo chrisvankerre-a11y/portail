@@ -55,6 +55,56 @@ h1 {
     box-shadow: 0 12px 30px rgba(0,0,0,0.3);
 }
 
+#guide {
+    display: none;
+    width: 85%;
+    max-width: 1000px;
+    margin: 25px 0 0 0;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 16px;
+    padding: 22px;
+    line-height: 1.65;
+}
+
+#guide h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.4rem;
+}
+
+#guide h3 {
+    margin: 16px 0 6px 0;
+    font-size: 1.05rem;
+    opacity: 0.95;
+}
+
+#guide p {
+    margin: 6px 0 0 0;
+    opacity: 0.95;
+}
+
+#guide ul {
+    margin: 8px 0 0 18px;
+    padding: 0;
+}
+
+#guide li {
+    margin: 7px 0;
+}
+
+#guide .tips {
+    margin-top: 14px;
+    padding: 14px 14px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.18);
+}
+
+#guide .tips strong {
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
 .footer {
     margin-top: auto;
     padding: 30px;
@@ -76,28 +126,116 @@ h1 {
         📱 Afficher le QR Code
     </a>
 
-    <!-- Application Feedback -->
-    <a href="https://chrisvankerre-a11y.github.io/feedback-circus-namur/" 
+    <!-- Ce que verront les sondés (formulaire) -->
+    <a href="https://chrisvankerre-a11y.github.io/feedback-circus-namur/"
        class="card" target="_blank">
-        🌐 Ouvrir l'application Feedback
+        🌐 Voir le questionnaire (ce que verront les sondés)
     </a>
 
     <!-- Google Sheet -->
-    <a href="https://docs.google.com/spreadsheets/d/1Lgbp8Vy7pTwUXtnYqZ6DqLsgywfVSe03rrCDvAQMF1Y/edit?gid=0#gid=0" 
+    <a href="https://docs.google.com/spreadsheets/d/1Lgbp8Vy7pTwUXtnYqZ6DqLsgywfVSe03rrCDvAQMF1Y/edit?gid=0#gid=0"
        class="card" target="_blank">
         📊 Consulter les réponses (Google Sheet)
     </a>
 
     <!-- Mode d'emploi -->
-    <a href="feedback.pdf" class="card" target="_blank">
+    <a href="#" class="card" onclick="toggleGuide(event)">
         📄 Mode d'emploi
     </a>
+
+</div>
+
+<!-- Mode d'emploi (corrigé selon l'usage réel) -->
+<div id="guide" aria-live="polite">
+    <h2>Mode d'emploi</h2>
+
+
+    <h3>1) Mettre le QR code à disposition</h3>
+    <ul>
+        <li>
+            Cliquez sur <strong>“Afficher le QR Code”</strong> pour ouvrir l’image du QR code.
+        </li>
+        <li>
+            <strong>Imprimez-le</strong> ou affichez-le sur un écran (accueil, stand, salle, comptoir, vitrine, etc.).
+        </li>
+        <li>
+            Placez-le à l’endroit où vous voulez collecter des retours (il peut être utilisé autant de fois que nécessaire).
+        </li>
+    </ul>
+
+    <h3>2) Ce que feront les sondés</h3>
+    <ul>
+        <li>
+            Les sondés <strong>scannent le QR code</strong> avec l’appareil photo de leur smartphone.
+        </li>
+        <li>
+            Un lien s’affiche : ils appuient dessus pour ouvrir le questionnaire.
+        </li>
+        <li>
+            Ils répondent aux questions et valident : la réponse est enregistrée automatiquement.
+        </li>
+    </ul>
+
+    <h3>3) Vérifier le questionnaire</h3>
+    <ul>
+        <li>
+            Cliquez sur <strong>“Voir le questionnaire (ce que verront les sondés)”</strong> pour visualiser exactement la page
+            qui s’ouvrira après le scan du QR code.
+        </li>
+        <li>
+            Cela vous permet de vérifier la présentation et les questions avant de diffuser le QR code.
+        </li>
+    </ul>
+
+    <h3>4) Consulter les réponses</h3>
+    <ul>
+        <li>
+            Cliquez sur <strong>“Consulter les réponses (Google Sheet)”</strong>.
+        </li>
+        <li>
+            Les réponses apparaissent au fur et à mesure : <strong>une ligne = une réponse</strong>.
+        </li>
+        <li>
+            Vous pouvez trier/filtrer dans le tableau pour analyser les retours.
+        </li>
+    </ul>
+
+    <div class="tips">
+        <strong>Conseils rapides</strong>
+        <ul>
+            <li><strong>Test :</strong> faites un scan vous-même et envoyez une réponse pour vérifier que tout fonctionne.</li>
+            <li><strong>Lisibilité :</strong> imprimez assez grand et évitez les reflets (plastification brillante, lumière directe).</li>
+            <li><strong>Accès :</strong> si le Google Sheet ne s’ouvre pas, vérifiez que vous êtes connecté au bon compte ou que vous avez les droits.</li>
+            <li><strong>À éviter :</strong> ne renommez pas / ne supprimez pas les colonnes du tableau.</li>
+        </ul>
+    </div>
+
+<div style="margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.25);">
+    <strong>Modification ou nouveau questionnaire :</strong><br>
+    Pour modifier le questionnaire lié à ce QR code ou pour créer un nouveau questionnaire basé sur un autre QR code,
+    contactez Christophe Van Kerrebroeck (disponible 24h/24, tarifs préférentiels pour les amis).
+</div>
 
 </div>
 
 <div class="footer">
     Sélectionnez une action.
 </div>
+
+<script>
+function toggleGuide(event) {
+    if (event) event.preventDefault();
+
+    const guide = document.getElementById('guide');
+    const isHidden = (guide.style.display === '' || guide.style.display === 'none');
+
+    guide.style.display = isHidden ? 'block' : 'none';
+
+    if (isHidden) {
+        guide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+</script>
 
 </body>
 </html>
