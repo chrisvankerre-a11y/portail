@@ -63,6 +63,7 @@
       <button class="btn" id="compute">Calculer</button>
       <button class="btn" id="exportCsv">Exporter Excel (CSV)</button>
       <button class="btn" id="copyTsv">Copier (TSV)</button>
+ <button class="btn" id="openNotice">Mode d’emploi</button>
       <span id="alerts" class="muted"></span>
     </div>
 
@@ -477,6 +478,9 @@ function copyTsv(){
   document.getElementById('compute').addEventListener('click', function(){ try{ compute(); }catch(e){ alertsEl.textContent=e.message; } });
   document.getElementById('exportCsv').addEventListener('click', function(){ try{ exportCsv(); }catch(e){ alertsEl.textContent=e.message; } });
   document.getElementById('copyTsv').addEventListener('click', function(){ try{ copyTsv(); }catch(e){ alertsEl.textContent=e.message; } });
+document.getElementById('openNotice').addEventListener('click', function () {
+  window.location.href = 'notice.html';
+});
 
   // Premier calcul au chargement
   try{ compute(); }catch(e){ alertsEl.textContent=e.message; }
