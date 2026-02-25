@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Newsletter</title>
+
+  <link rel="stylesheet" href="../admin/style.css" />
+  <script src="../admin/access.js"></script>
+
+  <style>
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 14px; }
+    .card { border: 1px solid #e5e5e5; border-radius: 10px; padding: 14px; background: #fff; }
+    .card h3 { margin: 0 0 8px 0; font-size: 1.05rem; }
+    .card p { margin: 0 0 12px 0; opacity: 0.85; }
+    .hidden { display: none !important; }
+    .muted { opacity: 0.7; }
+  </style>
+</head>
+
+<body onload="protectPagePerm('1')">
+  <h1>Newsletter</h1>
+
+  <ul>
+    <li><a href="../../Portail.html">← Retour au portail</a></li>
+  </ul>
+
+  <hr>
+
+  <div id="accessNote" class="muted"></div>
+
+  <div class="cards">
+    <div id="cardCodir" class="card hidden">
+      <h3>CODIR</h3>
+      <p>Accéder aux rapports CODIR.</p>
+      <button type="button" onclick="location.href='dossiers/codir/codir.html'">Ouvrir CODIR</button>
+    </div>
+
+    <div id="cardInfos" class="card hidden">
+      <h3>Infos</h3>
+      <p>Ouvrir le document PDF.</p>
+      <button type="button" onclick="window.open('dossiers/infos.pdf', '_blank', 'noopener')">Ouvrir infos.pdf</button>
+    </div>
+
+    <div id="cardCryptpad" class="card hidden">
+      <h3>Ordre du Jour Comité de Direction</h3>
+      <p>Ouvrir le lien externe.</p>
+      <button type="button" onclick="window.open('https://cryptpad.fr/sheet/#/2/sheet/edit/gng-XmZhh50r5C0h6woEDl5n/', '_blank', 'noopener')">Ouvrir CryptPad</button>
+    </div>
+  </div>
+
+  <script>
+    function _hasPerm(p) {
+      try {
+        if (typeof window.hasPerm === 'function') return !!window.hasPerm(String(p));
+        if (typeof window.hasPermission === 'function') return !!window.hasPermission(String(p));
+        if (typeof window.checkPerm === 'function') return !!window.checkPerm(String(p));
+        if (typeof window.userHasPerm === 'function') return !!window.userHasPerm(String(p));
+      } catch (_) {}
+
+      const candidates = [
+        window.perms,
+        window.permissions,
+        window.userPerms,
+        window.currentPerms,
+        window.allowedPerms,
+        window.ACCESS_PERMS
+      ];
+      for (const c of candidates) {
+        if (!c) continue;
+        if (Array.isArray(c)) return c.map(String).includes(String(p));
+        if (typeof c === 'string') {
+          const parts = c.split(/[^0-9]+/).filter(Boolean);
+          return parts.includes(String(p));
+        }
+        if (typeof c === 'object') {
+          if (Object.prototype.hasOwnProperty.call(c, String(p))) return !!c[String(p)];
+        }
+      }
+      return false;
+    }
+
+    function applyNewsletterAccess() {
+      const codir = document.getElementById('cardCodir');
+      const infos = document.getElementById('cardInfos');
+      const crypt = document.getElementById('cardCryptpad');
+      const note  = document.getElementById('accessNote');
+
+      codir.classList.add('hidden');
+      infos.classList.add('hidden');
+      crypt.classList.add('hidden');
+
+      const canInfos = _hasPerm('2');
+      const canAllExtra = _hasPerm('4') || _hasPerm('5') || _hasPerm('6');
+
+      if (canInfos) infos.classList.remove('hidden');
+      if (canAllExtra) {
+        codir.classList.remove('hidden');
+        crypt.classList.remove('hidden');
+      }
+
+      note.textContent = (!canInfos && !canAllExtra)
+        ? "Accès insuffisant pour afficher les documents de cette page."
+        : "";
+    }
+
+    window.addEventListener('load', applyNewsletterAccess);
+    window.applyNewsletterAccess = applyNewsletterAccess;
+  </script>
+</body>
+</html>
