@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tableau Global - Disponibilités (créneaux)</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 20px; }
+    .calendar { overflow-x: auto; margin: 20px 0; }
+    table { border-collapse: collapse; width: 100%; min-width: 1100px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; font-weight: bold; position: sticky; top: 0; z-index: 2; }
+    .top-head { position: sticky; top: 0; z-index: 3; }
+    .sub-head { position: sticky; top: 34px; z-index: 2; }
+    .participant-name { position: sticky; left: 0; background-color: white; z-index: 1; }
+    .weekend { background-color: #f9f9f9 !important; }
+    .availability-option { padding: 5px; margin: 2px; border-radius: 3px; display: inline-block; width: 25px; height: 25px; text-align: center; line-height: 25px; }
+    .available { background-color: #d4edda; color: #155724; }
+    .maybe { background-color: #fff3cd; color: #856404; }
+    .unavailable { background-color: #f8d7da; color: #721c24; }
+    .perfect-day-col { background: linear-gradient(135deg, #fff9e6 0%, #ffecb3 100%) !important; border-left: 3px solid #ffd700 !important; border-right: 3px solid #ffd700 !important; }
+    .perfect-day-header { background: linear-gradient(135deg, #fff9e6 0%, #ffecb3 100%) !important; border: 3px solid #ffd700 !important; color: #b8860b !important; font-weight: bold; }
+    .paste-section { background-color: #e7f3ff; padding: 15px; border-radius: 4px; margin: 15px 0; border-left: 4px solid #1e88e5; }
+    .export-section { background-color: #e6f7e6; padding: 15px; border-radius: 4px; margin: 15px 0; border-left: 4px solid #28a745; }
+    .date-range-section { background-color: #fff4e6; padding: 15px; border-radius: 4px; margin: 15px 0; border-left: 4px solid #ff9800; }
+    .action-buttons { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+    .action-btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+    .export-btn { background-color: #28a745; color: white; }
+    .export-jpg-btn { background-color: #ff6b6b; color: white; }
+    .copy-btn { background-color: #17a2b8; color: white; }
+    .reset-btn { background-color: #dc3545; color: white; }
+    .import-code-btn { background-color: #1e88e5; color: white; }
+    .date-range-btn { background-color: #ff9800; color: white; }
+    .action-btn:hover { transform: scale(1.05); opacity: 0.9; }
+    .copy-box { background: white; padding: 10px; border: 1px solid #28a745; border-radius: 4px; font-family: monospace; white-space: pre-wrap; margin: 10px 0; cursor: pointer; max-height: 200px; overflow-y: auto; }
+    .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; color: white; font-size: 18px; flex-direction: column; }
+    .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin-bottom: 15px; }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+    textarea#pastedCode { width: 100%; min-height: 120px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 14px; padding: 10px; border: 1px solid #90caf9; border-radius: 6px; box-sizing: border-box; }
+    .date-inputs { display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap; align-items: center; }
+    .date-input-group { display: flex; flex-direction: column; gap: 5px; }
+    .date-input-group label { font-weight: bold; font-size: 14px; }
+    .date-input-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+    .helper { color: #555; font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>📅 Tableau Global - Disponibilités (avec créneaux)</h1>
+
+  <!-- SECTION PLAGE DE DATES -->
+  <div class="date-range-section">
+    <h3>📅 Définir la plage de dates</h3>
+    <p class="helper">Ces dates contrôlent l'affichage du tableau et du résumé.</p>
+    <div class="date-inputs">
+      <div class="date-input-group">
+        <label for="dateStart">Date de début :</label>
+        <input type="date" id="dateStart" value="2025-11-10">
+      </div>
+      <div class="date-input-group">
+        <label for="dateEnd">Date de fin :</label>
+        <input type="date" id="dateEnd" value="2025-11-23">
+      </div>
+      <button class="action-btn date-range-btn" onclick="updateDateRange()">🔄 Mettre à jour les dates</button>
+    </div>
+    <div id="dateRangeResult"></div>
+  </div>
+
+  <!-- SECTION IMPORT CODE -->
+  <div class="paste-section">
+    <h3>📥 Coller le code reçu par mail</h3>
+    <p class="helper">
+      Collez ici le code du participant (format auto-exécuté <code>(()=>{...})()</code>, compat :
+      ancien format + nouveau format <strong>slots-v1</strong>.
+    </p>
+    <textarea id="pastedCode" placeholder="Collez ici le code copié depuis l'email du participant..."></textarea>
+    <div class="action-buttons">
+      <button class="action-btn import-code-btn" onclick="importFromPastedCode()">Importer le code</button>
+      <button class="action-btn copy-btn" onclick="fillDemo()">Remplir un exemple</button>
+    </div>
+    <div id="pasteResult"></div>
+  </div>
+
+  <!-- SECTION EXPORT -->
+  <div class="export-section">
+    <h3>📤 Exporter le tableau complet</h3>
+    <div class="action-buttons">
+      <button class="action-btn export-btn" onclick="exportToHTML()">💾 Exporter en HTML</button>
+      <button class="action-btn export-jpg-btn" onclick="exportToJPG()">🖼️ Exporter en JPG</button>
+      <button class="action-btn copy-btn" onclick="copyShareableLink()">📋 Lien partageable</button>
+      <button class="action-btn reset-btn" onclick="resetAllData()">🔄 Réinitialiser</button>
+    </div>
+    <div id="exportResult"></div>
+  </div>
+
+  <!-- TABLEAU PRINCIPAL -->
+  <div class="calendar">
+    <table id="availabilityTable">
+      <thead>
+        <tr id="headRow1" class="top-head">
+          <th rowspan="2" style="min-width:160px">Participants</th>
+        </tr>
+        <tr id="headRow2" class="sub-head"></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- RÉSUMÉ -->
+  <div class="summary">
+    <h3>👀 Résumé des disponibilités</h3>
+    <div id="availabilitySummary"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    /**
+     * Modèle de données (pour l'IA / futur refactoring) :
+     *
+     * state.participants: string[]
+     *   - Liste des noms de participants.
+     *
+     * state.availabilityData: {
+     *   [participantName: string]: AvailabilityRecord
+     * }
+     *
+     * AvailabilityRecord (format mixte pour compat) :
+     *   - ancien format (sans créneaux) :
+     *       { "2025-11-10": "available" | "unavailable" | "maybe" | undefined }
+     *
+     *   - nouveau format slots-v1 :
+     *       {
+     *         __v: "slots-v1",
+     *         __slots: { label: string, key: string }[],
+     *         "2025-11-10|matin": "available",
+     *         "2025-11-10|soir":  "maybe",
+     *         ...
+     *       }
+     *
+     * state.defaultDateRange: { min: "YYYY-MM-DD", max: "YYYY-MM-DD" }
+     */
+
+    const RecapApp = {
+      // ---------- CONFIG GLOBALE ----------
+      dayNames: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+
+      // ---------- ÉTAT CENTRAL ----------
+      state: {
+        participants: [],
+        availabilityData: {},
+        defaultDateRange: { min: "2025-11-10", max: "2025-11-23" }
+      },
+
+      // ---------- INITIALISATION ----------
+      init() {
+        this.loadFromLocalStorage();
+        this.loadFromURLShare();
+        this.syncDateInputsWithState();
+        this.renderTable();
+        this.renderSummary();
+
+        // Exposer l'état pour les snippets déjà en production
+        this.exposeGlobalsForSnippets();
+      },
+
+      exposeGlobalsForSnippets() {
+        // Ces références sont l'API implicite utilisée par le code envoyé par mail :
+        // - participants
+        // - availabilityData
+        // - updateDisplay()
+        // - updateSummary()
+        window.participants = this.state.participants;
+        window.availabilityData = this.state.availabilityData;
+        window.updateDisplay = () => this.renderTable();
+        window.updateSummary = () => this.renderSummary();
+      },
+
+      // ---------- PERSISTANCE ----------
+      saveToLocalStorage() {
+        const payload = {
+          participants: this.state.participants,
+          availabilityData: this.state.availabilityData,
+          defaultDateRange: this.state.defaultDateRange,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem("availabilityTableData_slots", JSON.stringify(payload));
+      },
+
+      loadFromLocalStorage() {
+        const raw = localStorage.getItem("availabilityTableData_slots");
+        if (!raw) return;
+
+        const data = JSON.parse(raw);
+        this.state.participants.length = 0;
+        this.state.participants.push(...(data.participants || []));
+        Object.assign(this.state.availabilityData, data.availabilityData || {});
+        if (data.defaultDateRange) {
+          this.state.defaultDateRange = data.defaultDateRange;
+        }
+      },
+
+      loadFromURLShare() {
+        const param = new URLSearchParams(window.location.search).get("data");
+        if (!param) return;
+        try {
+          const data = JSON.parse(atob(param));
+          this.state.participants.length = 0;
+          this.state.participants.push(...(data.participants || []));
+          Object.assign(this.state.availabilityData, data.availabilityData || {});
+          if (data.defaultDateRange) {
+            this.state.defaultDateRange = data.defaultDateRange;
+          }
+          this.saveToLocalStorage();
+          history.replaceState({}, document.title, window.location.pathname);
+        } catch (e) {
+          console.error("Erreur lecture data URL", e);
+        }
+      },
+
+      // ---------- DATES ----------
+      syncDateInputsWithState() {
+        const { min, max } = this.state.defaultDateRange;
+        const startInput = document.getElementById("dateStart");
+        const endInput = document.getElementById("dateEnd");
+        if (startInput) startInput.value = min;
+        if (endInput) endInput.value = max;
+      },
+
+      handleDateRangeChange() {
+        const start = document.getElementById("dateStart").value;
+        const end = document.getElementById("dateEnd").value;
+        const result = document.getElementById("dateRangeResult");
+
+        if (!start || !end) {
+          if (result) result.innerHTML = '<div style="color:red;margin-top:10px;">❌ Veuillez sélectionner les deux dates</div>';
+          return;
+        }
+        if (start > end) {
+          if (result) result.innerHTML = '<div style="color:red;margin-top:10px;">❌ La date de début doit être avant la date de fin</div>';
+          return;
+        }
+
+        this.state.defaultDateRange = { min: start, max: end };
+        this.saveToLocalStorage();
+        this.renderTable();
+        this.renderSummary();
+
+        if (result) {
+          result.innerHTML = '<div style="color:green;margin-top:10px;">✅ Plage de dates mise à jour</div>';
+          setTimeout(() => { result.innerHTML = ""; }, 3000);
+        }
+      },
+
+      getCurrentDateRange() {
+        return { ...this.state.defaultDateRange };
+      },
+
+      enumerateDates(minISO, maxISO) {
+        const result = [];
+        const start = new Date(minISO);
+        const end = new Date(maxISO);
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+          result.push(new Date(d));
+        }
+        return result;
+      },
+
+      // ---------- SLOTS (CRÉNEAUX) ----------
+      /**
+       * Agrège tous les créneaux disponibles dans les données.
+       * Retour : [{ key: string, label: string }]
+       */
+      collectAllSlots() {
+        const map = new Map();
+        const { participants, availabilityData } = this.state;
+
+        for (const name of participants) {
+          const rec = availabilityData[name];
+          if (!rec) continue;
+          if (rec.__v === "slots-v1" && Array.isArray(rec.__slots)) {
+            for (const slot of rec.__slots) {
+              if (slot && slot.key) {
+                map.set(slot.key, slot.label || slot.key);
+              }
+            }
+          }
+        }
+
+        // Fallback "sans créneaux"
+        if (map.size === 0) {
+          map.set("jour", "Jour");
+        }
+
+        return Array.from(map, ([key, label]) => ({ key, label }));
+      },
+
+      // ---------- IMPORT CODE PARTICIPANT ----------
+      importFromPastedCode() {
+        const input = document.getElementById("pastedCode");
+        const code = (input.value || "").trim();
+        const result = document.getElementById("pasteResult");
+
+        if (!code) {
+          alert("Collez d'abord le code reçu par mail.");
+          return;
+        }
+
+        try {
+          // API de contexte attendue par le snippet (ne pas changer sans changer les snippets)
+          window.participants = this.state.participants;
+          window.availabilityData = this.state.availabilityData;
+          window.updateDisplay = () => this.renderTable();
+          window.updateSummary = () => this.renderSummary();
+
+          eval(code); // exécution du snippet auto-invoqué
+
+          this.saveToLocalStorage();
+          this.renderTable();
+          this.renderSummary();
+
+          if (result) result.innerHTML = '<div style="color:green;margin-top:10px;">✅ Code importé.</div>';
+          input.value = "";
+        } catch (e) {
+          if (result) result.innerHTML = '<div style="color:red;margin-top:10px;">❌ Erreur : ' + (e?.message || e) + "</div>";
+        }
+      },
+
+      loadDemoSnippet() {
+        const demo =
+          '(()=>{const n="Exemple";' +
+          'const r={"2025-11-10|matin":"available","2025-11-10|soir":"maybe","2025-11-11|matin":"unavailable"};' +
+          'const s=[{"label":"Matin","key":"matin"},{"label":"Après-midi","key":"apres-midi"},{"label":"Soir","key":"soir"}];' +
+          'participants.includes(n)||participants.push(n);' +
+          'availabilityData[n]=Object.assign({__slots:s,__v:"slots-v1"},r);' +
+          'if(typeof updateDisplay=="function")updateDisplay();' +
+          'if(typeof updateSummary=="function")updateSummary();})();';
+
+        document.getElementById("pastedCode").value = demo;
+      },
+
+           // ---------- LOGIQUE JOURS / CRÉNEAUX SPÉCIAUX ----------
+      isWeekend(date) {
+        const d = date.getDay();
+        return d === 0 || d === 6;
+      },
+
+      // Créneau parfait = pour une date + un slot,
+      // tous les participants sont "available".
+      isPerfectSlot(date, slotKey) {
+        const { participants, availabilityData } = this.state;
+        if (participants.length === 0) return false;
+        const dateStr = date.toISOString().split("T")[0];
+
+        for (const p of participants) {
+          const rec = availabilityData[p] || {};
+          let status;
+          if (rec.__v === "slots-v1") {
+            status = rec[`${dateStr}|${slotKey}`];
+          } else {
+            // ancien format : un seul slot "Jour" par jour
+            status = rec[dateStr];
+          }
+          if (status !== "available") return false;
+        }
+        return true;
+      },
+
+      // Utile si tu veux colorer aussi l’entête de journée
+      hasPerfectSlotForDate(date, slots) {
+        return slots.some(s => this.isPerfectSlot(date, s.key));
+      },
+
+
+      // ---------- RENDU TABLEAU ----------
+      renderTable() {
+        const slots = this.collectAllSlots();
+        const { min, max } = this.getCurrentDateRange();
+        const dates = this.enumerateDates(min, max);
+
+        const headRow1 = document.getElementById("headRow1");
+        const headRow2 = document.getElementById("headRow2");
+        if (!headRow1 || !headRow2) return;
+
+        // Nettoyage des anciens headers (on garde la 1ère cellule "Participants")
+        while (headRow1.children.length > 1) {
+          headRow1.removeChild(headRow1.lastChild);
+        }
+        headRow2.innerHTML = "";
+
+        // Ligne 1 : dates
+        for (const date of dates) {
+          const day = date.getDate();
+          const month = date.getMonth() + 1;
+          const dayName = this.dayNames[date.getDay()];
+
+                    const th = document.createElement("th");
+          th.colSpan = slots.length;
+          th.textContent = `${dayName} ${day}/${month}`;
+
+          // Optionnel : si au moins un créneau parfait ce jour-là,
+          // on garde le style spécial sur l'entête de la date
+          if (this.hasPerfectSlotForDate(date, slots)) {
+            th.classList.add("perfect-day-header");
+          }
+          if (this.isWeekend(date)) th.classList.add("weekend");
+          headRow1.appendChild(th);
+
+          // Ligne 2 : noms des slots
+          for (const s of slots) {
+            const sub = document.createElement("th");
+            sub.textContent = s.label;
+            sub.classList.add("sub-head");
+
+            // On peut aussi marquer directement les slots parfaits
+            if (this.isPerfectSlot(date, s.key)) {
+              sub.classList.add("perfect-day-col");
+            }
+
+            if (this.isWeekend(date)) sub.classList.add("weekend");
+            headRow2.appendChild(sub);
+          }
+
+        }
+
+        const tbody = document.getElementById("tableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        const { participants, availabilityData } = this.state;
+
+        for (const p of participants) {
+          const tr = document.createElement("tr");
+          const nameTd = document.createElement("td");
+          nameTd.textContent = p;
+          nameTd.classList.add("participant-name");
+          tr.appendChild(nameTd);
+
+          for (const date of dates) {
+            const dateStr = date.toISOString().split("T")[0];
+            const rec = availabilityData[p] || {};
+
+            for (const s of slots) {
+                            const td = document.createElement("td");
+
+              // Créneau parfait (date + slot)
+              if (this.isPerfectSlot(date, s.key)) {
+                td.classList.add("perfect-day-col");
+              }
+
+              if (this.isWeekend(date)) td.classList.add("weekend");
+
+
+              const span = document.createElement("span");
+              let status;
+              if (rec.__v === "slots-v1") {
+                status = rec[`${dateStr}|${s.key}`];
+              } else {
+                status = rec[dateStr];
+              }
+
+              if (status === "available") {
+                span.className = "availability-option available";
+                span.textContent = "✓";
+              } else if (status === "unavailable") {
+                span.className = "availability-option unavailable";
+                span.textContent = "✗";
+              } else if (status === "maybe") {
+                span.className = "availability-option maybe";
+                span.textContent = "?";
+              } else {
+                span.className = "availability-option";
+                span.textContent = "○";
+                span.style.opacity = "0.3";
+              }
+
+              td.appendChild(span);
+              tr.appendChild(td);
+            }
+          }
+
+          tbody.appendChild(tr);
+        }
+      },
+
+      // ---------- RENDU RÉSUMÉ ----------
+      renderSummary() {
+        const slots = this.collectAllSlots();
+        const { min, max } = this.getCurrentDateRange();
+        const dates = this.enumerateDates(min, max);
+        const box = document.getElementById("availabilitySummary");
+        if (!box) return;
+
+               const { participants, availabilityData } = this.state;
+        let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;">';
+
+        let perfectSlotsCount = 0;
+        const perfectSlots = []; // ex: "Lun 10/11 – Matin"
+
+        for (const date of dates) {
+          const dateStr = date.toISOString().split("T")[0];
+          let a = 0, m = 0, u = 0, none = 0;
+
+          // Comptage global (inchangé)
+          for (const p of participants) {
+            const rec = availabilityData[p] || {};
+            for (const s of slots) {
+              let status;
+              if (rec.__v === "slots-v1") status = rec[`${dateStr}|${s.key}`];
+              else status = rec[dateStr];
+
+              if (status === "available") a++;
+              else if (status === "maybe") m++;
+              else if (status === "unavailable") u++;
+              else none++;
+            }
+          }
+
+          // Liste des créneaux parfaits pour ce jour
+          const perfectSlotsForDay = [];
+          for (const s of slots) {
+            if (this.isPerfectSlot(date, s.key)) {
+              perfectSlotsForDay.push(s.label);
+              perfectSlotsCount++;
+              const d = date.getDate();
+              const mo = date.getMonth() + 1;
+              perfectSlots.push(`${this.dayNames[date.getDay()]} ${d}/${mo} – ${s.label}`);
+            }
+          }
+
+          const hasPerfectSlot = perfectSlotsForDay.length > 0;
+
+          html += `
+            <div style="border:1px solid #ddd;padding:10px;border-radius:5px;background:${hasPerfectSlot ? "#fff9e6" : "white"};">
+              <strong>${this.dayNames[date.getDay()]} ${date.getDate()}/${date.getMonth() + 1}</strong><br>
+              ✅ ${a} | ❓ ${m} | ❌ ${u} | ○ ${none}
+              ${
+                hasPerfectSlot
+                  ? `<br><strong>🌟 Créneau parfait : ${perfectSlotsForDay.join(", ")}</strong>`
+                  : ""
+              }
+            </div>`;
+        }
+        html += "</div>";
+
+        if (perfectSlotsCount > 0) {
+          html =
+            `<div style="background:#fff9e6;padding:15px;border-radius:5px;margin:15px 0;border-left:4px solid #ffd700;">
+              <h4>🌟 ${perfectSlotsCount} créneau(x) parfait(s) :</h4>
+              <p>${perfectSlots.join(", ")}</p>
+            </div>` + html;
+        }
+
+
+        box.innerHTML = html;
+      },
+
+      // ---------- EXPORT HTML / JPG / LIEN ----------
+      buildExportHTMLTable() {
+        const slots = this.collectAllSlots();
+        const { min, max } = this.getCurrentDateRange();
+        const dates = this.enumerateDates(min, max);
+        const { participants, availabilityData } = this.state;
+
+        let html = "<table><thead>";
+        html += '<tr><th rowspan="2">Participants</th>';
+        for (const d of dates) {
+          const dn = this.dayNames[d.getDay()];
+          const dd = d.getDate();
+          const mm = d.getMonth() + 1;
+          html += `<th colspan="${slots.length}">${dn} ${dd}/${mm}</th>`;
+        }
+        html += "</tr><tr>";
+        for (const _d of dates) {
+          for (const s of slots) {
+            html += `<th>${s.label}</th>`;
+          }
+        }
+        html += "</tr></thead><tbody>";
+
+        for (const p of participants) {
+          html += `<tr><td><strong>${p}</strong></td>`;
+          for (const d of dates) {
+            const dateStr = d.toISOString().split("T")[0];
+            const rec = availabilityData[p] || {};
+            for (const s of slots) {
+              let status = rec.__v === "slots-v1" ? rec[`${dateStr}|${s.key}`] : rec[dateStr];
+              let content = "○";
+              let cls = "";
+              if (status === "available") { content = "✓"; cls = 'class="available"'; }
+              else if (status === "maybe") { content = "?"; cls = 'class="maybe"'; }
+              else if (status === "unavailable") { content = "✗"; cls = 'class="unavailable"'; }
+              html += `<td ${cls}>${content}</td>`;
+            }
+          }
+          html += "</tr>";
+        }
+
+        html += "</tbody></table>";
+        return html;
+      },
+
+      exportAsHTMLFile() {
+        const data = {
+          participants: this.state.participants,
+          availabilityData: this.state.availabilityData,
+          defaultDateRange: this.state.defaultDateRange,
+          timestamp: new Date().toISOString(),
+          exportDate: new Date().toLocaleDateString("fr-FR")
+        };
+
+        const htmlContent = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau Global Exporté - ${data.exportDate}</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:20px}
+    table{border-collapse:collapse;width:100%}
+    th,td{border:1px solid #ddd;padding:8px;text-align:center}
+    th{background:#f2f2f2}
+    .available{background:#d4edda}
+    .unavailable{background:#f8d7da}
+    .maybe{background:#fff3cd}
+    .weekend{background:#f9f9f9}
+  </style>
+</head>
+<body>
+  <h1>📅 Tableau Global Exporté - ${data.exportDate}</h1>
+  <p><strong>Exporté le :</strong> ${new Date().toLocaleString("fr-FR")}</p>
+  <p><strong>Nombre de participants :</strong> ${this.state.participants.length}</p>
+  ${this.buildExportHTMLTable()}
+  <script>
+    const exportData=${JSON.stringify(data).replace(/</g, "\\x3C")};
+    console.log("Données exportées:", exportData);
+  <\/script>
+</body>
+</html>`.trim();
+
+        const blob = new Blob([htmlContent], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `tableau-global-${new Date().toISOString().split("T")[0]}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        const target = document.getElementById("exportResult");
+        if (target) target.innerHTML = '<div style="color:green;margin-top:10px;">✅ Tableau exporté avec succès !</div>';
+      },
+
+      exportAsJPG() {
+        this.showLoading("Génération de l'image en cours...");
+
+        const temp = document.createElement("div");
+        temp.style.position = "fixed";
+        temp.style.left = "0";
+        temp.style.top = "0";
+        temp.style.width = "100%";
+        temp.style.background = "white";
+        temp.style.padding = "20px";
+        temp.style.zIndex = "10000";
+        temp.style.boxSizing = "border-box";
+
+        const title = document.createElement("h2");
+        title.textContent = "Tableau des Disponibilités";
+        title.style.textAlign = "center";
+        title.style.marginBottom = "10px";
+        title.style.color = "#2c3e50";
+
+        const info = document.createElement("div");
+        info.style.display = "flex";
+        info.style.justifyContent = "space-between";
+        info.style.marginBottom = "15px";
+        info.style.fontSize = "14px";
+        info.innerHTML =
+          `<div><strong>Participants :</strong> ${this.state.participants.length}</div>` +
+          `<div><strong>Exporté le :</strong> ${new Date().toLocaleDateString("fr-FR")}</div>`;
+
+        const tableClone = document.getElementById("availabilityTable").cloneNode(true);
+        tableClone.style.width = "auto";
+        tableClone.style.minWidth = "auto";
+        tableClone.style.border = "2px solid #333";
+        tableClone.style.fontSize = "14px";
+
+        const cells = tableClone.querySelectorAll("th,td");
+        cells.forEach(c => {
+          c.style.padding = "8px";
+          c.style.border = "1px solid #666";
+          c.style.minWidth = "60px";
+        });
+
+        temp.appendChild(title);
+        temp.appendChild(info);
+        temp.appendChild(tableClone);
+        document.body.appendChild(temp);
+
+        const options = {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: "#ffffff",
+          scrollX: 0,
+          scrollY: 0,
+          width: temp.scrollWidth,
+          height: temp.scrollHeight
+        };
+
+        html2canvas(temp, options)
+          .then(canvas => {
+            const imageData = canvas.toDataURL("image/jpeg", 0.95);
+            const link = document.createElement("a");
+            link.download = `disponibilites-${new Date().toISOString().split("T")[0]}.jpg`;
+            link.href = imageData;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            document.body.removeChild(temp);
+            this.hideLoading();
+            const target = document.getElementById("exportResult");
+            if (target) target.innerHTML = '<div style="color:green;margin-top:10px;">✅ Image JPG exportée avec succès !</div>';
+          })
+          .catch(err => {
+            console.error(err);
+            document.body.removeChild(temp);
+            this.hideLoading();
+            const target = document.getElementById("exportResult");
+            if (target) target.innerHTML = '<div style="color:red;margin-top:10px;">❌ Erreur lors de la génération de l\'image</div>';
+          });
+      },
+
+      copyShareLink() {
+        const data = {
+          participants: this.state.participants,
+          availabilityData: this.state.availabilityData,
+          defaultDateRange: this.state.defaultDateRange,
+          timestamp: new Date().toISOString()
+        };
+        const compressed = btoa(JSON.stringify(data));
+        const url = `${window.location.origin}${window.location.pathname}?data=${compressed}`;
+        const target = document.getElementById("exportResult");
+
+        navigator.clipboard.writeText(url).then(
+          () => {
+            if (target) {
+              target.innerHTML =
+                '<div style="color:green;margin-top:10px;">✅ Lien copié !<br><small>Collez ce lien dans un email pour partager le tableau</small></div>';
+            }
+          },
+          () => {
+            // fallback
+            const ta = document.createElement("textarea");
+            ta.value = url;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+            if (target) {
+              target.innerHTML =
+                '<div style="color:green;margin-top:10px;">✅ Lien copié !<br><small>Collez ce lien dans un email pour partager le tableau</small></div>';
+            }
+          }
+        );
+      },
+
+      resetAll() {
+        if (!confirm("Êtes-vous sûr de vouloir réinitialiser toutes les données ?")) return;
+
+        this.state.participants.length = 0;
+        const av = this.state.availabilityData;
+        for (const key of Object.keys(av)) {
+          delete av[key];
+        }
+        localStorage.removeItem("availabilityTableData_slots");
+        this.renderTable();
+        this.renderSummary();
+
+        const target = document.getElementById("exportResult");
+        if (target) target.innerHTML = '<div style="color:orange;margin-top:10px;">✅ Données réinitialisées</div>';
+      },
+
+      // ---------- UI LOADING ----------
+      showLoading(msg) {
+        let overlay = document.getElementById("loadingOverlay");
+        if (!overlay) {
+          overlay = document.createElement("div");
+          overlay.id = "loadingOverlay";
+          overlay.className = "loading-overlay";
+          overlay.innerHTML = `<div class="spinner"></div><div>${msg}</div>`;
+          document.body.appendChild(overlay);
+        } else {
+          const msgDiv = overlay.querySelector("div:nth-child(2)");
+          if (msgDiv) msgDiv.textContent = msg;
+        }
+        overlay.style.display = "flex";
+      },
+
+      hideLoading() {
+        const overlay = document.getElementById("loadingOverlay");
+        if (overlay) overlay.style.display = "none";
+      }
+    };
+
+    // ---------- WRAPPERS GLOBAUX POUR HTML / SNIPPETS ----------
+    function updateDateRange() { RecapApp.handleDateRangeChange(); }
+    function importFromPastedCode() { RecapApp.importFromPastedCode(); }
+    function fillDemo() { RecapApp.loadDemoSnippet(); }
+    function exportToHTML() { RecapApp.exportAsHTMLFile(); }
+    function exportToJPG() { RecapApp.exportAsJPG(); }
+    function copyShareableLink() { RecapApp.copyShareLink(); }
+    function resetAllData() { RecapApp.resetAll(); }
+
+    document.addEventListener("DOMContentLoaded", () => RecapApp.init());
+  </script>
+</body>
+</html>
