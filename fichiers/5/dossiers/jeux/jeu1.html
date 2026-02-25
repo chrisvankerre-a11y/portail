@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Casino du Hasard Absolu — 5×3 rouleaux, Free & Auto</title>
+  <style>
+    :root{ 
+      --bg:#0b0f1a; --card:rgba(255,255,255,0.06); --accent:#6cf0ff; --accent2:#ff7ee6; 
+      --text:#eaf6ff; --muted:#a9b6c7; --win:#9cff8a; --lose:#ffb3b3; --warning:#ffd166;
+    }
+    *{box-sizing:border-box; margin:0; padding:0;}
+    html,body{height:100%}
+    body{ 
+      margin:0; 
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; 
+      color:var(--text);
+      background: 
+        radial-gradient(1200px 800px at 20% 10%, #16213e 0%, #0b0f1a 60%) no-repeat,
+        radial-gradient(800px 800px at 85% 80%, #2a1e3f 0%, #0b0f1a 50%) no-repeat,
+        var(--bg); 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      padding:24px; 
+      overflow-x: hidden;
+    }
+    .wrap{width:min(1180px,96vw)}
+    .title{ 
+      text-align:center; 
+      margin-bottom:16px; 
+      font-weight:700; 
+      letter-spacing:.06em; 
+      background:linear-gradient(90deg,var(--accent),var(--accent2)); 
+      -webkit-background-clip:text; 
+      background-clip:text; 
+      color:transparent; 
+      font-size:clamp(22px,3.6vw,36px);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .slot-card{ 
+      background:var(--card); 
+      border:1px solid rgba(255,255,255,0.1); 
+      border-radius:24px; 
+      box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04); 
+      backdrop-filter:blur(10px); 
+      padding:22px;
+      transition: transform 0.2s ease;
+    }
+    .slot-card:hover {
+      transform: translateY(-2px);
+    }
+    .topbar{
+      display:flex; 
+      align-items:center; 
+      justify-content:space-between; 
+      gap:12px; 
+      margin-bottom:14px;
+      flex-wrap: wrap;
+    }
+    .meter{
+      display:flex; 
+      gap:12px; 
+      align-items:center; 
+      flex-wrap:wrap;
+    }
+    .pill{ 
+      background:rgba(255,255,255,.08); 
+      border:1px solid rgba(255,255,255,.14); 
+      padding:8px 12px; 
+      border-radius:999px; 
+      font-size:14px; 
+      color:var(--muted);
+      transition: all 0.2s ease;
+    }
+    .pill:hover {
+      background:rgba(255,255,255,.12);
+      transform: scale(1.05);
+    }
+    .pill b{color:var(--text)}
+    .bet-level {
+      font-size: 12px;
+      color: var(--accent);
+      margin-left: 4px;
+    }
+
+    .machine{ 
+      position:relative; 
+      border-radius:20px; 
+      padding:18px; 
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); 
+      border:1px solid rgba(255,255,255,.12);
+      overflow: hidden;
+    }
+    .machine::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.6s ease;
+    }
+    .machine.spinning::before {
+      left: 100%;
+    }
+    .grid{ 
+      display:grid; 
+      grid-template-columns:repeat(5,1fr); 
+      gap:10px; 
+      padding:14px; 
+      background:rgba(0,0,0,.25); 
+      border-radius:16px; 
+      border:1px solid rgba(255,255,255,.08); 
+      min-height:320px;
+      position: relative;
+    }
+    .col{ 
+      display:grid; 
+      grid-template-rows:repeat(3,1fr); 
+      gap:10px;
+      perspective: 500px;
+    }
+    .cell{ 
+      height:96px; 
+      display:grid; 
+      place-items:center; 
+      font-size:58px; 
+      line-height:1; 
+      border-radius:12px; 
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); 
+      border:2px solid rgba(255,255,255,.18); 
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.05); 
+      overflow:hidden; 
+      position:relative;
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+    .cell.winning {
+      animation: winPulse 0.6s ease 2;
+      border-color: var(--win);
+      box-shadow: 0 0 15px rgba(156, 255, 138, 0.4);
+    }
+    .cell span{ 
+      display:block;
+      transition: transform 0.3s ease;
+    }
+    .cell:hover span {
+      transform: scale(1.1);
+    }
+    /* Burst visuel pour ✪ */
+    .burst{ 
+      position:absolute; 
+      inset:0; 
+      border-radius:12px; 
+      pointer-events:none; 
+    }
+    .burst::after{ 
+      content:""; 
+      position:absolute; 
+      inset:8px; 
+      border-radius:inherit; 
+      border:2px solid rgba(126,252,255,.9); 
+      box-shadow:0 0 12px rgba(126,252,255,.8), inset 0 0 8px rgba(255,255,255,.4); 
+      opacity:0; 
+      transform:scale(.6); 
+      animation:burstPop 700ms ease-out forwards;
+    }
+    @keyframes burstPop{ 
+      0%{opacity:0; transform:scale(.6)} 
+      35%{opacity:1; transform:scale(1.06)} 
+      100%{opacity:.0; transform:scale(1.2)} 
+    }
+    @keyframes winPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .btns{ 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      gap:12px; 
+      margin-top:16px; 
+      flex-wrap:wrap;
+    }
+    button{ 
+      appearance:none; 
+      cursor:pointer; 
+      border:0; 
+      padding:12px 18px; 
+      border-radius:14px; 
+      font-weight:700; 
+      color:#071018; 
+      background:linear-gradient(90deg,var(--accent),var(--accent2)); 
+      box-shadow:0 10px 24px rgba(108,240,255,.25), inset 0 -1px 0 rgba(0,0,0,.15);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s ease;
+    }
+    button:hover::before {
+      left: 100%;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(108,240,255,.35), inset 0 -1px 0 rgba(0,0,0,.15);
+    }
+    button:active {
+      transform: translateY(1px);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    button.ghost{ 
+      background:transparent; 
+      color:var(--text); 
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: none;
+    }
+    button.ghost:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    button.mute{ 
+      background:transparent; 
+      color:var(--muted); 
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: none;
+    }
+    .btns .auto{ 
+      background:linear-gradient(90deg,#b0ffea,#bba6ff);
+      box-shadow: 0 10px 24px rgba(176, 255, 234, 0.25), inset 0 -1px 0 rgba(0,0,0,.15);
+    }
+    .btns .stop{ 
+      background:linear-gradient(90deg,#ffd2d2,#ff9ea1);
+      box-shadow: 0 10px 24px rgba(255, 210, 210, 0.25), inset 0 -1px 0 rgba(0,0,0,.15);
+    }
+
+    .ticker{ 
+      margin-top:12px; 
+      min-height:26px; 
+      text-align:center; 
+      color:var(--muted);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .ticker.win{
+      color:var(--win);
+      text-shadow: 0 0 10px rgba(156, 255, 138, 0.5);
+    }
+    .ticker.lose{
+      color:var(--lose);
+    }
+    .ticker.warning {
+      color: var(--warning);
+    }
+
+    .paytable{ 
+      margin-top:18px; 
+      font-size:14px; 
+      color:var(--muted); 
+      display:grid; 
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); 
+      gap:10px;
+    }
+    .paytable div{ 
+      background:rgba(255,255,255,.05); 
+      border:1px solid rgba(255,255,255,.08); 
+      padding:10px 12px; 
+      border-radius:12px;
+      transition: all 0.2s ease;
+    }
+    .paytable div:hover {
+      background: rgba(255,255,255,.08);
+      transform: translateY(-2px);
+    }
+    .sym{ 
+      font-size:22px; 
+      margin-right:6px;
+    }
+
+    @keyframes freePulse { 
+      0%{text-shadow:0 0 6px #fff, 0 0 12px #7efcff, 0 0 20px #7efcff} 
+      50%{text-shadow:0 0 10px #fff, 0 0 22px #a7f7ff, 0 0 34px #a7f7ff} 
+      100%{text-shadow:0 0 6px #fff, 0 0 12px #7efcff, 0 0 20px #7efcff} 
+    }
+    .free-glow{ 
+      animation: freePulse 900ms ease-in-out infinite; 
+      filter: drop-shadow(0 0 6px rgba(126,252,255,.85)); 
+    }
+
+    .fs-overlay{ 
+      position:fixed; 
+      inset:0; 
+      display:none; 
+      align-items:center; 
+      justify-content:center; 
+      pointer-events:none; 
+      background: radial-gradient(60vw 60vh at 50% 50%, rgba(108,240,255,.15), rgba(0,0,0,.0));
+      z-index: 1000;
+      animation: fadeIn 0.5s ease;
+    }
+    .fs-badge{ 
+      font-size: clamp(28px,6vw,64px); 
+      font-weight:900; 
+      letter-spacing:.06em; 
+      padding:18px 28px; 
+      border-radius:20px; 
+      border:1px solid rgba(255,255,255,.25); 
+      background:rgba(0,0,0,.35); 
+      box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.1); 
+      backdrop-filter: blur(8px);
+      animation: pulse 2s infinite;
+    }
+
+    .win-overlay{ 
+      position:fixed; 
+      inset:0; 
+      display:none; 
+      align-items:center; 
+      justify-content:center; 
+      pointer-events:none;
+      z-index: 1001;
+    }
+    .win-badge{ 
+      font-size: clamp(28px,7vw,72px); 
+      font-weight:1000; 
+      letter-spacing:.04em; 
+      padding:14px 22px; 
+      border-radius:18px; 
+      border:1px solid rgba(255,255,255,.25); 
+      background:rgba(0,0,0,.45); 
+      color:var(--win); 
+      box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.1); 
+      backdrop-filter: blur(8px);
+      animation: bounceIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .slot-card { padding: 16px; }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .meter { justify-content: center; }
+      .btns { gap: 8px; }
+      button { padding: 10px 14px; font-size: 14px; }
+      .cell { height: 80px; font-size: 48px; }
+      .grid { min-height: 280px; }
+    }
+
+    @media (max-width: 480px) {
+      .paytable { grid-template-columns: 1fr; }
+      .cell { height: 70px; font-size: 40px; }
+      .grid { min-height: 250px; gap: 6px; padding: 10px; }
+    }
+
+    /* Loading state */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    /* Stats panel */
+    .stats-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+    }
+    .stats-panel.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="stats-panel" id="statsPanel">
+    <div>Spins: <span id="totalSpins">0</span></div>
+    <div>Gains: <span id="totalWins">0</span></div>
+    <div>RTP: <span id="rtp">0%</span></div>
+  </div>
+
+  <div class="wrap">
+    <h1 class="title">🎰 Casino du Hasard Absolu — Grille 5×3</h1>
+    <div class="slot-card">
+      <div class="topbar">
+        <div class="meter">
+          <div class="pill">Crédits : <b id="credits">10000</b></div>
+          <div class="pill">Mise : <b id="bet">1</b><span class="bet-level" id="betLevel">(MIN)</span></div>
+          <div class="pill">Auto restants : <b id="auto-left">0</b></div>
+          <div class="pill">Free restants : <b id="free-left">0</b></div>
+        </div>
+        <div class="meter">
+          <button id="btn-minus" class="ghost">−</button>
+          <button id="btn-plus" class="ghost">+</button>
+          <button id="btn-mute" class="mute">🔇</button>
+          <button id="btn-stats" class="ghost">📊</button>
+        </div>
+      </div>
+
+      <div class="machine" id="machine">
+        <div id="grid" class="grid" aria-live="polite" aria-label="Grille 5 colonnes × 3 rangées">
+          <!-- Grid will be populated by JavaScript -->
+        </div>
+        <div class="btns">
+          <button id="spin">SPIN</button>
+          <button id="auto10" class="auto">AUTO ×10</button>
+          <button id="auto50" class="auto">AUTO ×50</button>
+          <button id="auto100" class="auto">AUTO ×100</button>
+          <button id="autostop" class="stop">STOP AUTO</button>
+          <button id="cashout" class="ghost">Réinitialiser</button>
+        </div>
+        <div id="ticker" class="ticker">Prêt.</div>
+      </div>
+
+      <div class="paytable">
+        <div><span class="sym">✪</span> Free Spins — 3✪=10 · 4✪=50 · 5✪=100 (n'importe où sur la grille)</div>
+        <div><span class="sym">☾</span> Wild</div>
+        <div><span class="sym">★</span> 3=×4 · 4=×20 · 5=×200</div>
+        <div><span class="sym">◆</span> 3=×3 · 4=×14 · 5=×140</div>
+        <div><span class="sym">●</span> 3=×2.5 · 4=×12 · 5=×120</div>
+        <div><span class="sym">▲</span> 3=×2 · 4=×10 · 5=×100</div>
+        <div><span class="sym">♦</span> 3=×1.5 · 4=×8 · 5=×80</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fs-overlay" id="fsOverlay"><div class="fs-badge">✨ JEUX GRATUITS ✨</div></div>
+  <div class="win-overlay" id="winOverlay"><div class="win-badge" id="winBadge"></div></div>
+
+<script defer>
+"use strict";
+// ======= CONSTANTES =======
+const FREE_CH = '✪';
+const FREE_PAY_BOOST = 1.6;
+const SYMBOLS = [
+  { ch:'✪', w:5, pay5:10,  pay4:4,  pay3:1.5, free:true },
+  { ch:'☾', w:5,  pay5:0,   pay4:0,  pay3:0,   wild:true },
+  { ch:'★', w:14, pay5:200, pay4:20, pay3:4 },
+  { ch:'◆', w:16, pay5:140, pay4:14, pay3:3 },
+  { ch:'●', w:20, pay5:120, pay4:12, pay3:2.5 },
+  { ch:'▲', w:22, pay5:100, pay4:10, pay3:2 },
+  { ch:'♦', w:25, pay5:80,  pay4:8,  pay3:1.5 },
+];
+
+// ======= PALIERS DE MISE =======
+const BET_LEVELS = [1, 5, 10, 25, 50, 100, 200, 500, 1000];
+const BET_LABELS = {
+  1: "MIN",
+  5: "PETITE",
+  10: "MOYENNE", 
+  25: "GRANDE",
+  50: "EXTRA",
+  100: "VIP",
+  200: "ULTRA",
+  500: "MEGA",
+  1000: "MAX"
+};
+
+// ======= ETATS =======
+let credits = 10000;
+let currentBetIndex = 0; // Commence à 1 crédit
+let bet = BET_LEVELS[currentBetIndex];
+let spinning = false;
+let autoActive=false, autoTarget=0, autoDone=0, autoTimer=null, autoStopRequested=false;
+let freeSpins=0, freeIntroPending=false, lockPaidSpins=false;
+let audioEnabled=false, ctx=null, spinTimer=null, freeMusicTimer=null;
+let totalSpins = 0, totalWins = 0, totalBet = 0;
+let statsVisible = false;
+
+// ======= HELPERS =======
+const $ = (s)=>document.querySelector(s);
+const $$= (s)=>Array.from(document.querySelectorAll(s));
+const gridEl = $('#grid');
+const machineEl = $('#machine');
+const creditsEl=$('#credits'), betEl=$('#bet'), betLevelEl=$('#betLevel'), autoEl=$('#auto-left'), freeEl=$('#free-left');
+const ticker=$('#ticker'), fsOverlay=$('#fsOverlay'), winOverlay=$('#winOverlay'), winBadge=$('#winBadge');
+const spinBtn=$('#spin'), auto10Btn=$('#auto10'), auto50Btn=$('#auto50'), auto100Btn=$('#auto100'), autoStopBtn=$('#autostop');
+const minusBtn=$('#btn-minus'), plusBtn=$('#btn-plus'), cashoutBtn=$('#cashout'), muteBtn=$('#btn-mute'), statsBtn=$('#btn-stats');
+const statsPanel=$('#statsPanel'), totalSpinsEl=$('#totalSpins'), totalWinsEl=$('#totalWins'), rtpEl=$('#rtp');
+
+function updateHUD(){ 
+  creditsEl.textContent=Math.max(0,Math.floor(credits)); 
+  betEl.textContent=bet; 
+  betLevelEl.textContent = `(${BET_LABELS[bet]})`;
+  autoEl.textContent=autoActive?Math.max(0,autoTarget-autoDone):0; 
+  freeEl.textContent=freeSpins; 
+}
+
+function setMsg(m,cls=''){ 
+  ticker.textContent=m; 
+  ticker.className='ticker'+(cls? ' '+cls:''); 
+}
+
+function updateStats(gain = 0) {
+  if (gain > 0) {
+    totalWins += gain;
+  }
+  const rtp = totalBet > 0 ? ((totalWins / totalBet) * 100).toFixed(2) : "0.00";
+  totalSpinsEl.textContent = totalSpins;
+  totalWinsEl.textContent = totalWins;
+  rtpEl.textContent = rtp + "%";
+}
+
+function increaseBet() {
+  if (currentBetIndex < BET_LEVELS.length - 1) {
+    currentBetIndex++;
+    bet = BET_LEVELS[currentBetIndex];
+    updateHUD();
+    playBeep(330, 0.1, 'sine', 0.03);
+  } else {
+    playBeep(220, 0.1, 'sine', 0.03);
+  }
+}
+
+function decreaseBet() {
+  if (currentBetIndex > 0) {
+    currentBetIndex--;
+    bet = BET_LEVELS[currentBetIndex];
+    updateHUD();
+    playBeep(330, 0.1, 'sine', 0.03);
+  } else {
+    playBeep(220, 0.1, 'sine', 0.03);
+  }
+}
+
+function ensureAudio(){ 
+  if(!ctx){ 
+    ctx=new (window.AudioContext||window.webkitAudioContext)(); 
+  } 
+}
+
+function playBeep(freq=440, dur=0.12, type='sine', gain=0.04){ 
+  if(!audioEnabled) return; 
+  ensureAudio(); 
+  const o=ctx.createOscillator(); 
+  const g=ctx.createGain(); 
+  o.type=type; 
+  o.frequency.value=freq; 
+  g.gain.value=gain; 
+  o.connect(g).connect(ctx.destination); 
+  o.start(); 
+  setTimeout(()=>{ o.stop(); o.disconnect(); g.disconnect(); }, dur*1000); 
+}
+
+function startSpinMusic(){ 
+  if(!audioEnabled) return; 
+  ensureAudio(); 
+  const notes=[220,247,262,294,330,294,262,247]; 
+  let i=0; 
+  stopSpinMusic(); 
+  spinTimer=setInterval(()=>{ 
+    playBeep(notes[i%notes.length],0.08,'triangle',0.035); 
+    i++; 
+  },120); 
+}
+
+function stopSpinMusic(){ 
+  if(spinTimer){ 
+    clearInterval(spinTimer); 
+    spinTimer=null; 
+  } 
+}
+
+function startFreeMusic(){ 
+  if(!audioEnabled || freeMusicTimer) return; 
+  ensureAudio(); 
+  let i=0; 
+  const scale=[392,440,494,523,587,659,698]; 
+  freeMusicTimer=setInterval(()=>{ 
+    const f=scale[i%scale.length]; 
+    i++; 
+    playBeep(f,0.08,'sawtooth',0.03); 
+    setTimeout(()=>playBeep(f*2,0.06,'square',0.025),60); 
+    setTimeout(()=>playBeep(110,0.03,'sine',0.05),120); 
+  },180); 
+}
+
+function stopFreeMusic(){ 
+  if(freeMusicTimer){ 
+    clearInterval(freeMusicTimer); 
+    freeMusicTimer=null; 
+  } 
+}
+
+function winJingle(){ 
+  if(!audioEnabled) return; 
+  ensureAudio(); 
+  [523,659,784,988].forEach((f,k)=> setTimeout(()=> playBeep(f,0.16,'square',0.06), k*140)); 
+}
+
+function weightedPick(){ 
+  const tot=SYMBOLS.reduce((a,s)=>a+s.w,0); 
+  let r=Math.random()*tot; 
+  for(const s of SYMBOLS){ 
+    if((r-=s.w)<=0) return s; 
+  } 
+  return SYMBOLS[0]; 
+}
+
+const isWild=(ch)=> SYMBOLS.find(s=>s.ch===ch)?.wild===true;
+const isFree=(ch)=> ch===FREE_CH;
+
+// Construit la grille 5×3 (DOM)
+function buildGrid(){
+  gridEl.innerHTML='';
+  for(let c=0;c<5;c++){
+    const col=document.createElement('div'); 
+    col.className='col';
+    for(let r=0;r<3;r++){
+      const cell=document.createElement('div'); 
+      cell.className='cell';
+      const span=document.createElement('span'); 
+      span.textContent='★';
+      cell.appendChild(span); 
+      col.appendChild(cell);
+    }
+    gridEl.appendChild(col);
+  }
+}
+
+// Animation améliorée avec effets visuels
+async function animateTo(result){
+  const cols = $$('.col');
+  const winningCells = new Set();
+  
+  // Identifier les cellules gagnantes
+  const lines = [result[0], result[1], result[2]];
+  for (let row = 0; row < 3; row++) {
+    const line = lines[row];
+    const payout = payoutLine(line);
+    if (payout.mult > 0) {
+      for (let col = 0; col < 5; col++) {
+        winningCells.add(`${row}-${col}`);
+      }
+    }
+  }
+
+  const promises = [];
+  machineEl.classList.add('spinning');
+  
+  for(let c=0;c<5;c++){
+    const delay = 100*c;
+    promises.push(new Promise(async (resolve)=>{
+      await new Promise(r=>setTimeout(r,delay));
+      const cells = Array.from(cols[c].children);
+      const dur = 700 + 120*c;
+      const int = setInterval(()=>{ 
+        for(const cell of cells){ 
+          cell.firstChild.textContent = weightedPick().ch; 
+        } 
+      }, 70);
+      
+      setTimeout(()=>{
+        clearInterval(int);
+        for(let r=0;r<3;r++){
+          const ch = result[r][c];
+          const cell = cells[r];
+          const span = cell.firstChild; 
+          span.textContent = ch; 
+          span.classList.toggle('free-glow', isFree(ch));
+          
+          // Marquer les cellules gagnantes
+          if (winningCells.has(`${r}-${c}`)) {
+            cell.classList.add('winning');
+            setTimeout(() => cell.classList.remove('winning'), 2000);
+          }
+          
+          // Effet burst pour ✪
+          if(isFree(ch)){
+            const fx=document.createElement('div'); 
+            fx.className='burst'; 
+            cell.appendChild(fx);
+            setTimeout(()=> fx.remove(), 720);
+          }
+        }
+        resolve();
+      }, dur);
+    }));
+  }
+  
+  await Promise.all(promises);
+  machineEl.classList.remove('spinning');
+}
+
+function pingFreeSound(count){ 
+  for(let i=0;i<count;i++){ 
+    setTimeout(()=> playBeep(880 + i*60, 0.12, 'square', 0.05), i*90); 
+  } 
+}
+
+// Payout pour une ligne (5 symboles), wild à la suite, ✪ non payé
+function payoutLine(line){
+  const first=line[0];
+  const candidates = isWild(first) ? SYMBOLS.filter(s=>!s.wild && !s.free) : [SYMBOLS.find(s=>s.ch===first)];
+  let best={mult:0};
+  for(const cand of candidates){ 
+    if(!cand||cand.free) continue; 
+    let n=0; 
+    for(const ch of line){ 
+      if(ch===cand.ch || isWild(ch)) n++; 
+      else break; 
+    } 
+    if(n>=3){ 
+      const mult=n===5?cand.pay5:n===4?cand.pay4:cand.pay3; 
+      if(mult>best.mult) best={mult}; 
+    } 
+  }
+  return best;
+}
+
+// Compte les ✪ sur toute la grille
+function countFree(result){
+  let c=0; 
+  for(let r=0;r<3;r++){ 
+    for(let n of result[r]) if(n===FREE_CH) c++; 
+  }
+  return c>=5?100: c===4?50: c===3?10: 0;
+}
+
+// ======= LOGIQUE DE JEU =======
+async function spin(isFree=false){
+  if(spinning) return;
+  if(!isFree && bet>credits){ 
+    setMsg('Crédits insuffisants.','lose'); 
+    stopAuto(); 
+    return; 
+  }
+  
+  try{
+    spinning=true;
+    setControls(false,{keepMute:true,keepStop:true});
+    
+    // Débit mise si payant
+    if(isFree){ 
+      setMsg(`Jeux gratuits restants : ${freeSpins}`); 
+    } else { 
+      credits-=bet; 
+      totalSpins++;
+      totalBet += bet;
+      updateHUD(); 
+      updateStats();
+      setMsg(autoActive? `AUTO ${autoDone+1}/${autoTarget} — Mise ${bet}` : 'Les rouleaux chantent…'); 
+    }
+    
+    if(audioEnabled) startSpinMusic();
+
+    // Génère une matrice 3×5
+    const result=[0,1,2].map(()=> Array.from({length:5}, ()=> weightedPick().ch));
+    await animateTo(result);
+
+    // Évalue 3 lignes horizontales (haut, milieu, bas)
+    const lines=[ result[0], result[1], result[2] ];
+    let totalMult=0;
+    for(const line of lines){ 
+      totalMult += payoutLine(line).mult; 
+    }
+    
+    const boost = isFree? FREE_PAY_BOOST:1;
+    const gain = Math.floor(bet * totalMult * boost);
+    credits += gain; 
+    updateHUD();
+    updateStats(gain);
+
+    stopSpinMusic();
+
+    // Détecte Free
+    const fs = countFree(result);
+    if(fs>0){
+      if(freeSpins===0) freeIntroPending=true;
+      freeSpins+=fs; 
+      updateHUD();
+      // stop AUTO et verrou
+      lockPaidSpins=true; 
+      autoActive=false; 
+      autoTarget=autoDone; 
+      autoStopRequested=true; 
+      clearTimeout(autoTimer);
+      setMsg(`✨ +${fs} free spins !`,'win');
+      pingFreeSound(Math.min(fs,5));
+      winJingle();
+    }
+
+    let pause=350;
+    if(gain>0){ 
+      setMsg(`+${gain} crédits${isFree? ' (boost ×'+FREE_PAY_BOOST+')':''}`,'win'); 
+      showWin(gain); 
+      pause=1100; 
+    } else if(fs===0){ 
+      setMsg('Pas de ligne gagnante.','lose'); 
+    }
+
+    if(!isFree && autoActive){ 
+      autoDone++; 
+      updateHUD(); 
+    }
+  } catch(e){ 
+    console.error(e); 
+    setMsg('Erreur.','lose'); 
+    stopAuto(); 
+  } finally{ 
+    spinning=false; 
+    flow(); 
+  }
+}
+
+function showWin(amount){ 
+  winBadge.textContent = `+${amount} crédits`; 
+  winOverlay.style.display='flex'; 
+  void winBadge.offsetWidth; 
+  setTimeout(()=> winOverlay.style.display='none', 1000); 
+}
+
+function scheduleNext(isFree,delay=350){ 
+  clearTimeout(autoTimer); 
+  if(!isFree && (lockPaidSpins || autoStopRequested || !autoActive)) return; 
+  autoTimer=setTimeout(()=> spin(!!isFree), delay); 
+}
+
+function flow(){
+  if(freeSpins>0){
+    if(freeIntroPending){ 
+      freeIntroPending=false; 
+      fsOverlay.style.display='flex'; 
+      setTimeout(()=>{ 
+        fsOverlay.style.display='none'; 
+        startFreeMusic(); 
+        scheduleNext(true,0); 
+      },1000); 
+      return; 
+    }
+    freeSpins--; 
+    updateHUD(); 
+    scheduleNext(true,350); 
+    return;
+  }
+  
+  // Fin de free: couper musique + déverrouiller et permettre AUTO à nouveau
+  stopFreeMusic();
+  lockPaidSpins=false;           // 🔓 on autorise à nouveau les spins payants
+  autoStopRequested=false;       // 🔄 l'utilisateur peut relancer AUTO
+  setControls(true);
+  
+  if(autoActive && autoDone<autoTarget){ 
+    scheduleNext(false,350); 
+    return; 
+  }
+  stopAuto(false);
+}
+
+function startAuto(n){ 
+  if(spinning) return; 
+  if(freeSpins>0||lockPaidSpins){ 
+    setMsg('Attends la fin des FREE pour lancer AUTO.','warning'); 
+    return; 
+  } 
+  autoActive=true; 
+  autoStopRequested=false; 
+  autoTarget=n; 
+  autoDone=0; 
+  updateHUD(); 
+  setControls(false,{keepMute:true,keepStop:true}); 
+  setMsg(`AUTO lancé (${n})`); 
+  spin(false); 
+}
+
+function stopAuto(show=true){ 
+  autoActive=false; 
+  autoStopRequested=true; 
+  clearTimeout(autoTimer); 
+  updateHUD(); 
+  if(show) setMsg('AUTO arrêté.'); 
+}
+
+function setControls(on,opt={}){ 
+  const {keepMute=false,keepStop=false}=opt; 
+  spinBtn.disabled=!on; 
+  minusBtn.disabled=!on; 
+  plusBtn.disabled=!on; 
+  cashoutBtn.disabled=!on; 
+  auto10Btn.disabled=!on; 
+  auto50Btn.disabled=!on; 
+  auto100Btn.disabled=!on; 
+  muteBtn.disabled=keepMute?false:!on; 
+  autoStopBtn.disabled=keepStop?false:!on; 
+  statsBtn.disabled=!on;
+}
+
+function toggleStats() {
+  statsVisible = !statsVisible;
+  statsPanel.classList.toggle('show', statsVisible);
+  statsBtn.textContent = statsVisible ? '📈' : '📊';
+}
+
+// ======= ÉVÉNEMENTS =======
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn || btn.disabled) return;
+  
+  switch(btn.id){
+    case 'spin':      spin(false); break;
+    case 'auto10':    startAuto(10); break;
+    case 'auto50':    startAuto(50); break;
+    case 'auto100':   startAuto(100); break;
+    case 'autostop':  stopAuto(); break;
+    case 'btn-minus': if(!spinning && !autoActive){ decreaseBet(); } break;
+    case 'btn-plus':  if(!spinning && !autoActive){ increaseBet(); } break;
+    case 'cashout':   if(!spinning){ stopAuto(false); lockPaidSpins=false; credits=10000; currentBetIndex=0; bet=BET_LEVELS[currentBetIndex]; freeSpins=0; updateHUD(); setMsg('Crédits réinitialisés.'); } break;
+    case 'btn-mute':  audioEnabled=!audioEnabled; btn.textContent=audioEnabled?'🔊':'🔇'; if(ctx && ctx.state==='suspended' && audioEnabled){ ctx.resume(); } if(spinning){ if(audioEnabled) startSpinMusic(); else stopSpinMusic(); } if(audioEnabled && freeSpins>0) startFreeMusic(); else stopFreeMusic(); break;
+    case 'btn-stats': toggleStats(); break;
+  }
+});
+
+// Raccourcis clavier maintenus
+document.addEventListener('keydown',(e)=>{
+  if((e.key===' '||e.key==='Enter') && !spinning && !autoActive){ e.preventDefault(); spin(false); }
+  if(e.key==='ArrowUp'&&!spinning&&!autoActive){ increaseBet(); }
+  if(e.key==='ArrowDown'&&!spinning&&!autoActive){ decreaseBet(); }
+  if(e.key.toLowerCase()==='m'){ const mb=document.getElementById('btn-mute'); if(mb) mb.click(); }
+  if(e.key.toLowerCase()==='s'){ toggleStats(); }
+});
+
+// ======= INITIALISATION =======
+function seedGrid(){ 
+  const cols=$$('.col');
+  for(let c=0;c<cols.length;c++){
+    const cells=Array.from(cols[c].children);
+    for(let r=0;r<cells.length;r++){
+      const ch=weightedPick().ch;
+      const span=cells[r].firstChild; 
+      span.textContent=ch; 
+      span.classList.toggle('free-glow', isFree(ch));
+    }
+  }
+}
+
+function init(){
+  if(!gridEl) return;
+  buildGrid();
+  seedGrid();
+  updateHUD();
+  updateStats();
+  setControls(true);
+  setMsg('Prêt. Utilisez ESPACE ou ENTRÉE pour spin, flèches pour la mise.');
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
