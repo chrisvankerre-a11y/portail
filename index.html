@@ -20,50 +20,6 @@
 <input type="file" id="f">
 <div id="viewer" style="margin-top:20px;"></div>
 
-<script>
-  const input = document.getElementById("f");
-  const viewer = document.getElementById("viewer");
-
-  input.addEventListener("change", async () => {
-    const file = input.files?.[0];
-    if (!file) return;
-
-    viewer.innerHTML = ""; // reset
-
-    const type = file.type;
-
-    // IMAGE
-    if (type.startsWith("image/")) {
-      const img = document.createElement("img");
-      img.style.maxWidth = "100%";
-      img.src = URL.createObjectURL(file);
-      viewer.appendChild(img);
-      return;
-    }
-
-    // PDF
-    if (type === "application/pdf") {
-      const iframe = document.createElement("iframe");
-      iframe.style.width = "100%";
-      iframe.style.height = "600px";
-      iframe.src = URL.createObjectURL(file);
-      viewer.appendChild(iframe);
-      return;
-    }
-
-    // TEXTE (txt, csv, json, etc.)
-    if (type.startsWith("text/") || !type) {
-      const text = await file.text();
-      const pre = document.createElement("pre");
-      pre.textContent = text;
-      viewer.appendChild(pre);
-      return;
-    }
-
-    // FALLBACK
-    viewer.textContent = "Type de fichier non prévisualisable dans le navigateur.";
-  });
-</script>
 
 </body>
 
