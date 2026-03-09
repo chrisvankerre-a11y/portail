@@ -233,6 +233,46 @@
       white-space: normal;
     }
 
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 8px 0 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    table.data-table th,
+    table.data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.data-table th {
+      background: rgba(245,158,11,0.10);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    table.data-table td {
+      color: #d6d9e0;
+      font-size: 0.97rem;
+    }
+
+    table.data-table tr:last-child td {
+      border-bottom: 0;
+    }
+
     .back-top {
       margin-top: 28px;
       display: inline-flex;
@@ -326,11 +366,49 @@
 <p>L&#x27;audit UX et SEO souligne que si circus-poker.com possède un socle solide, il reste sous-exploité face aux standards de l&#x27;industrie. Le marché est dominé par des acteurs comme Winamax (7,14 pages par visite), imposant une rigueur transactionnelle absolue. Pour Circus, l&#x27;enjeu n&#x27;est pas de concurrencer les termes génériques &quot;poker en ligne&quot;, mais de dominer le SEO d&#x27;intention locale et événementielle avec une autorité &quot;Live&quot; inégalée.</p>
 <p>Analyse des Frictions (Pain Points) : La dispersion des éléments de réassurance (souvent relégués en FAQ ou Footer) et une interface qui ne priorise pas assez l&#x27;action immédiate freinent la conversion. Le trafic organique estimé (~8,8K) doit être mieux capté par des pages &quot;Produit&quot; plus agressives.</p>
 <p>Analyse Comparative (Benchmark) :</p>
-<p>Dimension<br>Circus Poker<br>Winamax<br>PokerStars<br>GGPoker</p>
-<p>Engagement Produit<br>Modéré (Contenu Live)<br>Très élevé (7,14 pages/visite)<br>Élevé (Trust-first)<br>Fort (Download &amp; Play)</p>
-<p>Onboarding Flow<br>Compte obligatoire (Friction)<br>Flux de dépôt fluide<br>&quot;Safe &amp; Regulated&quot;<br>Step-by-step (1/2/3)</p>
-<p>Signaux de Confiance<br>Dispersés (FAQ)<br>Omniprésents (ANJ)<br>Comptes ségrégués<br>Migration Ocean Rewards</p>
-<p>Volume SEO (Est.)<br>~8,8K / mois<br>~4,2M / mois<br>~209K (FR)<br>~753K (Global)</p>
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Circus Poker</th>
+        <th>Winamax</th>
+        <th>PokerStars</th>
+        <th>GGPoker</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Engagement Produit</td>
+        <td>Modéré (Contenu Live)</td>
+        <td>Très élevé (7,14 pages/visite)</td>
+        <td>Élevé (Trust-first)</td>
+        <td>Fort (Download &amp; Play)</td>
+      </tr>
+      <tr>
+        <td>Onboarding Flow</td>
+        <td>Compte obligatoire (Friction)</td>
+        <td>Flux de dépôt fluide</td>
+        <td>&quot;Safe &amp; Regulated&quot;</td>
+        <td>Step-by-step (1/2/3)</td>
+      </tr>
+      <tr>
+        <td>Signaux de Confiance</td>
+        <td>Dispersés (FAQ)</td>
+        <td>Omniprésents (ANJ)</td>
+        <td>Comptes ségrégués</td>
+        <td>Migration Ocean Rewards</td>
+      </tr>
+      <tr>
+        <td>Volume SEO (Est.)</td>
+        <td>~8,8K / mois</td>
+        <td>~4,2M / mois</td>
+        <td>~209K (FR)</td>
+        <td>~753K (Global)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <p>Opportunité &quot;Live&quot; vs &quot;Online&quot; : Notre avantage compétitif réside dans la capture du trafic lié aux événements réels (Namur, Spa, Paris). Nous devons saturer les niches sur les structures de tournois, les blindes et les informations logistiques que les pure-players online délaissent.</p>
 <p>Transition : Pour convertir ce trafic qualifié, nous devons maintenant restructurer le pilier de la confiance et l&#x27;accessibilité au checkout.</p>
 <p>3. Le Pilier Confiance et Accessibilité : Optimisation du Checkout et de l&#x27;Inscription</p>
